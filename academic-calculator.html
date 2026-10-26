@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Academic Calculator (CGPA, SGPA & GPA) | Mohamed Baheed</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+  :root {
+    --bg-page: #0B101B;
+    --bg-card: #121A2A;
+    --bg-input: #182338;
+    --border: #223048;
+    --cyan: #00F2FE;
+    --amber: #FFB020;
+    --emerald: #10B981;
+    --coral: #EF4444;
+    --text-main: #FFFFFF;
+    --text-muted: #94A3B8;
+    --text-dim: #64748B;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg-page);
+    color: var(--text-main);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+  .disp { font-family: 'Space Grotesk', sans-serif; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+
+  header.calc-topbar {
+    background: #0E1524;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  .topbar-content {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 16px 20px 0 20px;
+  }
+  .brand-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .brand-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #00F2FE, #4FACFE);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #0B101B;
+    font-size: 1.15rem;
+  }
+  .brand-name {
+    font-size: 17px;
+    font-weight: 700;
+  }
+  .brand-sub {
+    font-size: 11px;
+    color: var(--cyan);
+    margin-top: 2px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: #fff;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+  .back-btn:hover {
+    background: var(--cyan);
+    color: #0B101B;
+  }
+
+  nav.tab-bar {
+    display: flex;
+    gap: 4px;
+    margin-top: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  nav.tab-bar button {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 13.5px;
+    padding: 10px 18px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+  }
+  nav.tab-bar button.active {
+    color: #fff;
+    border-bottom-color: var(--cyan);
+  }
+
+  main {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 24px 20px 80px 20px;
+  }
+
+  .calc-panel { display: none; }
+  .calc-panel.active { display: block; animation: fadein 0.25s ease; }
+  @keyframes fadein { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px;
+    margin-bottom: 20px;
+  }
+
+  .section-header {
+    margin-bottom: 16px;
+  }
+  .section-title {
+    font-size: 18px;
+    color: #fff;
+    margin-bottom: 4px;
+  }
+  .section-sub {
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  /* Table Grid */
+  .entry-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 16px;
+  }
+  .entry-table th {
+    text-align: left;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    color: var(--text-dim);
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    text-transform: uppercase;
+  }
+  .entry-table td {
+    padding: 8px 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .entry-table input, .entry-table select {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1px solid var(--border);
+    background: var(--bg-input);
+    color: #fff;
+    border-radius: 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+  }
+  .entry-table input:focus, .entry-table select:focus {
+    outline: 2px solid var(--cyan);
+    border-color: transparent;
+  }
+
+  .btn {
+    appearance: none;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 18px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 13.5px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+  }
+  .btn-primary { background: linear-gradient(135deg, #00F2FE, #4FACFE); color: #0B101B; font-weight: 700; }
+  .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+  .btn-secondary { background: rgba(255,255,255,0.06); border: 1px solid var(--border); color: #fff; }
+  .btn-secondary:hover { background: rgba(255,255,255,0.12); }
+  .btn-danger-sm { background: transparent; border: none; color: var(--text-dim); cursor: pointer; padding: 6px; font-size: 14px; }
+  .btn-danger-sm:hover { color: var(--coral); }
+
+  .actions-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 14px;
+  }
+
+  /* Result Display Box */
+  .result-banner {
+    background: linear-gradient(135deg, rgba(0, 242, 254, 0.08), rgba(79, 172, 254, 0.04));
+    border: 1px solid rgba(0, 242, 254, 0.3);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 20px;
+  }
+  .result-num {
+    font-size: 34px;
+    font-weight: 800;
+    color: var(--cyan);
+    line-height: 1;
+  }
+  .result-sub {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-family: 'JetBrains Mono', monospace;
+    margin-top: 4px;
+  }
+
+  .scale-reference {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-top: 16px;
+  }
+</style>
+</head>
+<body>
+
+<header class="calc-topbar">
+  <div class="topbar-content">
+    <div class="brand-row">
+      <div class="brand">
+        <div class="brand-icon">
+          <i class="fa-solid fa-calculator"></i>
+        </div>
+        <div>
+          <div class="brand-name disp">Academic Grade Calculator Suite</div>
+          <div class="brand-sub mono">Anna University &bull; Credit-Weighted Engineering Engine</div>
+        </div>
+      </div>
+      <a href="index.html#stage-4" class="back-btn" title="Back to Mohamed Baheed's Portfolio">
+        <i class="fa-solid fa-arrow-left"></i> Back to Portfolio
+      </a>
+    </div>
+
+    <nav class="tab-bar" id="tabBar">
+      <button class="active" data-tab="gpa"><i class="fa-solid fa-graduation-cap"></i> GPA Calculator</button>
+      <button data-tab="sgpa"><i class="fa-solid fa-chart-pie"></i> SGPA (Semester)</button>
+      <button data-tab="cgpa"><i class="fa-solid fa-award"></i> CGPA (Cumulative)</button>
+      <button data-tab="projection"><i class="fa-solid fa-compass"></i> Goal Seek Projection</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <!-- ============ GPA / COURSE TAB ============ -->
+  <section class="calc-panel active" id="panel-gpa">
+    <div class="card">
+      <div class="section-header">
+        <h2 class="section-title disp">Grade Point Average (GPA)</h2>
+        <p class="section-sub">Formula: &sum; (Credits &times; Grade Points) / &sum; (Credits)</p>
+      </div>
+
+      <table class="entry-table" id="gpa-table">
+        <thead>
+          <tr>
+            <th style="width: 45%;">Course / Subject Name</th>
+            <th style="width: 25%;">Credits</th>
+            <th style="width: 25%;">Grade</th>
+            <th style="width: 5%;"></th>
+          </tr>
+        </thead>
+        <tbody id="gpa-tbody"></tbody>
+      </table>
+
+      <div class="actions-row">
+        <button class="btn btn-secondary" id="gpa-add-row"><i class="fa-solid fa-plus"></i> Add Course</button>
+        <button class="btn btn-primary" id="gpa-calc-btn"><i class="fa-solid fa-calculator"></i> Calculate GPA</button>
+        <button class="btn btn-secondary" id="gpa-clear-btn">Clear All</button>
+      </div>
+
+      <div class="result-banner" id="gpa-result-banner">
+        <div>
+          <div style="font-size: 13px; color: var(--text-muted); font-weight: 600;">CALCULATED GRADE POINT AVERAGE</div>
+          <div class="result-num mono" id="gpa-result-val">0.00</div>
+          <div class="result-sub" id="gpa-result-details">Total Credits: 0 &bull; Weighted Points: 0</div>
+        </div>
+        <div id="gpa-class-tag" style="text-align: right;"></div>
+      </div>
+
+      <div class="scale-reference mono">
+        <strong>Anna University Grading Scale Reference:</strong><br>
+        O (Outstanding): 10 &bull; A+ (Excellent): 9 &bull; A (Very Good): 8 &bull; B+ (Good): 7 &bull; B (Average): 6 &bull; C (Satisfactory): 5 &bull; U (Reappear): 0
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SGPA TAB ============ -->
+  <section class="calc-panel" id="panel-sgpa">
+    <div class="card">
+      <div class="section-header">
+        <h2 class="section-title disp">Semester Grade Point Average (SGPA)</h2>
+        <p class="section-sub">Calculate individual semester performance matching Mohamed Baheed's 9.62 &amp; 9.54 distinctions.</p>
+      </div>
+
+      <table class="entry-table" id="sgpa-table">
+        <thead>
+          <tr>
+            <th style="width: 45%;">Semester Course</th>
+            <th style="width: 25%;">Credits</th>
+            <th style="width: 25%;">Grade Points</th>
+            <th style="width: 5%;"></th>
+          </tr>
+        </thead>
+        <tbody id="sgpa-tbody"></tbody>
+      </table>
+
+      <div class="actions-row">
+        <button class="btn btn-secondary" id="sgpa-add-row"><i class="fa-solid fa-plus"></i> Add Subject</button>
+        <button class="btn btn-primary" id="sgpa-calc-btn"><i class="fa-solid fa-calculator"></i> Calculate SGPA</button>
+        <button class="btn btn-secondary" id="sgpa-preset-btn"><i class="fa-solid fa-sparkles"></i> Load Baheed's Sem 2 Preset (9.62)</button>
+      </div>
+
+      <div class="result-banner" id="sgpa-result-banner">
+        <div>
+          <div style="font-size: 13px; color: var(--text-muted); font-weight: 600;">SEMESTER 2 SGPA SCORE</div>
+          <div class="result-num mono" id="sgpa-result-val">0.00</div>
+          <div class="result-sub" id="sgpa-result-details">Total Credits: 0 &bull; Weighted Points: 0</div>
+        </div>
+        <div id="sgpa-class-tag" style="text-align: right;"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CGPA TAB ============ -->
+  <section class="calc-panel" id="panel-cgpa">
+    <div class="card">
+      <div class="section-header">
+        <h2 class="section-title disp">Cumulative Grade Point Average (CGPA)</h2>
+        <p class="section-sub">Formula: &sum; (Semester Credits &times; Semester SGPA) / &sum; (Semester Credits)</p>
+      </div>
+
+      <table class="entry-table" id="cgpa-table">
+        <thead>
+          <tr>
+            <th style="width: 40%;">Semester</th>
+            <th style="width: 30%;">Total Semester Credits</th>
+            <th style="width: 25%;">Semester SGPA</th>
+            <th style="width: 5%;"></th>
+          </tr>
+        </thead>
+        <tbody id="cgpa-tbody"></tbody>
+      </table>
+
+      <div class="actions-row">
+        <button class="btn btn-secondary" id="cgpa-add-row"><i class="fa-solid fa-plus"></i> Add Semester</button>
+        <button class="btn btn-primary" id="cgpa-calc-btn"><i class="fa-solid fa-calculator"></i> Compute CGPA</button>
+        <button class="btn btn-secondary" id="cgpa-clear-btn">Clear</button>
+      </div>
+
+      <div class="result-banner">
+        <div>
+          <div style="font-size: 13px; color: var(--text-muted); font-weight: 600;">CUMULATIVE CGPA RESULT</div>
+          <div class="result-num mono" id="cgpa-result-val">0.00</div>
+          <div class="result-sub" id="cgpa-result-details">Calculated across completed semesters</div>
+        </div>
+        <div id="cgpa-class-tag" style="text-align: right;"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PROJECTION / GOAL SEEK TAB ============ -->
+  <section class="calc-panel" id="panel-projection">
+    <div class="card">
+      <div class="section-header">
+        <h2 class="section-title disp">Target CGPA Goal Seek &amp; Projection</h2>
+        <p class="section-sub">Calculate the exact SGPA needed in upcoming semesters to graduate with your dream honors.</p>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 18px;">
+        <div>
+          <label style="font-size: 12.5px; color: var(--text-muted); display: block; margin-bottom: 6px;">Current CGPA</label>
+          <input type="number" step="0.01" value="9.58" id="proj-current-cgpa" style="width: 100%; padding: 10px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; color: #fff; font-family: 'JetBrains Mono', monospace;">
+        </div>
+        <div>
+          <label style="font-size: 12.5px; color: var(--text-muted); display: block; margin-bottom: 6px;">Completed Credits So Far</label>
+          <input type="number" value="44" id="proj-completed-credits" style="width: 100%; padding: 10px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; color: #fff; font-family: 'JetBrains Mono', monospace;">
+        </div>
+        <div>
+          <label style="font-size: 12.5px; color: var(--text-muted); display: block; margin-bottom: 6px;">Target Desired CGPA</label>
+          <input type="number" step="0.01" value="9.60" id="proj-target-cgpa" style="width: 100%; padding: 10px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; color: #fff; font-family: 'JetBrains Mono', monospace;">
+        </div>
+        <div>
+          <label style="font-size: 12.5px; color: var(--text-muted); display: block; margin-bottom: 6px;">Remaining Credits to Graduate</label>
+          <input type="number" value="120" id="proj-remaining-credits" style="width: 100%; padding: 10px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; color: #fff; font-family: 'JetBrains Mono', monospace;">
+        </div>
+      </div>
+
+      <button class="btn btn-primary" id="proj-calc-btn"><i class="fa-solid fa-bullseye"></i> Calculate Required Target SGPA</button>
+
+      <div class="result-banner" style="margin-top: 20px;">
+        <div>
+          <div style="font-size: 13px; color: var(--text-muted); font-weight: 600;">REQUIRED AVERAGE SGPA IN REMAINING CREDITS</div>
+          <div class="result-num mono" id="proj-result-val">9.61</div>
+          <div class="result-sub" id="proj-result-note">Maintain &ge; 9.61 SGPA across next semesters to achieve your goal</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+/* ==================== TABS SWITCHER ==================== */
+document.getElementById('tabBar').addEventListener('click', (e) => {
+  const btn = e.target.closest('button[data-tab]');
+  if (!btn) return;
+  document.querySelectorAll('nav.tab-bar button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.calc-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+});
+
+const GRADES = [
+  { label: 'O (10 Points)', val: 10 },
+  { label: 'A+ (9 Points)', val: 9 },
+  { label: 'A (8 Points)', val: 8 },
+  { label: 'B+ (7 Points)', val: 7 },
+  { label: 'B (6 Points)', val: 6 },
+  { label: 'C (5 Points)', val: 5 },
+  { label: 'U / RA (0 Points)', val: 0 }
+];
+
+/* ==================== GPA TAB LOGIC ==================== */
+const defaultGpaRows = [
+  { name: 'Data Structures & Algorithms', credits: 4, grade: 10 },
+  { name: 'Python Programming', credits: 3, grade: 10 },
+  { name: 'Database Management Systems', credits: 3, grade: 9 },
+  { name: 'Digital Principles & System Design', credits: 4, grade: 9 },
+  { name: 'Discrete Mathematics', credits: 4, grade: 10 },
+  { name: 'DSA Laboratory', credits: 2, grade: 10 }
+];
+
+function renderGpaRows(rows) {
+  const tbody = document.getElementById('gpa-tbody');
+  tbody.innerHTML = '';
+  rows.forEach((r, idx) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><input type="text" value="${escapeHtml(r.name)}" placeholder="Course name" class="gpa-name"></td>
+      <td><input type="number" step="0.5" min="1" max="10" value="${r.credits}" class="gpa-credits"></td>
+      <td>
+        <select class="gpa-grade">
+          ${GRADES.map(g => `<option value="${g.val}" ${g.val === r.grade ? 'selected' : ''}>${g.label}</option>`).join('')}
+        </select>
+      </td>
+      <td><button class="btn-danger-sm" onclick="this.closest('tr').remove(); calculateGpa();"><i class="fa-solid fa-trash-can"></i></button></td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function calculateGpa() {
+  const rows = document.querySelectorAll('#gpa-tbody tr');
+  let totalCredits = 0;
+  let weightedPoints = 0;
+
+  rows.forEach(r => {
+    const credits = parseFloat(r.querySelector('.gpa-credits').value) || 0;
+    const grade = parseFloat(r.querySelector('.gpa-grade').value) || 0;
+    totalCredits += credits;
+    weightedPoints += credits * grade;
+  });
+
+  const gpa = totalCredits > 0 ? (weightedPoints / totalCredits).toFixed(2) : '0.00';
+  document.getElementById('gpa-result-val').textContent = gpa;
+  document.getElementById('gpa-result-details').textContent = `Total Credits: ${totalCredits} • Weighted Points: ${weightedPoints.toFixed(1)}`;
+
+  const classElem = document.getElementById('gpa-class-tag');
+  if (parseFloat(gpa) >= 8.5) {
+    classElem.innerHTML = `<span style="background: rgba(16,185,129,0.2); color:#10B981; border:1px solid #10B981; padding:4px 10px; border-radius:20px; font-size:11px; font-weight:700;">First Class with Distinction</span>`;
+  } else if (parseFloat(gpa) >= 7.0) {
+    classElem.innerHTML = `<span style="background: rgba(0,242,254,0.2); color:#00F2FE; border:1px solid #00F2FE; padding:4px 10px; border-radius:20px; font-size:11px; font-weight:700;">First Class</span>`;
+  } else {
+    classElem.innerHTML = '';
+  }
+}
+
+document.getElementById('gpa-add-row').addEventListener('click', () => {
+  const tbody = document.getElementById('gpa-tbody');
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td><input type="text" placeholder="Course name" class="gpa-name"></td>
+    <td><input type="number" step="0.5" min="1" max="10" value="3" class="gpa-credits"></td>
+    <td>
+      <select class="gpa-grade">
+        ${GRADES.map(g => `<option value="${g.val}">${g.label}</option>`).join('')}
+      </select>
+    </td>
+    <td><button class="btn-danger-sm" onclick="this.closest('tr').remove(); calculateGpa();"><i class="fa-solid fa-trash-can"></i></button></td>
+  `;
+  tbody.appendChild(tr);
+});
+
+document.getElementById('gpa-calc-btn').addEventListener('click', calculateGpa);
+document.getElementById('gpa-clear-btn').addEventListener('click', () => {
+  renderGpaRows([]);
+  calculateGpa();
+});
+
+/* ==================== SGPA TAB LOGIC ==================== */
+const baheedSem2Preset = [
+  { name: 'Theory of Computation', credits: 4, grade: 10 },
+  { name: 'Object Oriented Programming (Java)', credits: 3, grade: 10 },
+  { name: 'Computer Architecture', credits: 3, grade: 9 },
+  { name: 'Software Engineering', credits: 3, grade: 10 },
+  { name: 'Environmental Science', credits: 2, grade: 9 },
+  { name: 'Java Programming Laboratory', credits: 2, grade: 10 },
+  { name: 'Interpersonal Skills Lab', credits: 1, grade: 10 }
+];
+
+function renderSgpaRows(rows) {
+  const tbody = document.getElementById('sgpa-tbody');
+  tbody.innerHTML = '';
+  rows.forEach(r => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><input type="text" value="${escapeHtml(r.name)}" placeholder="Subject" class="sgpa-name"></td>
+      <td><input type="number" step="0.5" min="1" max="10" value="${r.credits}" class="sgpa-credits"></td>
+      <td>
+        <select class="sgpa-grade">
+          ${GRADES.map(g => `<option value="${g.val}" ${g.val === r.grade ? 'selected' : ''}>${g.label}</option>`).join('')}
+        </select>
+      </td>
+      <td><button class="btn-danger-sm" onclick="this.closest('tr').remove(); calculateSgpa();"><i class="fa-solid fa-trash-can"></i></button></td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function calculateSgpa() {
+  const rows = document.querySelectorAll('#sgpa-tbody tr');
+  let totalCredits = 0;
+  let weightedPoints = 0;
+
+  rows.forEach(r => {
+    const credits = parseFloat(r.querySelector('.sgpa-credits').value) || 0;
+    const grade = parseFloat(r.querySelector('.sgpa-grade').value) || 0;
+    totalCredits += credits;
+    weightedPoints += credits * grade;
+  });
+
+  const sgpa = totalCredits > 0 ? (weightedPoints / totalCredits).toFixed(2) : '0.00';
+  document.getElementById('sgpa-result-val').textContent = sgpa;
+  document.getElementById('sgpa-result-details').textContent = `Total Credits: ${totalCredits} • Weighted Points: ${weightedPoints.toFixed(1)}`;
+
+  const classElem = document.getElementById('sgpa-class-tag');
+  if (parseFloat(sgpa) >= 9.0) {
+    classElem.innerHTML = `<span style="background: rgba(255,176,32,0.2); color:#FFB020; border:1px solid #FFB020; padding:4px 10px; border-radius:20px; font-size:11px; font-weight:700;">🌟 Academic Rank Holder Distinction</span>`;
+  } else {
+    classElem.innerHTML = '';
+  }
+}
+
+document.getElementById('sgpa-add-row').addEventListener('click', () => {
+  const tbody = document.getElementById('sgpa-tbody');
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td><input type="text" placeholder="Subject name" class="sgpa-name"></td>
+    <td><input type="number" step="0.5" min="1" max="10" value="3" class="sgpa-credits"></td>
+    <td>
+      <select class="sgpa-grade">
+        ${GRADES.map(g => `<option value="${g.val}">${g.label}</option>`).join('')}
+      </select>
+    </td>
+    <td><button class="btn-danger-sm" onclick="this.closest('tr').remove(); calculateSgpa();"><i class="fa-solid fa-trash-can"></i></button></td>
+  `;
+  tbody.appendChild(tr);
+});
+
+document.getElementById('sgpa-calc-btn').addEventListener('click', calculateSgpa);
+document.getElementById('sgpa-preset-btn').addEventListener('click', () => {
+  renderSgpaRows(baheedSem2Preset);
+  calculateSgpa();
+});
+
+/* ==================== CGPA TAB LOGIC ==================== */
+const defaultSemesters = [
+  { name: 'Semester 1', credits: 22, sgpa: 9.54 },
+  { name: 'Semester 2', credits: 22, sgpa: 9.62 }
+];
+
+function renderCgpaRows(sems) {
+  const tbody = document.getElementById('cgpa-tbody');
+  tbody.innerHTML = '';
+  sems.forEach((s) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><input type="text" value="${escapeHtml(s.name)}" class="cgpa-sem-name"></td>
+      <td><input type="number" value="${s.credits}" min="1" max="40" class="cgpa-credits"></td>
+      <td><input type="number" step="0.01" min="0" max="10" value="${s.sgpa}" class="cgpa-sgpa"></td>
+      <td><button class="btn-danger-sm" onclick="this.closest('tr').remove(); calculateCgpa();"><i class="fa-solid fa-trash-can"></i></button></td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function calculateCgpa() {
+  const rows = document.querySelectorAll('#cgpa-tbody tr');
+  let totalCredits = 0;
+  let totalPoints = 0;
+
+  rows.forEach(r => {
+    const credits = parseFloat(r.querySelector('.cgpa-credits').value) || 0;
+    const sgpa = parseFloat(r.querySelector('.cgpa-sgpa').value) || 0;
+    totalCredits += credits;
+    totalPoints += credits * sgpa;
+  });
+
+  const cgpa = totalCredits > 0 ? (totalPoints / totalCredits).toFixed(2) : '0.00';
+  document.getElementById('cgpa-result-val').textContent = cgpa;
+  document.getElementById('cgpa-result-details').textContent = `Total Credits: ${totalCredits} • Weighted Cumulative Points: ${totalPoints.toFixed(2)}`;
+
+  const classElem = document.getElementById('cgpa-class-tag');
+  if (parseFloat(cgpa) >= 8.5) {
+    classElem.innerHTML = `<span style="background: rgba(16,185,129,0.2); color:#10B981; border:1px solid #10B981; padding:4px 10px; border-radius:20px; font-size:11px; font-weight:700;">First Class with Distinction</span>`;
+  }
+}
+
+document.getElementById('cgpa-add-row').addEventListener('click', () => {
+  const tbody = document.getElementById('cgpa-tbody');
+  const count = tbody.querySelectorAll('tr').length + 1;
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td><input type="text" value="Semester ${count}" class="cgpa-sem-name"></td>
+    <td><input type="number" value="22" min="1" max="40" class="cgpa-credits"></td>
+    <td><input type="number" step="0.01" min="0" max="10" value="9.00" class="cgpa-sgpa"></td>
+    <td><button class="btn-danger-sm" onclick="this.closest('tr').remove(); calculateCgpa();"><i class="fa-solid fa-trash-can"></i></button></td>
+  `;
+  tbody.appendChild(tr);
+});
+
+document.getElementById('cgpa-calc-btn').addEventListener('click', calculateCgpa);
+document.getElementById('cgpa-clear-btn').addEventListener('click', () => {
+  renderCgpaRows([]);
+  calculateCgpa();
+});
+
+/* ==================== GOAL SEEK PROJECTION ==================== */
+document.getElementById('proj-calc-btn').addEventListener('click', () => {
+  const currentCgpa = parseFloat(document.getElementById('proj-current-cgpa').value) || 0;
+  const compCredits = parseFloat(document.getElementById('proj-completed-credits').value) || 0;
+  const targetCgpa = parseFloat(document.getElementById('proj-target-cgpa').value) || 0;
+  const remCredits = parseFloat(document.getElementById('proj-remaining-credits').value) || 0;
+
+  const totalCredits = compCredits + remCredits;
+  const targetTotalPoints = targetCgpa * totalCredits;
+  const currentPoints = currentCgpa * compCredits;
+  const neededPoints = targetTotalPoints - currentPoints;
+
+  const reqSgpa = remCredits > 0 ? (neededPoints / remCredits).toFixed(2) : 0;
+  const resultVal = document.getElementById('proj-result-val');
+  const resultNote = document.getElementById('proj-result-note');
+
+  resultVal.textContent = reqSgpa;
+  if (parseFloat(reqSgpa) > 10.0) {
+    resultVal.style.color = 'var(--coral)';
+    resultNote.textContent = 'Target impossible (requires SGPA > 10.0). Consider adjusting target CGPA.';
+  } else if (parseFloat(reqSgpa) < 0) {
+    resultVal.style.color = 'var(--emerald)';
+    resultNote.textContent = 'Goal already accomplished! Maintaining passing grades will secure target.';
+  } else {
+    resultVal.style.color = 'var(--cyan)';
+    resultNote.textContent = `Maintain ≥ ${reqSgpa} average SGPA across remaining ${remCredits} credits to graduate with ${targetCgpa} CGPA.`;
+  }
+});
+
+function escapeHtml(str) {
+  if (!str) return '';
+  const d = document.createElement('div');
+  d.textContent = str;
+  return d.innerHTML;
+}
+
+/* ==================== INIT ==================== */
+renderGpaRows(defaultGpaRows);
+calculateGpa();
+renderSgpaRows(baheedSem2Preset);
+calculateSgpa();
+renderCgpaRows(defaultSemesters);
+calculateCgpa();
+</script>
+</body>
+</html>

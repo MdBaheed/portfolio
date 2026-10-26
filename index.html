@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mohamed Baheed | Full-Stack Developer & Data Scientist Portfolio</title>
+  <meta name="description" content="Portfolio of Mohamed Baheed - Full-Stack Developer, Data Scientist & Analytics Engineer. B.E. CSE at Mohamed Sathak Engineering College. SIH Hackathon Participant & Academic Rank Holder.">
+  <meta name="keywords" content="Mohamed Baheed, MdBaheed, Portfolio, Full-Stack Developer, Data Science, Python, Java, SIH, Smart India Hackathon, Mohamed Sathak Engineering College">
+  <meta name="author" content="Mohamed Baheed">
+
+  <!-- Google Fonts: Outfit, Plus Jakarta Sans, JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="theme-cyber">
+  <!-- Dynamic Ambient Glow & Grid -->
+  <div class="ambient-background">
+    <div class="glow-orb orb-1"></div>
+    <div class="glow-orb orb-2"></div>
+    <div class="glow-orb orb-3"></div>
+    <div class="cyber-grid"></div>
+  </div>
+
+  <!-- Top Navigation Header -->
+  <header class="site-header" id="siteHeader">
+    <div class="header-inner">
+      <a href="#stage-1" class="logo-brand" id="logoBrand" aria-label="Mohamed Baheed Home">
+        <div class="logo-symbol">MB</div>
+        <div class="logo-text">
+          <span class="logo-name">Mohamed Baheed</span>
+          <span class="logo-tag">CSE &bull; Data & Code</span>
+        </div>
+      </a>
+
+      <!-- Quick Stage Indicator HUD -->
+      <div class="stage-hud" id="stageHud">
+        <span class="hud-label">CURRENT STAGE</span>
+        <div class="hud-stage-counter">
+          <span class="hud-current" id="hudCurrent">01</span>
+          <span class="hud-divider">/</span>
+          <span class="hud-total" id="hudTotal">07</span>
+        </div>
+        <span class="hud-title" id="hudTitle">Identity & Vision</span>
+      </div>
+
+      <!-- Action Tools (Sound Toggle, View Mode, GitHub, Resume) -->
+      <div class="header-controls">
+        <button class="icon-btn" id="soundToggleBtn" title="Toggle UI Sound Effects" aria-label="Toggle UI Audio">
+          <i class="fa-solid fa-volume-high" id="soundIcon"></i>
+        </button>
+
+        <button class="mode-toggle-btn" id="viewModeBtn" title="Switch between Stage Mode and Full Scroll Mode">
+          <i class="fa-solid fa-layer-group"></i>
+          <span class="mode-label" id="viewModeLabel">Stage Mode</span>
+        </button>
+
+        <a href="https://github.com/MdBaheed" target="_blank" rel="noopener noreferrer" class="btn-github" id="githubLink" title="View GitHub Profile">
+          <i class="fa-brands fa-github"></i>
+          <span>MdBaheed</span>
+        </a>
+
+        <button class="btn-primary-sm" id="quickAddBtn" title="Add Upcoming Achievement">
+          <i class="fa-solid fa-plus"></i>
+          <span>Add Achievement</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Stage Progress Bar -->
+    <div class="stage-progress-track">
+      <div class="stage-progress-fill" id="stageProgressFill"></div>
+    </div>
+
+    <!-- Quick Navigation Dock / Stage Pills -->
+    <nav class="stages-dock" id="stagesDock" aria-label="Stage Navigation">
+      <button class="dock-pill active" data-stage="1" title="Stage 1: Identity & Vision">
+        <span class="pill-number">01</span>
+        <span class="pill-text">Hero</span>
+      </button>
+      <button class="dock-pill" data-stage="2" title="Stage 2: Academic Record & Honors">
+        <span class="pill-number">02</span>
+        <span class="pill-text">Education</span>
+      </button>
+      <button class="dock-pill" data-stage="3" title="Stage 3: Technical Skills">
+        <span class="pill-number">03</span>
+        <span class="pill-text">Skills</span>
+      </button>
+      <button class="dock-pill" data-stage="4" title="Stage 4: Projects & SIH Hackathons">
+        <span class="pill-number">04</span>
+        <span class="pill-text">Projects</span>
+      </button>
+      <button class="dock-pill" data-stage="5" title="Stage 5: Certificates & Dynamic Vault">
+        <span class="pill-number">05</span>
+        <span class="pill-text">Certificates</span>
+      </button>
+      <button class="dock-pill" data-stage="6" title="Stage 6: Leadership, Hobbies & Sports">
+        <span class="pill-number">06</span>
+        <span class="pill-text">Extracurricular</span>
+      </button>
+      <button class="dock-pill" data-stage="7" title="Stage 7: Contact & Connect">
+        <span class="pill-number">07</span>
+        <span class="pill-text">Contact</span>
+      </button>
+    </nav>
+  </header>
+
+  <!-- Main Multi-Stage Container -->
+  <main class="stages-viewport" id="stagesViewport">
+
+    <!-- ================= STAGE 1: HERO & IDENTITY ================= -->
+    <section class="stage-section active" id="stage-1" data-stage-index="1">
+      <div class="stage-wrapper hero-layout">
+        <div class="hero-content">
+          <div class="hero-badge-tag">
+            <span class="pulse-dot"></span>
+            <span>Pursuing B.E. Computer Science &bull; Mohamed Sathak Engineering College</span>
+          </div>
+
+          <h1 class="hero-title">
+            Hi, I'm <span class="text-gradient">Mohamed Baheed</span>
+          </h1>
+
+          <div class="typing-role-container">
+            <span class="role-prefix">Aspiring </span>
+            <span class="typed-role" id="typedRole">Full-Stack Developer</span>
+            <span class="typing-cursor">|</span>
+          </div>
+
+          <p class="hero-lead">
+            Passionate Computer Science student with a solid academic foundation (<strong>9.62 SGPA</strong>, 2nd Place in Class). Skilled in <strong>Python, Java, JavaFX, Modern Web Development, Git/GitHub, and Prompt Engineering</strong>. Actively innovating in <strong>Smart India Hackathon (SIH)</strong> projects and dedicated to building intelligent, data-driven systems.
+          </p>
+
+          <div class="hero-stats-strip">
+            <div class="stat-card">
+              <div class="stat-number text-gradient">9.62</div>
+              <div class="stat-desc">Sem 2 SGPA (2nd Rank)</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-number text-gradient">9.54</div>
+              <div class="stat-desc">Sem 1 SGPA</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-number text-gradient">2x</div>
+              <div class="stat-desc">SIH Hackathon Innovator</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-number text-gradient">IIF & EDC</div>
+              <div class="stat-desc">Event Coordinator</div>
+            </div>
+          </div>
+
+          <div class="hero-actions">
+            <button class="btn-stage-next-hero" id="heroStartJourneyBtn">
+              <span>Review Next Page: Education</span>
+              <i class="fa-solid fa-arrow-right"></i>
+            </button>
+            <a href="#stage-4" class="btn-secondary" id="heroViewProjectsBtn" onclick="goToStage(4)">
+              <i class="fa-solid fa-laptop-code"></i>
+              <span>View Projects</span>
+            </a>
+            <button class="btn-outline" id="openResumeModalBtn">
+              <i class="fa-solid fa-file-invoice"></i>
+              <span>Summary CV</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="hero-visual">
+          <div class="avatar-card-container">
+            <div class="avatar-glow-ring"></div>
+            <div class="avatar-card">
+              <img src="assets/images/avatar.jpg" alt="Mohamed Baheed - Tech Avatar" class="avatar-img" id="heroAvatarImg">
+              <div class="floating-badge badge-top-right">
+                <i class="fa-solid fa-code"></i>
+                <div>
+                  <div class="f-title">Fullstack</div>
+                  <div class="f-sub">Python &bull; JS &bull; Java</div>
+                </div>
+              </div>
+              <div class="floating-badge badge-bottom-left">
+                <i class="fa-solid fa-chart-line"></i>
+                <div>
+                  <div class="f-title">Data Science</div>
+                  <div class="f-sub">NPTEL Certified</div>
+                </div>
+              </div>
+              <div class="floating-badge badge-bottom-right">
+                <i class="fa-solid fa-lightbulb"></i>
+                <div>
+                  <div class="f-title">SIH Innovator</div>
+                  <div class="f-sub">AI & IoT Solutions</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= STAGE 2: EDUCATION & ACADEMIC EXCELLENCE ================= -->
+    <section class="stage-section" id="stage-2" data-stage-index="2">
+      <div class="stage-wrapper">
+        <div class="section-header">
+          <div class="section-tag"><i class="fa-solid fa-graduation-cap"></i> STAGE 02 &bull; ACADEMIC EXCELLENCE</div>
+          <h2 class="section-title">Education & <span class="text-gradient">Scholastic Honors</span></h2>
+          <p class="section-subtitle">Consistent academic distinction and foundational education fueling my technical journey.</p>
+        </div>
+
+        <!-- Academic GPA Showcase Grid -->
+        <div class="academic-highlight-grid">
+          <div class="gpa-card rank-card">
+            <div class="rank-crown"><i class="fa-solid fa-trophy"></i> CLASS 2ND RANK</div>
+            <div class="gpa-score-row">
+              <div class="gpa-value text-gradient">9.62</div>
+              <div class="gpa-scale">/ 10.0 SGPA</div>
+            </div>
+            <h3 class="gpa-title">Semester 02 Distinction</h3>
+            <p class="gpa-desc">Secured the prestigious 2nd place across the computer science department with outstanding grades in programming, mathematics, and engineering core disciplines.</p>
+            <div class="gpa-progress-bar">
+              <div class="gpa-bar-fill" style="width: 96.2%;"></div>
+            </div>
+          </div>
+
+          <div class="gpa-card">
+            <div class="gpa-badge"><i class="fa-solid fa-star"></i> SEMESTER 1 DISTINCTION</div>
+            <div class="gpa-score-row">
+              <div class="gpa-value text-gradient">9.54</div>
+              <div class="gpa-scale">/ 10.0 SGPA</div>
+            </div>
+            <h3 class="gpa-title">Semester 01 Excellence</h3>
+            <p class="gpa-desc">Exceptional semester grade demonstrating mastery of foundational engineering principles, algorithms, and computational problem solving.</p>
+            <div class="gpa-progress-bar">
+              <div class="gpa-bar-fill" style="width: 95.4%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Timeline for Degree & Schooling -->
+        <div class="timeline-container">
+          <div class="timeline-item">
+            <div class="timeline-dot current-dot"></div>
+            <div class="timeline-content glass-card">
+              <div class="timeline-meta">
+                <span class="timeline-period"><i class="fa-regular fa-calendar"></i> Pursuing Bachelor's Degree</span>
+                <span class="timeline-status-badge badge-active">In Progress</span>
+              </div>
+              <h3 class="institution-name">Mohamed Sathak Engineering College, Kilakarai</h3>
+              <h4 class="degree-title"><i class="fa-solid fa-laptop-code"></i> B.E. Computer Science and Engineering (CSE)</h4>
+              <p class="institution-summary">
+                Immersed in advanced computer science studies, data structures, algorithm design, artificial intelligence, object-oriented software development with Java & JavaFX, and modern web architectures.
+              </p>
+              <div class="timeline-tags">
+                <span class="t-tag">Semester 1: 9.54 SGPA</span>
+                <span class="t-tag">Semester 2: 9.62 SGPA</span>
+                <span class="t-tag">Class Rank #2</span>
+                <span class="t-tag">IIF Coordinator</span>
+                <span class="t-tag">EDC-Cell Coordinator</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content glass-card">
+              <div class="timeline-meta">
+                <span class="timeline-period"><i class="fa-regular fa-calendar"></i> Completed SSLC & HSC</span>
+                <span class="timeline-status-badge badge-completed">Graduated</span>
+              </div>
+              <h3 class="institution-name">Muhyiddheeniya Matriculation Higher Secondary School</h3>
+              <h4 class="degree-title"><i class="fa-solid fa-school"></i> Higher Secondary Certificate (HSC) & SSLC</h4>
+              <p class="institution-summary">
+                Completed secondary and higher secondary schooling with deep emphasis on Mathematics, Physics, and foundational computing, building a rigorous analytical and problem-solving mindset.
+              </p>
+              <div class="timeline-tags">
+                <span class="t-tag">Mathematics & Science</span>
+                <span class="t-tag">Logical Reasoning</span>
+                <span class="t-tag">Academic Discipline</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mini Interactive CGPA/SGPA Estimator Tool -->
+        <div class="mini-tool-box glass-card">
+          <div class="mini-tool-header">
+            <div>
+              <span class="tool-tag"><i class="fa-solid fa-calculator"></i> Built-in Interactive Calculator</span>
+              <h3 class="mini-tool-title">Quick Semester SGPA / GPA Simulator</h3>
+            </div>
+            <span class="badge-accent">Interactive Demo</span>
+          </div>
+          <p class="mini-tool-desc">Test the logic inspired by my dedicated "CGPA, GPA, SGPA Calculator" project right here:</p>
+          <div class="calc-simulator-grid">
+            <div class="calc-input-group">
+              <label>Semester 1 SGPA</label>
+              <input type="number" id="calcSem1" value="9.54" step="0.01" min="0" max="10">
+            </div>
+            <div class="calc-input-group">
+              <label>Semester 2 SGPA</label>
+              <input type="number" id="calcSem2" value="9.62" step="0.01" min="0" max="10">
+            </div>
+            <div class="calc-input-group">
+              <label>Target Sem 3 SGPA</label>
+              <input type="number" id="calcSem3" value="9.70" step="0.01" min="0" max="10">
+            </div>
+            <div class="calc-result-box">
+              <div class="calc-result-label">Projected CGPA</div>
+              <div class="calc-result-val text-gradient" id="calcCgpaResult">9.62</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= STAGE 3: TECHNICAL ARSENAL & SKILLS ================= -->
+    <section class="stage-section" id="stage-3" data-stage-index="3">
+      <div class="stage-wrapper">
+        <div class="section-header">
+          <div class="section-tag"><i class="fa-solid fa-microchip"></i> STAGE 03 &bull; TECHNICAL CAPABILITIES</div>
+          <h2 class="section-title">Technical <span class="text-gradient">Arsenal & Skills</span></h2>
+          <p class="section-subtitle">Proficiencies forged through rigorous coursework, hackathon problem solving, and hands-on coding.</p>
+        </div>
+
+        <!-- Skills Category Grid -->
+        <div class="skills-universe-grid">
+          <!-- Card 1: Core Programming -->
+          <div class="skill-category-card glass-card">
+            <div class="card-glow-line glow-cyan"></div>
+            <div class="cat-header">
+              <div class="cat-icon icon-cyan"><i class="fa-solid fa-terminal"></i></div>
+              <div>
+                <h3 class="cat-title">Core Programming</h3>
+                <span class="cat-sub">Algorithms & Architecture</span>
+              </div>
+            </div>
+            <div class="skill-chips-list">
+              <div class="skill-chip">
+                <span class="chip-name"><i class="fa-brands fa-python"></i> Python</span>
+                <span class="chip-level">Advanced (Data & Scripts)</span>
+              </div>
+              <div class="skill-chip">
+                <span class="chip-name"><i class="fa-brands fa-java"></i> Java</span>
+                <span class="chip-level">OOP & Data Structures</span>
+              </div>
+              <div class="skill-chip">
+                <span class="chip-name"><i class="fa-solid fa-window-restore"></i> JavaFX</span>
+                <span class="chip-level">Desktop GUI Applications</span>
+              </div>
+              <div class="skill-chip">
+                <span class="chip-name"><i class="fa-brands fa-square-js"></i> JavaScript (ES6+)</span>
+                <span class="chip-level">Modern Web Logic & DOM</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2: Full-Stack Web Development -->
+          <div class="skill-category-card glass-card">
+            <div class="card-glow-line glow-purple"></div>
+            <div class="cat-header">
+              <div class="cat-icon icon-purple"><i class="fa-solid fa-code"></i></div>
+              <div>
+                <h3 class="cat-title">Web Development</h3>
+                <span class="cat-sub">Responsive & Interactive</span>
+              </div>
+            </div>
+            <div class="skill-chips-list">
+              <div class="skill-chip">
+                <span class="chip-name"><i class="fa-brands fa-html5"></i> HTML5 Semantic</span>
+                <span class="chip-level">Accessible, SEO-Ready</span>
+              </div>
+              <div class="skill-chip">
+                <span class="chip-name"><i class="fa-brands fa-css3-alt"></i> Modern CSS3</span>
+                <span class="chip-level">Flexbox, Grid, Glassmorphism</span>
+              </div>
+              <div class="skill-chip">
+                <span class="chip-name"><i class="fa-solid fa-bolt"></i> Interactive Frontends</span>
+                <span class="chip-level">Dynamic SPAs, State Management</span>
+              </div>
+              <div class="skill-chip">
+                <span class="chip-name"><i class="fa-solid fa-network-wired"></i> REST APIs & JSON</span>
+                <span class="chip-level">Asynchronous Data Fetching</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3: Data Science & AI -->
+          <div class="skill-category-card glass-card">
+            <div class="card-glow-line glow-emerald"></div>
+            <div class="cat-header">
+              <div class="cat-icon icon-emerald"><i class="fa-solid fa-brain"></i></div>
+              <div>
+                <h3 class="cat-title">Data Science & AI</h3>
+                <span class="cat-sub">Analytics & Intelligence</span>
+              </div>
+            </div>
+            <div class="skill-chips-list">
+              <div class="skill-chip">
+                <span class="chip-name"><i class="fa-solid fa-database"></i> Python for Data Science</span>
+                <span class="chip-level">NPTEL Certified Foundation</span>
+              </div>
+              <div class="skill-chip">
+                <span class="chip-name"><i class="fa-solid fa-robot"></i> Prompt Engineering</span>
+                <span class="chip-level">LLMs, Context & Fine Prompting</span>
+              </div>
+              <div class="skill-chip">
+                <span class="chip-name"><i class="fa-solid fa-diagram-project"></i> Machine Learning Concepts</span>
+                <span class="chip-level">Classification, Regression, Geo-AI</span>
+              </div>
+              <div class="skill-chip">
+                <span class="chip-name"><i class="fa-solid fa-sitemap"></i> Data Structures & Algorithms</span>
+                <span class="chip-level">Simplilearn DSA Foundation</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 4: Dev Tools & Version Control -->
+          <div class="skill-category-card glass-card">
+            <div class="card-glow-line glow-amber"></div>
+            <div class="cat-header">
+              <div class="cat-icon icon-amber"><i class="fa-solid fa-screwdriver-wrench"></i></div>
+              <div>
+                <h3 class="cat-title">DevOps & Tooling</h3>
+                <span class="cat-sub">Workflow & Best Practices</span>
+              </div>
+            </div>
+            <div class="skill-chips-list">
+              <div class="skill-chip">
+                <span class="chip-name"><i class="fa-brands fa-git-alt"></i> Git Version Control</span>
+                <span class="chip-level">Branching, Merging, Commits</span>
+              </div>
+              <div class="skill-chip">
+                <span class="chip-name"><i class="fa-brands fa-github"></i> GitHub Mastery</span>
+                <span class="chip-level">Repositories, Pages, Collaboration</span>
+              </div>
+              <div class="skill-chip">
+                <span class="chip-name"><i class="fa-solid fa-shield-halved"></i> Cybersecurity Basics</span>
+                <span class="chip-level">HP LIFE Awareness Certified</span>
+              </div>
+              <div class="skill-chip">
+                <span class="chip-name"><i class="fa-solid fa-lightbulb"></i> Critical AI Thinking</span>
+                <span class="chip-level">HP LIFE Analytical Certified</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Career Ambition Vision Card -->
+        <div class="ambition-banner glass-card">
+          <div class="ambition-icon-wrap">
+            <i class="fa-solid fa-compass text-gradient"></i>
+          </div>
+          <div class="ambition-body">
+            <h3 class="ambition-title">Career Ambition & Trajectory</h3>
+            <p class="ambition-text">
+              My goal is to evolve into a high-impact <strong>Full-Stack Developer, Data Scientist, and Analytics Engineer</strong>. I bridge the sweet spot between building scalable web interfaces and extracting actionable insights from data through artificial intelligence.
+            </p>
+          </div>
+          <div class="ambition-badges">
+            <span class="amb-tag"><i class="fa-solid fa-code-commit"></i> Scalable Web Systems</span>
+            <span class="amb-tag"><i class="fa-solid fa-chart-pie"></i> Predictive Analytics</span>
+            <span class="amb-tag"><i class="fa-solid fa-brain"></i> Applied AI & ML</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= STAGE 4: FEATURED PROJECTS & HACKATHONS ================= -->
+    <section class="stage-section" id="stage-4" data-stage-index="4">
+      <div class="stage-wrapper">
+        <div class="section-header">
+          <div class="section-tag"><i class="fa-solid fa-code-branch"></i> STAGE 04 &bull; INNOVATIONS & HACKATHONS</div>
+          <h2 class="section-title">Featured <span class="text-gradient">Projects & SIH Solutions</span></h2>
+          <p class="section-subtitle">Real-world applications spanning Smart India Hackathon innovations, AI utilities, and web software.</p>
+        </div>
+
+        <!-- Projects Filter Tabs -->
+        <div class="project-filter-bar">
+          <button class="filter-btn active" data-filter="all">All Projects (4)</button>
+          <button class="filter-btn" data-filter="sih"><i class="fa-solid fa-award"></i> SIH Hackathons</button>
+          <button class="filter-btn" data-filter="ai"><i class="fa-solid fa-brain"></i> AI & Data</button>
+          <button class="filter-btn" data-filter="web"><i class="fa-solid fa-globe"></i> Web Apps</button>
+        </div>
+
+        <!-- Projects Showcase Grid -->
+        <div class="projects-grid" id="projectsGrid">
+
+          <!-- PROJECT 1: Smart Classroom Energy Management System (SIH) -->
+          <article class="project-card glass-card" data-category="sih ai">
+            <div class="project-badge sih-badge">
+              <i class="fa-solid fa-trophy"></i> Smart India Hackathon (SIH)
+            </div>
+            <div class="project-image-box">
+              <img src="assets/images/sih-banner.jpg" alt="Smart Classroom Energy Management System" class="project-img">
+              <div class="project-img-overlay">
+                <span class="overlay-tag"><i class="fa-solid fa-leaf"></i> IoT & Energy AI</span>
+              </div>
+            </div>
+            <div class="project-body">
+              <div class="project-header-row">
+                <h3 class="project-name">Smart Classroom Energy Management System</h3>
+                <span class="domain-pill">SIH Innovation</span>
+              </div>
+              <p class="project-desc">
+                An intelligent IoT and AI-powered energy management architecture designed for educational institutions. Dynamically monitors classroom occupancy, ambient illumination, and power demand using IoT sensors to automatically control lighting, ventilation, and projectors — reducing unnecessary electrical use and the institutional carbon footprint.
+              </p>
+              <div class="project-tech-tags">
+                <span class="p-tag">IoT Sensors</span>
+                <span class="p-tag">AI Automation</span>
+                <span class="p-tag">Python</span>
+                <span class="p-tag">Energy Analytics</span>
+                <span class="p-tag">SIH</span>
+              </div>
+              <div class="project-footer" style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+                <a href="classroom-energy.html" target="_blank" rel="noopener noreferrer" class="btn-primary-sm" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none;" title="Open live classroom energy prototype">
+                  <i class="fa-solid fa-play"></i> Launch Prototype
+                </a>
+                <button class="btn-card-action" onclick="openProjectModal('sih-classroom')">
+                  <i class="fa-solid fa-circle-info"></i> Architecture
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <!-- PROJECT 2: Manganese Resources Smart Identify AI (SIH) -->
+          <article class="project-card glass-card" data-category="sih ai">
+            <div class="project-badge sih-badge">
+              <i class="fa-solid fa-trophy"></i> Smart India Hackathon (SIH)
+            </div>
+            <div class="project-image-box">
+              <img src="assets/images/sih-banner.jpg" alt="Manganese Resources Smart Identify AI" class="project-img mineral-crop">
+              <div class="project-img-overlay">
+                <span class="overlay-tag"><i class="fa-solid fa-satellite"></i> AI/ML & Geo-Spatial</span>
+              </div>
+            </div>
+            <div class="project-body">
+              <div class="project-header-row">
+                <h3 class="project-name">MANGANEX — Manganese Prospectivity Intelligence</h3>
+                <span class="domain-pill">AI/ML Geological</span>
+              </div>
+              <p class="project-desc">
+                A manganese prospectivity prototype that demonstrates geospatial scoring, machine-learning-based ranking, and synthetic production forecasting. The dashboard is a concept demo and does not confirm real mining deposits or production outcomes.
+              </p>
+              <div class="project-tech-tags">
+                <span class="p-tag">AI/ML</span>
+                <span class="p-tag">Python</span>
+                <span class="p-tag">Geospatial ML</span>
+                <span class="p-tag">FastAPI</span>
+                <span class="p-tag">React + TypeScript</span>
+                <span class="p-tag">SIH</span>
+              </div>
+              <div class="project-footer">
+                <a href="manganese-prototype.html" target="_blank" rel="noopener noreferrer" class="btn-primary-sm" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none; margin-bottom:8px;" title="Open the MANGANEX prototype demo">
+                  <i class="fa-solid fa-play"></i> Open Prototype Demo
+                </a>
+                <button class="btn-card-action" onclick="openProjectModal('sih-manganese')">
+                  <i class="fa-solid fa-circle-info"></i> Project Details & Architecture
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <!-- PROJECT 3: AI Study Schedule Web Application (Z CRACKERS) -->
+          <article class="project-card glass-card" data-category="web ai">
+            <div class="project-badge web-badge">
+              <i class="fa-solid fa-wand-magic-sparkles"></i> AI Powered Web App &bull; Live Prototype
+            </div>
+            <div class="project-card-header-icon">
+              <div class="proj-icon-circle icon-cyan"><i class="fa-solid fa-calendar-check"></i></div>
+            </div>
+            <div class="project-body">
+              <div class="project-header-row">
+                <h3 class="project-name">Z CRACKERS — AI Study Scheduler</h3>
+                <span class="domain-pill" style="background: rgba(23,162,162,0.22); color: #5fd3d3; border: 1px solid rgba(23,162,162,0.4);"><i class="fa-solid fa-bolt"></i> Interactive Prototype</span>
+              </div>
+              <p class="project-desc">
+                An intelligent study planner designed to eliminate academic burnout. Features a <strong>4-variable priority score algorithm</strong> (Urgency, Difficulty, Remaining Work, Weakness), <strong>PDF / text syllabus parser</strong> with automatic keyword extraction, <strong>MCQ quiz generation</strong>, adaptive timetable generator with breaks, and spaced repetition rescheduling.
+              </p>
+              <div class="project-tech-tags">
+                <span class="p-tag">PDF.js Parser</span>
+                <span class="p-tag">Auto Quiz Generator</span>
+                <span class="p-tag">Dynamic Timetable</span>
+                <span class="p-tag">Weakness Detection</span>
+                <span class="p-tag">Spaced Repetition</span>
+              </div>
+              <div class="project-footer" style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+                <button class="btn-primary-sm" onclick="openStudySchedulerModal()" title="Open interactive prototype modal">
+                  <i class="fa-solid fa-play"></i> Launch App
+                </button>
+                <a href="study-scheduler.html" target="_blank" rel="noopener noreferrer" class="btn-outline-sm" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none;" title="Open prototype in full browser tab">
+                  <i class="fa-solid fa-arrow-up-right-from-square"></i> Fullscreen
+                </a>
+                <button class="btn-card-action" onclick="openProjectModal('ai-schedule')">
+                  <i class="fa-solid fa-circle-info"></i> Architecture
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <!-- PROJECT 4: CGPA, GPA, SGPA Calculator -->
+          <article class="project-card glass-card" data-category="web">
+            <div class="project-badge calc-badge">
+              <i class="fa-solid fa-calculator"></i> Academic Utility Suite
+            </div>
+            <div class="project-card-header-icon">
+              <div class="proj-icon-circle icon-amber"><i class="fa-solid fa-chart-column"></i></div>
+            </div>
+            <div class="project-body">
+              <div class="project-header-row">
+                <h3 class="project-name">CGPA, GPA & SGPA Calculator</h3>
+                <span class="domain-pill">Academic Web App</span>
+              </div>
+              <p class="project-desc">
+                A high-precision academic grading calculation engine tailored for engineering credit point systems (such as Anna University / affiliated college guidelines). Features real-time grade point translation, semester weightage, target GPA projection, and JavaFX/Web implementation prototypes.
+              </p>
+              <div class="project-tech-tags">
+                <span class="p-tag">JavaScript</span>
+                <span class="p-tag">Java / JavaFX</span>
+                <span class="p-tag">CSS Grid</span>
+                <span class="p-tag">Grade Algorithms</span>
+              </div>
+              <div class="project-footer" style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+                <a href="academic-calculator.html" target="_blank" rel="noopener noreferrer" class="btn-primary-sm" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none;" title="Open CGPA/GPA calculator">
+                  <i class="fa-solid fa-calculator"></i> Launch Calculator
+                </a>
+                <button class="btn-card-action" onclick="openProjectModal('gpa-calc')">
+                  <i class="fa-solid fa-circle-info"></i> Details
+                </button>
+              </div>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= STAGE 5: CERTIFICATES & DYNAMIC ACHIEVEMENT VAULT ================= -->
+    <section class="stage-section" id="stage-5" data-stage-index="5">
+      <div class="stage-wrapper">
+        <div class="section-header">
+          <div class="section-tag"><i class="fa-solid fa-certificate"></i> STAGE 05 &bull; CERTIFICATIONS & VAULT</div>
+          <h2 class="section-title">Verified Credentials & <span class="text-gradient">Achievement Vault</span></h2>
+          <p class="section-subtitle">Official certifications and dynamic interactive portal to record and display upcoming milestones.</p>
+        </div>
+
+        <!-- Add Upcoming Achievement Banner & Trigger -->
+        <div class="achievement-add-bar glass-card">
+          <div class="vault-info">
+            <div class="vault-icon"><i class="fa-solid fa-award text-gradient"></i></div>
+            <div>
+              <h3 class="vault-title">Dynamic Achievement & Certificate Manager</h3>
+              <p class="vault-sub">Add any upcoming certifications, hackathons, or badges here — it saves live into your portfolio!</p>
+            </div>
+          </div>
+          <div class="vault-actions">
+            <button class="btn-primary" id="openAddModalBtn">
+              <i class="fa-solid fa-plus-circle"></i>
+              <span>Add New Achievement</span>
+            </button>
+            <button class="btn-outline-sm" id="resetAchievementsBtn" title="Reset to default certificates">
+              <i class="fa-solid fa-rotate-left"></i>
+              <span>Reset</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Certificate Filter Tags -->
+        <div class="cert-filter-bar">
+          <button class="cert-filter-btn active" data-cert-filter="all">All Credentials (<span id="certCountTotal">6</span>)</button>
+          <button class="cert-filter-btn" data-cert-filter="nptel">NPTEL</button>
+          <button class="cert-filter-btn" data-cert-filter="hp">HP LIFE</button>
+          <button class="cert-filter-btn" data-cert-filter="simplilearn">Simplilearn</button>
+          <button class="cert-filter-btn" data-cert-filter="symposium">Symposium</button>
+          <button class="cert-filter-btn" data-cert-filter="custom">User Added</button>
+        </div>
+
+        <!-- Dynamic Certificates Grid (Rendered by script.js) -->
+        <div class="certificates-grid" id="certificatesGrid">
+          <!-- Populated dynamically via JS from initial data + localStorage -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= STAGE 6: LEADERSHIP, SPORTS & E-SPORTS ================= -->
+    <section class="stage-section" id="stage-6" data-stage-index="6">
+      <div class="stage-wrapper">
+        <div class="section-header">
+          <div class="section-tag"><i class="fa-solid fa-users-gear"></i> STAGE 06 &bull; LEADERSHIP & PASSIONS</div>
+          <h2 class="section-title">Leadership, Sports & <span class="text-gradient">Extracurricular Life</span></h2>
+          <p class="section-subtitle">Beyond coding: campus leadership, athletic sportsmanship, strategic gaming, and spiritual devotion.</p>
+        </div>
+
+        <div class="extracurricular-grid">
+          <!-- Card 1: College Leadership (IIF & EDC) -->
+          <div class="extra-card leadership-card glass-card">
+            <div class="card-glow-line glow-cyan"></div>
+            <div class="extra-icon-box icon-cyan">
+              <i class="fa-solid fa-people-roof"></i>
+            </div>
+            <div class="extra-content">
+              <div class="badge-role">Campus Leadership</div>
+              <h3 class="extra-title">Event Coordinator &bull; IIF & EDC-Cell</h3>
+              <h4 class="extra-subtitle">Mohamed Sathak Engineering College</h4>
+              <p class="extra-desc">
+                Serving as an active Event Coordinator for:
+              </p>
+              <ul class="extra-bullets">
+                <li><strong>IIF (Innovation and Incubation Centre):</strong> Organizing technical hackathons, prototype showcases, student project pitches, and mentorship sessions.</li>
+                <li><strong>EDC-Cell (Entrepreneurship Development Cell):</strong> Coordinating startup awareness workshops, guest lectures from founders, and innovation symposiums.</li>
+              </ul>
+              <div class="extra-tags">
+                <span class="x-tag"><i class="fa-solid fa-microphone"></i> Event Organization</span>
+                <span class="x-tag"><i class="fa-solid fa-handshake"></i> Team Coordination</span>
+                <span class="x-tag"><i class="fa-solid fa-lightbulb"></i> Startup Ecosystem</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2: Spiritual & Lifelong Learning -->
+          <div class="extra-card spiritual-card glass-card">
+            <div class="card-glow-line glow-emerald"></div>
+            <div class="extra-icon-box icon-emerald">
+              <i class="fa-solid fa-book-quran"></i>
+            </div>
+            <div class="extra-content">
+              <div class="badge-role">Mindfulness & Discipline</div>
+              <h3 class="extra-title">Qur'an Memorization & Reading</h3>
+              <h4 class="extra-subtitle">Spiritual Growth & Focused Mindset</h4>
+              <p class="extra-desc">
+                Dedicated to reading and memorizing the Holy Qur'an with discipline, building deep cognitive retention, patience, and moral integrity. An enthusiastic reader of educational and non-fiction books that broaden perspective on life and technology.
+              </p>
+              <div class="extra-tags">
+                <span class="x-tag"><i class="fa-solid fa-star-and-crescent"></i> Hifz & Tajweed</span>
+                <span class="x-tag"><i class="fa-solid fa-brain"></i> Memory Retention</span>
+                <span class="x-tag"><i class="fa-solid fa-book-open"></i> Non-Fiction Reading</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3: Sports & Athletics -->
+          <div class="extra-card sports-card glass-card">
+            <div class="card-glow-line glow-amber"></div>
+            <div class="extra-icon-box icon-amber">
+              <i class="fa-solid fa-person-running"></i>
+            </div>
+            <div class="extra-content">
+              <div class="badge-role">Athletic Pursuits</div>
+              <h3 class="extra-title">Kabaddi, Football, Cricket & Athletics</h3>
+              <h4 class="extra-subtitle">Physical Fitness & Team Resilience</h4>
+              <p class="extra-desc">
+                Active athlete passionate about field sports that cultivate physical agility, rapid reaction time, and unbreakable team cohesion:
+              </p>
+              <div class="sports-badges-container">
+                <div class="sport-item"><i class="fa-solid fa-shield-halved"></i> <strong>Kabaddi:</strong> Agility, raid tactics & defense coordination</div>
+                <div class="sport-item"><i class="fa-solid fa-futbol"></i> <strong>Football:</strong> Tactical field positioning & endurance</div>
+                <div class="sport-item"><i class="fa-solid fa-baseball-bat-ball"></i> <strong>Cricket:</strong> Precision timing & team sportsmanship</div>
+                <div class="sport-item"><i class="fa-solid fa-stopwatch-20"></i> <strong>Athletic Games:</strong> Speed, stamina, and competitive drive</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 4: E-Sports & Strategic Mobile Gaming -->
+          <div class="extra-card gaming-card glass-card">
+            <div class="card-glow-line glow-purple"></div>
+            <div class="extra-icon-box icon-purple">
+              <i class="fa-solid fa-gamepad"></i>
+            </div>
+            <div class="extra-content">
+              <div class="badge-role">E-Sports & Reflexes</div>
+              <h3 class="extra-title">Strategic Gaming & E-Sports</h3>
+              <h4 class="extra-subtitle">Split-Second Decision Making</h4>
+              <p class="extra-desc">
+                Competitive enthusiast in mobile titles requiring high-tempo strategy, tactical awareness, resource management, and split-second reflex execution:
+              </p>
+              <div class="game-badges-grid">
+                <div class="game-badge">
+                  <i class="fa-solid fa-crosshairs"></i>
+                  <span>Free Fire</span>
+                </div>
+                <div class="game-badge">
+                  <i class="fa-solid fa-futbol"></i>
+                  <span>eFootball</span>
+                </div>
+                <div class="game-badge">
+                  <i class="fa-solid fa-dice-d6"></i>
+                  <span>Stumble Guys</span>
+                </div>
+                <div class="game-badge">
+                  <i class="fa-solid fa-dragon"></i>
+                  <span>Dragon Ball Legends</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= STAGE 7: CONTACT & CONNECT ================= -->
+    <section class="stage-section" id="stage-7" data-stage-index="7">
+      <div class="stage-wrapper">
+        <div class="section-header">
+          <div class="section-tag"><i class="fa-solid fa-paper-plane"></i> STAGE 07 &bull; GET IN TOUCH</div>
+          <h2 class="section-title">Let's Connect & <span class="text-gradient">Collaborate</span></h2>
+          <p class="section-subtitle">Open for developer opportunities, data science internships, hackathon collaborations, and academic research.</p>
+        </div>
+
+        <div class="contact-layout">
+          <!-- Left Info Column -->
+          <div class="contact-info-card glass-card">
+            <div class="contact-author">
+              <div class="author-avatar-sm">MB</div>
+              <div>
+                <h3 class="author-name">Mohamed Baheed</h3>
+                <p class="author-title">B.E. Computer Science &bull; Developer & Data Scientist</p>
+              </div>
+            </div>
+
+            <div class="contact-methods">
+              <a href="mailto:mohamedbaheed6@gmail.com" class="c-method-item">
+                <div class="c-icon"><i class="fa-solid fa-envelope"></i></div>
+                <div>
+                  <span class="c-label">Direct Email</span>
+                  <span class="c-val">mohamedbaheed6@gmail.com</span>
+                </div>
+              </a>
+
+              <a href="https://github.com/MdBaheed" target="_blank" rel="noopener noreferrer" class="c-method-item">
+                <div class="c-icon"><i class="fa-brands fa-github"></i></div>
+                <div>
+                  <span class="c-label">GitHub Profile</span>
+                  <span class="c-val">github.com/MdBaheed</span>
+                </div>
+              </a>
+
+              <div class="c-method-item">
+                <div class="c-icon"><i class="fa-solid fa-location-dot"></i></div>
+                <div>
+                  <span class="c-label">Location</span>
+                  <span class="c-val">Kilakarai / Tamil Nadu, India</span>
+                </div>
+              </div>
+
+              <div class="c-method-item">
+                <div class="c-icon"><i class="fa-solid fa-building-columns"></i></div>
+                <div>
+                  <span class="c-label">Campus</span>
+                  <span class="c-val">Mohamed Sathak Engineering College</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="quick-status-box">
+              <div class="status-indicator">
+                <span class="pulse-dot green-dot"></span>
+                <span class="status-text">Available for Internships & Projects</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Interactive Message Form -->
+          <div class="contact-form-card glass-card">
+            <h3 class="form-title">Send a Direct Message</h3>
+            <p class="form-desc">Have a question or want to work together? Leave a message below!</p>
+            <form id="contactForm" onsubmit="handleContactSubmit(event)">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="senderName"><i class="fa-solid fa-user"></i> Your Name</label>
+                  <input type="text" id="senderName" placeholder="e.g. Alex Morgan" required>
+                </div>
+                <div class="form-group">
+                  <label for="senderEmail"><i class="fa-solid fa-at"></i> Your Email</label>
+                  <input type="email" id="senderEmail" placeholder="e.g. alex@company.com" required>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="subject"><i class="fa-solid fa-tag"></i> Subject / Purpose</label>
+                <select id="subject" class="custom-select">
+                  <option value="Internship / Job Opportunity">Internship / Job Opportunity</option>
+                  <option value="Hackathon / Project Collaboration">Hackathon / Project Collaboration</option>
+                  <option value="Data Science & AI Discussion">Data Science & AI Discussion</option>
+                  <option value="General Networking">General Networking</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="messageText"><i class="fa-solid fa-comment-dots"></i> Message</label>
+                <textarea id="messageText" rows="4" placeholder="Write your message here..." required></textarea>
+              </div>
+
+              <button type="submit" class="btn-submit" id="submitMsgBtn">
+                <i class="fa-solid fa-paper-plane"></i>
+                <span>Transmit Message</span>
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Footer Strip -->
+        <footer class="portfolio-footer">
+          <div class="footer-copy">
+            &copy; 2026 Mohamed Baheed (MdBaheed). Designed with modern HTML5, CSS3 & JavaScript.
+          </div>
+          <div class="footer-links">
+            <button class="footer-btn" onclick="goToStage(1)"><i class="fa-solid fa-arrow-up"></i> Back to Top (Stage 1)</button>
+            <a href="https://github.com/MdBaheed" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-github"></i> GitHub</a>
+          </div>
+        </footer>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Floating Sticky Stage Review Controller ("button aftr click we can review the next page") -->
+  <aside class="stage-controller-bar" id="stageControllerBar" aria-label="Stage Control">
+    <div class="stage-ctrl-inner">
+      <button class="ctrl-btn btn-prev" id="prevStageBtn" title="Go to Previous Stage" aria-label="Previous Stage">
+        <i class="fa-solid fa-arrow-left"></i>
+        <span>Previous</span>
+      </button>
+
+      <div class="ctrl-info">
+        <span class="ctrl-counter" id="ctrlCounter">STAGE 1 OF 7</span>
+        <span class="ctrl-current-title" id="ctrlCurrentTitle">Identity & Vision</span>
+      </div>
+
+      <button class="ctrl-btn btn-next" id="nextStageBtn" title="Review Next Page" aria-label="Review Next Stage">
+        <span>Review Next Page</span>
+        <i class="fa-solid fa-arrow-right"></i>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ================= MODAL: ADD UPCOMING ACHIEVEMENT ================= -->
+  <div class="modal-overlay" id="addAchievementModal" aria-hidden="true" role="dialog">
+    <div class="modal-box glass-card">
+      <div class="modal-header">
+        <div class="m-title-wrap">
+          <div class="m-icon icon-cyan"><i class="fa-solid fa-trophy"></i></div>
+          <div>
+            <h3 class="modal-title">Add New Certificate / Achievement</h3>
+            <p class="modal-sub">Add any upcoming milestone; it will instantly appear in Stage 5 & persist in your browser.</p>
+          </div>
+        </div>
+        <button class="modal-close-btn" id="closeAddModalBtn" aria-label="Close modal">&times;</button>
+      </div>
+
+      <form id="addAchievementForm" onsubmit="handleNewAchievement(event)">
+        <div class="form-group">
+          <label for="achTitle"><i class="fa-solid fa-certificate"></i> Title / Certificate Name *</label>
+          <input type="text" id="achTitle" placeholder="e.g. AWS Certified Cloud Practitioner / Hackathon Winner" required>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="achIssuer"><i class="fa-solid fa-building"></i> Issuing Body / Platform *</label>
+            <input type="text" id="achIssuer" placeholder="e.g. NPTEL / HP LIFE / Google / Hackathon" required>
+          </div>
+          <div class="form-group">
+            <label for="achCategory"><i class="fa-solid fa-layer-group"></i> Category *</label>
+            <select id="achCategory" class="custom-select">
+              <option value="nptel">NPTEL</option>
+              <option value="hp">HP LIFE</option>
+              <option value="simplilearn">Simplilearn</option>
+              <option value="symposium">Symposium / Hackathon</option>
+              <option value="custom" selected>Personal / Other Achievement</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="achDate"><i class="fa-regular fa-calendar"></i> Date / Year</label>
+            <input type="text" id="achDate" placeholder="e.g. 2026 / Completed / In Progress">
+          </div>
+          <div class="form-group">
+            <label for="achLink"><i class="fa-solid fa-link"></i> Verification / Credential URL</label>
+            <input type="url" id="achLink" placeholder="https://...">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="achDesc"><i class="fa-solid fa-align-left"></i> Description & Key Learnings</label>
+          <textarea id="achDesc" rows="3" placeholder="Key topics covered, grade, rank, or impact..."></textarea>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-outline-sm" id="cancelAddBtn">Cancel</button>
+          <button type="submit" class="btn-primary">
+            <i class="fa-solid fa-plus"></i>
+            <span>Add to Portfolio Vault</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: INTERACTIVE STUDY SCHEDULER PROTOTYPE ================= -->
+  <div class="modal-overlay" id="studySchedulerModal" aria-hidden="true" role="dialog">
+    <div class="modal-box modal-app-view glass-card">
+      <div class="modal-header">
+        <div class="m-title-wrap">
+          <div class="m-icon icon-cyan"><i class="fa-solid fa-calendar-check"></i></div>
+          <div>
+            <h3 class="modal-title">Z CRACKERS &bull; AI Study Scheduler &amp; Quiz Engine</h3>
+            <p class="modal-sub">Live Interactive Prototype &bull; PDF Syllabus Ingestion, Keyword Extraction &amp; Dynamic Timetable</p>
+          </div>
+        </div>
+        <div style="display:flex; align-items:center; gap:10px;">
+          <a href="study-scheduler.html" target="_blank" rel="noopener noreferrer" class="btn-outline-sm" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none;" title="Open in new window">
+            <i class="fa-solid fa-arrow-up-right-from-square"></i> Fullscreen
+          </a>
+          <button class="modal-close-btn" id="closeSchedulerModalBtn" onclick="closeStudySchedulerModal()" aria-label="Close modal">&times;</button>
+        </div>
+      </div>
+
+      <div class="modal-iframe-wrap">
+        <iframe id="studySchedulerIframe" src="study-scheduler.html" title="Z CRACKERS Study Scheduler Prototype" loading="lazy"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: CERTIFICATE IMAGE VIEWER (LIGHTBOX) ================= -->
+  <div class="modal-overlay" id="certViewerModal" aria-hidden="true" role="dialog">
+    <div class="modal-box modal-cert-viewer glass-card">
+      <div class="modal-header" style="margin-bottom: 16px;">
+        <div class="m-title-wrap">
+          <div class="m-icon icon-emerald"><i class="fa-solid fa-certificate"></i></div>
+          <div style="text-align: left;">
+            <h3 class="modal-title" id="certViewerTitle">Certificate Verification</h3>
+            <p class="modal-sub" id="certViewerSubtitle">Official verified credential document</p>
+          </div>
+        </div>
+        <button class="modal-close-btn" onclick="closeCertViewerModal()" aria-label="Close modal">&times;</button>
+      </div>
+
+      <div class="cert-preview-box">
+        <img id="certViewerImage" src="" alt="Verified Certificate" class="cert-preview-img">
+      </div>
+
+      <div class="cert-viewer-meta" id="certViewerMeta">
+        <!-- Injected dynamically via JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: PROJECT DETAILS & DEEP DIVE ================= -->
+  <div class="modal-overlay" id="projectDetailsModal" aria-hidden="true" role="dialog">
+    <div class="modal-box modal-wide glass-card">
+      <div class="modal-header">
+        <div class="m-title-wrap">
+          <div class="m-icon icon-purple" id="projModalIcon"><i class="fa-solid fa-laptop-code"></i></div>
+          <div>
+            <h3 class="modal-title" id="projModalTitle">Project Architecture</h3>
+            <p class="modal-sub" id="projModalSubtitle">Deep dive into technology stack and system design</p>
+          </div>
+        </div>
+        <button class="modal-close-btn" id="closeProjModalBtn" aria-label="Close modal">&times;</button>
+      </div>
+
+      <div class="modal-scroll-body" id="projModalBody">
+        <!-- Injected dynamically via JS based on selected project -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: SUMMARY CV / RESUME ================= -->
+  <div class="modal-overlay" id="resumeModal" aria-hidden="true" role="dialog">
+    <div class="modal-box glass-card">
+      <div class="modal-header">
+        <div class="m-title-wrap">
+          <div class="m-icon icon-amber"><i class="fa-solid fa-file-invoice"></i></div>
+          <div>
+            <h3 class="modal-title">Mohamed Baheed - Candidate Summary</h3>
+            <p class="modal-sub">B.E. Computer Science and Engineering &bull; 9.62 SGPA</p>
+          </div>
+        </div>
+        <button class="modal-close-btn" id="closeResumeModalBtn" aria-label="Close modal">&times;</button>
+      </div>
+
+      <div class="modal-scroll-body cv-printable" id="resumeBody">
+        <div class="cv-header">
+          <h2>Mohamed Baheed</h2>
+          <p>Full-Stack Developer &bull; Data Scientist &bull; AI Innovator</p>
+          <p><i class="fa-solid fa-envelope"></i> mohamedbaheed6@gmail.com &bull; <i class="fa-brands fa-github"></i> github.com/MdBaheed</p>
+        </div>
+
+        <div class="cv-section">
+          <h4><i class="fa-solid fa-graduation-cap"></i> Education</h4>
+          <p><strong>B.E. Computer Science and Engineering</strong> (Pursuing) - Mohamed Sathak Engineering College, Kilakarai<br>
+          <em>Semester 1 SGPA: 9.54 | Semester 2 SGPA: 9.62 (Class 2nd Rank)</em></p>
+          <p><strong>SSLC & HSC</strong> - Muhyiddheeniya Matric Higher Secondary School</p>
+        </div>
+
+        <div class="cv-section">
+          <h4><i class="fa-solid fa-code"></i> Technical Arsenal</h4>
+          <p><strong>Languages:</strong> Python, Java, JavaFX, JavaScript (ES6+), HTML5, CSS3</p>
+          <p><strong>Domains:</strong> Full-Stack Web Development, Data Science, Prompt Engineering, Git/GitHub, Algorithms</p>
+        </div>
+
+        <div class="cv-section">
+          <h4><i class="fa-solid fa-award"></i> Major Projects & Hackathons</h4>
+          <ul>
+            <li><strong>Smart Classroom Energy Management System:</strong> Smart India Hackathon (SIH) IoT & AI project for institutional energy conservation.</li>
+            <li><strong>Manganese Resources Smart Identify AI:</strong> Smart India Hackathon (SIH) AI/ML prospectivity-mapping prototype using synthetic sample data.</li>
+            <li><strong>AI Study Schedule Web App:</strong> Intelligent syllabus-adaptive study planner using Prompt Engineering.</li>
+            <li><strong>CGPA / GPA / SGPA Calculator:</strong> Engineering grade point computation suite with projection algorithms.</li>
+          </ul>
+        </div>
+
+        <div class="cv-section">
+          <h4><i class="fa-solid fa-certificate"></i> Key Certifications</h4>
+          <p>&bull; <strong>NPTEL:</strong> Python for Data Science<br>
+          &bull; <strong>HP LIFE:</strong> Critical Thinking in AI Era | AI for Beginners | Cybersecurity Awareness<br>
+          &bull; <strong>Simplilearn:</strong> Basic Data Structures & Algorithms<br>
+          &bull; <strong>Anna University, Madurai:</strong> National Symposium Participation</p>
+        </div>
+
+        <div class="cv-section">
+          <h4><i class="fa-solid fa-users"></i> Leadership & Campus Responsibilities</h4>
+          <p>Event Coordinator at IIF (Innovation and Incubation Centre) & EDC-Cell (Entrepreneurship Development Cell).</p>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-primary" onclick="window.print()">
+          <i class="fa-solid fa-print"></i>
+          <span>Print / Save as PDF</span>
+        </button>
+        <button class="btn-outline-sm" onclick="closeAllModals()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification System -->
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>

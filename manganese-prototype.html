@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="MANGANEX prototype demo and local setup guide. The prototype uses synthetic sample data.">
+  <title>MANGANEX | Prototype Demo</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: #080d18;
+      color: #e8edf7;
+      font-synthesis: none;
+      text-rendering: optimizeLegibility;
+      --muted: #a8b3c7;
+      --line: rgba(255, 255, 255, 0.12);
+      --panel: rgba(17, 26, 44, 0.88);
+      --cyan: #62e6e0;
+      --amber: #f6c667;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      background:
+        radial-gradient(ellipse at 15% 0%, rgba(27, 112, 129, 0.2), transparent 42rem),
+        radial-gradient(ellipse at 90% 12%, rgba(120, 75, 165, 0.16), transparent 38rem),
+        #080d18;
+      line-height: 1.6;
+    }
+
+    a { color: var(--cyan); }
+
+    .page { width: min(1080px, calc(100% - 32px)); margin: 0 auto; }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 24px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .brand { color: #fff; font-size: 1.05rem; font-weight: 800; letter-spacing: 0.12em; text-decoration: none; }
+    .back-link { color: var(--muted); font-size: 0.9rem; text-decoration: none; }
+    .back-link:hover { color: #fff; }
+
+    main { padding: 56px 0 72px; }
+    .eyebrow { color: var(--cyan); font-size: 0.78rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; }
+    h1 { margin: 12px 0; color: #fff; font-size: clamp(2.2rem, 6vw, 4rem); line-height: 1.08; }
+    h2 { margin: 0 0 10px; color: #fff; font-size: 1.35rem; }
+    p { color: var(--muted); }
+    .intro { max-width: 760px; margin: 0 0 24px; font-size: 1.08rem; }
+
+    .notice {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin: 28px 0;
+      padding: 16px 18px;
+      border: 1px solid rgba(246, 198, 103, 0.38);
+      border-radius: 12px;
+      background: rgba(246, 198, 103, 0.08);
+      color: var(--amber);
+    }
+    .notice p { margin: 0; color: #e4d8bc; }
+
+    .panel {
+      margin-top: 24px;
+      padding: clamp(20px, 4vw, 32px);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--panel);
+      box-shadow: 0 22px 70px rgba(0, 0, 0, 0.28);
+    }
+
+    video {
+      display: block;
+      width: 100%;
+      max-height: 620px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #03060b;
+    }
+    .video-note { margin-bottom: 0; font-size: 0.88rem; }
+    .video-error { color: var(--amber); }
+
+    .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px; }
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 10px 16px;
+      border: 1px solid rgba(98, 230, 224, 0.42);
+      border-radius: 9px;
+      background: rgba(98, 230, 224, 0.1);
+      color: #dffffd;
+      font-weight: 700;
+      text-decoration: none;
+    }
+    .button:hover { background: rgba(98, 230, 224, 0.18); }
+
+    .feature-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 18px; }
+    .feature {
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      background: rgba(255, 255, 255, 0.025);
+    }
+    .feature h3 { margin: 0 0 4px; color: #fff; font-size: 1rem; }
+    .feature p { margin: 0; font-size: 0.9rem; }
+
+    ol { padding-left: 22px; color: var(--muted); }
+    li { padding-left: 4px; margin: 7px 0; }
+    .setup-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-top: 18px; }
+    .setup-step { min-width: 0; padding: 18px; border: 1px solid var(--line); border-radius: 12px; }
+    .setup-step h3 { margin: 0 0 8px; color: #fff; font-size: 1rem; }
+    pre {
+      overflow-x: auto;
+      margin: 12px 0 0;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: #060a12;
+      color: #c9f5f1;
+      font-size: 0.82rem;
+      line-height: 1.7;
+      white-space: pre;
+    }
+    .small { font-size: 0.88rem; }
+
+    @media (max-width: 680px) {
+      header { align-items: flex-start; flex-direction: column; }
+      main { padding-top: 38px; }
+      .feature-grid, .setup-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <a class="brand" href="index.html#stage-4">MANGANEX</a>
+      <a class="back-link" href="index.html#stage-4">&larr; Back to portfolio projects</a>
+    </header>
+
+    <main>
+      <span class="eyebrow">Smart India Hackathon prototype</span>
+      <h1>Explore MANGANEX</h1>
+      <p class="intro">A demonstration dashboard for manganese prospectivity screening and production planning, combining geospatial features, machine-learning workflows, and interactive scenario analysis.</p>
+
+      <aside class="notice" aria-label="Prototype data disclaimer">
+        <span aria-hidden="true">&#9888;</span>
+        <p><strong>Sample data only.</strong> Exploration and production values are synthetic. The map scores do not represent confirmed deposits, and forecasts are not real production estimates or validated mining advice.</p>
+      </aside>
+
+      <section class="panel" aria-labelledby="recording-title">
+        <h2 id="recording-title">Prototype walkthrough</h2>
+        <video id="demoVideo" controls preload="none" aria-label="MANGANEX prototype walkthrough video">
+          <source src="Manganex-01%20Demo.mp4" type="video/mp4">
+          Your browser does not support the video element. Use the download link below to view the recording.
+        </video>
+        <p id="videoError" class="video-note video-error" role="status" hidden>The recording could not be loaded. If this page is hosted on GitHub Pages, see the note below about the video file size.</p>
+        <p class="video-note">The recording file is larger than GitHub's 100 MB per-file limit. For a hosted portfolio, publish it with Git LFS or a separate video host and update the video source URL.</p>
+        <div class="actions">
+          <a class="button" href="manganex-1.zip" download>Download MANGANEX source</a>
+          <a class="button" href="Manganex-01%20Demo.mp4" download>Download demo recording</a>
+        </div>
+      </section>
+
+      <section class="panel" aria-labelledby="features-title">
+        <h2 id="features-title">What the prototype demonstrates</h2>
+        <div class="feature-grid">
+          <article class="feature">
+            <h3>Exploration</h3>
+            <p>Sample regional map, prospectivity heatmap, ranked targets, and target explanations.</p>
+          </article>
+          <article class="feature">
+            <h3>Production forecast</h3>
+            <p>Illustrative production-demand trends and a configurable what-if scenario.</p>
+          </article>
+          <article class="feature">
+            <h3>Supply risk</h3>
+            <p>Sample supply-gap indicators and recommendations generated from prototype values.</p>
+          </article>
+          <article class="feature">
+            <h3>Analytics</h3>
+            <p>Model metrics and feature importance for the synthetic training dataset.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="panel" aria-labelledby="setup-title">
+        <h2 id="setup-title">Run the interactive dashboard locally</h2>
+        <p class="small">Extract <code>manganex-1.zip</code> into the portfolio folder so it creates a <code>manganex\</code> folder beside this page. The frontend and API must run in separate terminals; the frontend proxies API requests to the backend on port 8000.</p>
+        <div class="setup-grid">
+          <div class="setup-step">
+            <h3>1. Start the backend (PowerShell)</h3>
+            <pre><code>cd .\manganex\backend
+py -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+uvicorn app.main:app --reload --port 8000</code></pre>
+          </div>
+          <div class="setup-step">
+            <h3>2. Start the frontend (new terminal)</h3>
+            <pre><code>cd .\manganex\frontend
+npm install
+npm run dev</code></pre>
+          </div>
+        </div>
+        <p class="small">Then open <code>http://localhost:5173</code>. The backend API documentation is available at <code>http://localhost:8000/docs</code>. The models train on startup using the bundled synthetic datasets.</p>
+      </section>
+    </main>
+  </div>
+  <script>
+    document.getElementById("demoVideo").addEventListener("error", () => {
+      document.getElementById("videoError").hidden = false;
+    });
+  </script>
+</body>
+</html>

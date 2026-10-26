@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Classroom Energy Management — Live SIH Simulator | Mohamed Baheed</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+  :root {
+    --bg-main: #0A0E14;
+    --bg-card: #0D1420;
+    --bg-sub: #10161F;
+    --border: #1C232E;
+    --text-main: #E6EDF3;
+    --text-muted: #8B949E;
+    --text-dim: #6B7684;
+    --amber: #FFB020;
+    --amber-tint: #2A2111;
+    --emerald: #3DD68C;
+    --emerald-tint: #151F17;
+    --coral: #FF5C5C;
+    --coral-tint: #26120F;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg-main);
+    color: var(--text-main);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+  .disp { font-family: 'Space Grotesk', sans-serif; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+
+  @keyframes pulseDot { 0%,100% { opacity: 1; } 50% { opacity: 0.25; } }
+  @keyframes blinkCursor { 0%,49% { opacity: 1; } 50%,100% { opacity: 0; } }
+  @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  .fan-spin { animation: spin 0.9s linear infinite; display: inline-block; }
+  .live-dot { animation: pulseDot 1.6s ease-in-out infinite; display: inline-block; }
+  .cursor { animation: blinkCursor 1s step-start infinite; }
+
+  input[type=range] {
+    accent-color: var(--amber);
+    width: 100%;
+    cursor: pointer;
+  }
+
+  /* Header */
+  .top-header {
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-card);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  .header-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+  .brand-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .brand-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #FFB020, #F4A100);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #0A0E14;
+    font-size: 1.25rem;
+  }
+  .brand-title {
+    font-size: 17px;
+    font-weight: 700;
+  }
+  .brand-sub {
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.04em;
+    margin-top: 2px;
+  }
+  .header-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .hud-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #131B27;
+    border: 1px solid #232B36;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+  .btn-power {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 12.5px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+  }
+  .btn-power.mains-on {
+    border: 1px solid #2A3542;
+    background: #131B27;
+    color: #C6D1DE;
+  }
+  .btn-power.power-cut {
+    border: 1px solid #6E2A24;
+    background: #26120F;
+    color: #FF8A75;
+  }
+  .back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: #fff;
+    padding: 7px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+  .back-btn:hover {
+    background: rgba(255,255,255,0.15);
+  }
+
+  /* Main Grid */
+  .layout-grid {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 24px;
+    display: grid;
+    grid-template-columns: 1.55fr 1fr;
+    gap: 20px;
+  }
+  @media (max-width: 900px) {
+    .layout-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .card-box {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px;
+  }
+
+  /* Floor Plan */
+  .floor-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .board-marker {
+    display: inline-block;
+    font-size: 10.5px;
+    letter-spacing: 3px;
+    color: #4C5665;
+    border: 1px solid #232B36;
+    border-radius: 6px;
+    padding: 5px 22px;
+    margin-bottom: 22px;
+  }
+  .bench-grid-top {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    width: 100%;
+  }
+  .bench-grid-bottom {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    width: 78%;
+    margin: 14px auto 0 auto;
+  }
+  @media (max-width: 600px) {
+    .bench-grid-top, .bench-grid-bottom {
+      grid-template-columns: repeat(2, 1fr);
+      width: 100%;
+    }
+  }
+
+  .bench-btn {
+    cursor: pointer;
+    text-align: left;
+    background: #10161F;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px;
+    transition: all 0.2s ease;
+    color: inherit;
+    font-family: inherit;
+  }
+  .bench-btn.occupied {
+    background: var(--emerald-tint);
+    border-color: #2C4A31;
+  }
+  .bench-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  .bench-id {
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+  .bench-occupancy {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 8px;
+    font-size: 11.5px;
+  }
+  .bench-temp {
+    font-size: 13.5px;
+    color: #9FB0C3;
+    margin-bottom: 10px;
+  }
+  .bench-appliances {
+    display: flex;
+    gap: 12px;
+  }
+  .appliance-badge {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 9.5px;
+    color: #3E4956;
+  }
+  .appliance-badge.active-fan {
+    color: var(--emerald);
+  }
+  .appliance-badge.active-light {
+    color: #FFD27A;
+  }
+
+  /* Right Controller Column */
+  .stats-two {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+  .stat-mini {
+    background: var(--bg-sub);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
+  }
+  .stat-mini-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-dim);
+    font-size: 10px;
+    margin-bottom: 6px;
+  }
+  .stat-mini-val {
+    font-size: 17px;
+    color: #E6EDF3;
+  }
+
+  .slider-box {
+    margin-bottom: 14px;
+  }
+  .slider-label-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+    font-size: 11px;
+    color: #9FB0C3;
+  }
+
+  /* Terminal Log Box */
+  .terminal-box {
+    background: #0A0E14;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 260px;
+  }
+  .terminal-header {
+    padding: 12px 18px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,0.02);
+  }
+  .term-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+  .terminal-content {
+    padding: 14px 18px;
+    font-size: 11px;
+    line-height: 1.8;
+    overflow-y: auto;
+    flex: 1;
+    max-height: 260px;
+  }
+  .log-line {
+    margin-bottom: 2px;
+  }
+
+  /* Bottom Energy Footer */
+  .footer-energy {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 24px 32px;
+  }
+  .energy-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 20px;
+    align-items: center;
+  }
+  @media (max-width: 800px) {
+    .energy-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .meter-box {
+    text-align: center;
+    background: var(--bg-sub);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 8px;
+  }
+  .meter-val {
+    font-size: 20px;
+    font-weight: 700;
+  }
+  .meter-sub {
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-top: 4px;
+  }
+
+  .bar-container {
+    margin-bottom: 10px;
+  }
+  .bar-text-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+    font-size: 10.5px;
+    color: var(--text-muted);
+  }
+  .bar-bg {
+    background: #151B23;
+    border-radius: 6px;
+    height: 10px;
+    overflow: hidden;
+  }
+  .bar-fill {
+    height: 100%;
+    border-radius: 6px;
+    transition: width 0.5s ease;
+  }
+</style>
+</head>
+<body>
+
+<header class="top-header">
+  <div class="header-inner">
+    <div class="brand-group">
+      <div class="brand-icon">
+        <i class="fa-solid fa-bolt"></i>
+      </div>
+      <div>
+        <div class="brand-title disp">Smart Classroom Energy Management</div>
+        <div class="brand-sub mono">SMART INDIA HACKATHON (SIH) &bull; LIVE SENSOR SIMULATION</div>
+      </div>
+    </div>
+
+    <div class="header-controls">
+      <div class="hud-badge mono">
+        <span class="live-dot" id="system-status-dot" style="width: 7px; height: 7px; border-radius: 50%; background: var(--emerald);"></span>
+        <span id="sim-clock">00:00:00</span>
+      </div>
+
+      <div class="hud-badge mono" id="battery-badge">
+        <i class="fa-solid fa-battery-three-quarters" id="battery-icon"></i>
+        <span id="battery-val">100%</span>
+      </div>
+
+      <button class="btn-power mains-on mono" id="mains-toggle-btn">
+        <i class="fa-solid fa-power-off"></i>
+        <span id="mains-text">MAINS ON — click to simulate outage</span>
+      </button>
+
+      <a href="index.html#stage-4" class="back-btn mono" title="Return to Mohamed Baheed's Portfolio">
+        <i class="fa-solid fa-arrow-left"></i> Portfolio
+      </a>
+    </div>
+  </div>
+</header>
+
+<main class="layout-grid">
+  <!-- Left Column: Floor Plan -->
+  <div class="card-box">
+    <div class="floor-head">
+      <div class="disp" style="font-size: 15px; font-weight: 600;">Classroom Floor Plan — 7 Bench Zones</div>
+      <div class="mono" style="font-size: 11px; color: var(--text-dim);">tap any bench to seat / vacate students</div>
+    </div>
+
+    <div style="text-align: center;">
+      <div class="board-marker mono">— CHALKBOARD / PROJECTOR SCREEN —</div>
+    </div>
+
+    <div class="bench-grid-top" id="bench-row-top"></div>
+    <div class="bench-grid-bottom" id="bench-row-bottom"></div>
+
+    <div id="outage-alert" style="display:none; margin-top:20px; align-items:center; gap:10px; background:var(--coral-tint); border:1px solid #6E2A24; border-radius:10px; padding:12px 14px; color:#FF8A75;">
+      <i class="fa-solid fa-triangle-exclamation"></i>
+      <span class="mono" style="font-size: 12px;">Battery depleted — sensing paused, all appliances forced OFF until power is restored.</span>
+    </div>
+  </div>
+
+  <!-- Right Column: Controller & Python Decision Log -->
+  <div style="display: flex; flex-direction: column; gap: 20px;">
+    <div class="card-box">
+      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
+        <i class="fa-solid fa-microchip" style="color: var(--amber);"></i>
+        <div class="disp" style="font-size: 15px; font-weight: 600;">Main Microcontroller &amp; Sensor Node</div>
+      </div>
+
+      <div class="stats-two">
+        <div class="stat-mini">
+          <div class="stat-mini-label mono"><i class="fa-solid fa-temperature-half"></i> Classroom Temp</div>
+          <div class="stat-mini-val mono" id="avg-temp-val">27.0°C</div>
+        </div>
+        <div class="stat-mini">
+          <div class="stat-mini-label mono"><i class="fa-solid fa-droplet"></i> Room Humidity</div>
+          <div class="stat-mini-val mono" id="humidity-display">58%</div>
+        </div>
+      </div>
+
+      <div class="slider-box">
+        <div class="slider-label-row mono">
+          <span><i class="fa-solid fa-droplet"></i> Ambient Humidity</span>
+          <span style="color: var(--amber);" id="humidity-val">58%</span>
+        </div>
+        <input type="range" min="20" max="95" value="58" id="humidity-slider">
+      </div>
+
+      <div class="slider-box">
+        <div class="slider-label-row mono">
+          <span><i class="fa-solid fa-sun"></i> Window Daylight Illumination</span>
+          <span style="color: var(--amber);" id="daylight-val">35%</span>
+        </div>
+        <input type="range" min="0" max="100" value="35" id="daylight-slider">
+      </div>
+
+      <div class="mono" style="margin-top: 14px; font-size: 10.5px; color: #5C6673; border-top: 1px solid var(--border); paddingTop: 12px; line-height: 1.7;">
+        <strong>ALGORITHM RULES:</strong><br>
+        &bull; <strong>Rule 1 (HVAC/Fan):</strong> Fan ON if bench occupied &amp; temp &ge; 26°C (70W)<br>
+        &bull; <strong>Rule 2 (Lighting):</strong> Light ON if bench occupied &amp; daylight &lt; 45% (20W)
+      </div>
+    </div>
+
+    <!-- Python Telemetry Log -->
+    <div class="terminal-box">
+      <div class="terminal-header">
+        <span class="term-dot" style="background:#FF5C5C;"></span>
+        <span class="term-dot" style="background:#FFB020;"></span>
+        <span class="term-dot" style="background:#3DD68C;"></span>
+        <span class="mono" style="font-size: 11px; color: var(--text-dim); margin-left: 6px;">control_daemon.py &bull; Telemetry Terminal</span>
+      </div>
+      <div class="terminal-content mono" id="terminal-log">
+        <!-- Log lines dynamically injected -->
+        <div id="term-cursor" style="color: var(--amber);"><span class="cursor">▍</span></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Energy Accounting Comparison Footer -->
+<div class="footer-energy">
+  <div class="card-box">
+    <div class="disp" style="font-size: 15px; font-weight: 600; margin-bottom: 16px;">
+      Power Consumption Telemetry &bull; Traditional Baseline vs SIH Smart Automation
+    </div>
+    <div class="energy-grid">
+      <div>
+        <div class="bar-container">
+          <div class="bar-text-row mono">
+            <span>Traditional Wastage (All room appliances constantly ON)</span>
+            <span id="baseline-watts-text">630W</span>
+          </div>
+          <div class="bar-bg">
+            <div class="bar-fill" id="baseline-bar" style="width: 100%; background: #4C5665;"></div>
+          </div>
+        </div>
+
+        <div class="bar-container">
+          <div class="bar-text-row mono">
+            <span style="color: var(--amber);">SIH Smart System (Selective occupancy &amp; daylight dimming)</span>
+            <span style="color: var(--amber);" id="smart-watts-text">180W</span>
+          </div>
+          <div class="bar-bg">
+            <div class="bar-fill" id="smart-bar" style="width: 28%; background: var(--amber);"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="meter-box">
+        <div class="meter-val disp" id="reduction-pct" style="color: var(--emerald);">71%</div>
+        <div class="meter-sub mono">Instant Power Drop</div>
+      </div>
+
+      <div class="meter-box">
+        <div class="meter-val disp" id="saved-kwh" style="color: var(--emerald);">0.000 kWh</div>
+        <div class="meter-sub mono">Energy Saved (Session)</div>
+      </div>
+
+      <div class="meter-box">
+        <div class="meter-val disp" id="saved-inr" style="color: var(--amber);">₹0.00</div>
+        <div class="meter-sub mono">Tariff Savings (₹6/kWh)</div>
+      </div>
+    </div>
+    <div class="mono" style="font-size: 10px; color: #4C5665; margin-top: 14px;">
+      Simulated at 6 accelerated minutes/second &bull; Tariff: ₹6.00/kWh &bull; Fan: 70W &bull; Light: 20W per bench zone &bull; SIH Innovation by Mohamed Baheed.
+    </div>
+  </div>
+</div>
+
+<script>
+/* ==================== SMART CLASSROOM SIMULATOR ENGINE ==================== */
+const FAN_WATT = 70;
+const LIGHT_WATT = 20;
+const TARIFF_PER_KWH = 6;
+const TEMP_THRESHOLD = 26;
+const SIM_MINUTES_PER_SEC = 6;
+
+let state = {
+  mainsOn: true,
+  battery: 100,
+  humidity: 58,
+  daylight: 35,
+  elapsedSeconds: 0,
+  savedKwh: 0,
+  savedRupees: 0,
+  benches: [
+    { id: 1, occupied: true,  temp: 27.2 },
+    { id: 2, occupied: false, temp: 25.1 },
+    { id: 3, occupied: true,  temp: 26.8 },
+    { id: 4, occupied: false, temp: 24.9 },
+    { id: 5, occupied: true,  temp: 27.5 },
+    { id: 6, occupied: false, temp: 25.4 },
+    { id: 7, occupied: false, temp: 24.8 }
+  ]
+};
+
+let prevZones = {};
+
+function formatSimClock(seconds) {
+  const totalMins = Math.floor(seconds * SIM_MINUTES_PER_SEC);
+  const h = Math.floor(totalMins / 60) % 24;
+  const m = totalMins % 60;
+  const s = Math.floor((seconds * SIM_MINUTES_PER_SEC * 60) % 60);
+  return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+
+function pushTerminalLog(msg, tone = 'info') {
+  const container = document.getElementById('terminal-log');
+  const cursor = document.getElementById('term-cursor');
+  const line = document.createElement('div');
+  line.className = 'log-line';
+
+  let color = '#9FB0C3';
+  if (tone === 'alert') color = '#FF8A75';
+  else if (tone === 'on') color = '#8FE3C7';
+  else if (tone === 'off') color = '#6B7684';
+
+  line.style.color = color;
+  line.innerHTML = `<span style="color:#3E4956;">[${formatSimClock(state.elapsedSeconds)}]</span> ${escapeHtml(msg)}`;
+  container.insertBefore(line, cursor);
+
+  // Keep max 50 lines
+  const lines = container.querySelectorAll('.log-line');
+  if (lines.length > 50) lines[0].remove();
+
+  container.scrollTop = container.scrollHeight;
+}
+
+function escapeHtml(str) {
+  const d = document.createElement('div');
+  d.textContent = str;
+  return d.innerHTML;
+}
+
+/* ==================== RENDER BENCHES ==================== */
+function renderBenches() {
+  const topRow = document.getElementById('bench-row-top');
+  const botRow = document.getElementById('bench-row-bottom');
+  topRow.innerHTML = '';
+  botRow.innerHTML = '';
+
+  const systemLive = state.mainsOn || state.battery > 0;
+
+  state.benches.forEach((b, idx) => {
+    const fanOn = systemLive && b.occupied && b.temp >= TEMP_THRESHOLD;
+    const lightOn = systemLive && b.occupied && state.daylight < 45;
+
+    const btn = document.createElement('button');
+    btn.className = `bench-btn ${b.occupied ? 'occupied' : ''}`;
+    btn.onclick = () => toggleBench(b.id);
+
+    btn.innerHTML = `
+      <div class="bench-top">
+        <span class="bench-id mono">BENCH 0${b.id}</span>
+        <i class="fa-solid fa-wifi ${systemLive ? 'live-dot' : ''}" style="font-size: 10px; color: ${systemLive ? 'var(--emerald)' : '#4C5665'};"></i>
+      </div>
+      <div class="bench-occupancy mono">
+        <i class="fa-solid fa-user" style="color: ${b.occupied ? 'var(--amber)' : '#3E4956'};"></i>
+        <span style="color: ${b.occupied ? '#E6EDF3' : '#4C5665'};">${b.occupied ? 'Occupied' : 'Vacant'}</span>
+      </div>
+      <div class="bench-temp mono">${b.temp.toFixed(1)}°C</div>
+      <div class="bench-appliances">
+        <div class="appliance-badge ${fanOn ? 'active-fan' : ''}">
+          <i class="fa-solid fa-fan ${fanOn ? 'fan-spin' : ''}"></i>
+          <span class="mono">${fanOn ? 'ON' : 'OFF'}</span>
+        </div>
+        <div class="appliance-badge ${lightOn ? 'active-light' : ''}">
+          <i class="fa-solid fa-lightbulb"></i>
+          <span class="mono">${lightOn ? 'ON' : 'OFF'}</span>
+        </div>
+      </div>
+    `;
+
+    if (idx < 4) topRow.appendChild(btn);
+    else botRow.appendChild(btn);
+  });
+
+  document.getElementById('outage-alert').style.display = (!systemLive) ? 'flex' : 'none';
+}
+
+function toggleBench(id) {
+  const b = state.benches.find(x => x.id === id);
+  if (!b) return;
+  b.occupied = !b.occupied;
+  renderBenches();
+  updateEnergyAccounting();
+}
+
+/* ==================== ENERGY ACCOUNTING & DECISION ENGINE ==================== */
+function updateEnergyAccounting() {
+  const systemLive = state.mainsOn || state.battery > 0;
+  const anyOccupied = state.benches.some(b => b.occupied);
+  const totalZones = state.benches.length;
+  
+  // Traditional baseline: if room is in use, all lights & fans are on across all 7 benches
+  const baselineWatts = anyOccupied ? totalZones * (FAN_WATT + LIGHT_WATT) : 0;
+  
+  // Smart system: only occupied zones exceeding thresholds
+  let smartWatts = 0;
+  state.benches.forEach(b => {
+    const fanOn = systemLive && b.occupied && b.temp >= TEMP_THRESHOLD;
+    const lightOn = systemLive && b.occupied && state.daylight < 45;
+    if (fanOn) smartWatts += FAN_WATT;
+    if (lightOn) smartWatts += LIGHT_WATT;
+
+    // Check for state changes to log
+    const prev = prevZones[b.id] || {};
+    if (prev.fanOn !== fanOn) {
+      pushTerminalLog(`Bench ${b.id}: Fan zone ${fanOn ? 'ACTIVATED' : 'SHUTDOWN'} (occupancy=${b.occupied}, temp=${b.temp.toFixed(1)}°C)`, fanOn ? 'on' : 'off');
+    }
+    if (prev.lightOn !== lightOn) {
+      pushTerminalLog(`Bench ${b.id}: Light zone ${lightOn ? 'ACTIVATED' : 'SHUTDOWN'} (daylight=${state.daylight}%)`, lightOn ? 'on' : 'off');
+    }
+    prevZones[b.id] = { fanOn, lightOn };
+  });
+
+  const maxPossible = totalZones * (FAN_WATT + LIGHT_WATT);
+  const reduction = baselineWatts > 0 ? Math.round(((baselineWatts - smartWatts) / baselineWatts) * 100) : 0;
+
+  // Update UI Elements
+  document.getElementById('baseline-watts-text').textContent = `${baselineWatts}W`;
+  document.getElementById('smart-watts-text').textContent = `${smartWatts}W`;
+  document.getElementById('baseline-bar').style.width = `${Math.min(100, (baselineWatts / maxPossible) * 100)}%`;
+  document.getElementById('smart-bar').style.width = `${Math.min(100, (smartWatts / maxPossible) * 100)}%`;
+  document.getElementById('reduction-pct').textContent = `${reduction}%`;
+
+  const avgTemp = (state.benches.reduce((s,b)=>s+b.temp,0) / totalZones).toFixed(1);
+  document.getElementById('avg-temp-val').textContent = `${avgTemp}°C`;
+}
+
+/* ==================== TICK ENGINE ==================== */
+setInterval(() => {
+  state.elapsedSeconds += 1;
+  document.getElementById('sim-clock').textContent = formatSimClock(state.elapsedSeconds);
+
+  // Battery drain / charge logic
+  if (!state.mainsOn) {
+    state.battery = Math.max(0, state.battery - 1.5);
+  } else {
+    state.battery = Math.min(100, state.battery + 2.5);
+  }
+  document.getElementById('battery-val').textContent = `${Math.round(state.battery)}%`;
+  
+  const systemLive = state.mainsOn || state.battery > 0;
+  const statusDot = document.getElementById('system-status-dot');
+  if (statusDot) statusDot.style.background = systemLive ? 'var(--emerald)' : 'var(--coral)';
+
+  // Energy accumulation
+  const anyOccupied = state.benches.some(b => b.occupied);
+  const baselineWatts = anyOccupied ? state.benches.length * (FAN_WATT + LIGHT_WATT) : 0;
+  let smartWatts = 0;
+  state.benches.forEach(b => {
+    if (systemLive && b.occupied && b.temp >= TEMP_THRESHOLD) smartWatts += FAN_WATT;
+    if (systemLive && b.occupied && state.daylight < 45) smartWatts += LIGHT_WATT;
+  });
+
+  const savedWatts = Math.max(0, baselineWatts - smartWatts);
+  const hoursPerTick = SIM_MINUTES_PER_SEC / 60;
+  const kwhTick = (savedWatts / 1000) * hoursPerTick;
+  state.savedKwh += kwhTick;
+  state.savedRupees += kwhTick * TARIFF_PER_KWH;
+
+  document.getElementById('saved-kwh').textContent = `${state.savedKwh.toFixed(3)} kWh`;
+  document.getElementById('saved-inr').textContent = `₹${state.savedRupees.toFixed(2)}`;
+}, 1000);
+
+// Bench temperature drift
+setInterval(() => {
+  state.benches.forEach(b => {
+    const drift = (Math.random() - 0.48) * 0.3;
+    const target = b.occupied ? b.temp + drift + 0.05 : b.temp + drift - 0.05;
+    b.temp = Math.min(33, Math.max(22, target));
+  });
+  renderBenches();
+  updateEnergyAccounting();
+}, 2500);
+
+/* ==================== CONTROLS LISTENERS ==================== */
+document.getElementById('humidity-slider').addEventListener('input', (e) => {
+  state.humidity = Number(e.target.value);
+  document.getElementById('humidity-val').textContent = `${state.humidity}%`;
+  document.getElementById('humidity-display').textContent = `${state.humidity}%`;
+});
+
+document.getElementById('daylight-slider').addEventListener('input', (e) => {
+  state.daylight = Number(e.target.value);
+  document.getElementById('daylight-val').textContent = `${state.daylight}%`;
+  renderBenches();
+  updateEnergyAccounting();
+});
+
+const mainsBtn = document.getElementById('mains-toggle-btn');
+const mainsText = document.getElementById('mains-text');
+mainsBtn.addEventListener('click', () => {
+  state.mainsOn = !state.mainsOn;
+  if (state.mainsOn) {
+    mainsBtn.className = 'btn-power mains-on mono';
+    mainsText.textContent = 'MAINS ON — click to simulate outage';
+    pushTerminalLog('Mains power supply restored — charging backup battery.', 'info');
+  } else {
+    mainsBtn.className = 'btn-power power-cut mono';
+    mainsText.textContent = 'POWER CUT — click to restore mains';
+    pushTerminalLog('⚠ MAINS POWER COLLAPSE: Switched to 12V LiFePO4 battery inverter backup.', 'alert');
+  }
+  renderBenches();
+  updateEnergyAccounting();
+});
+
+/* ==================== INIT ==================== */
+pushTerminalLog('System initialized &bull; ESP32 Controller linked to 7 PIR/DHT nodes.', 'info');
+pushTerminalLog('Control daemon active (poll cycle: 1s, SIM speed: 6x).', 'info');
+renderBenches();
+updateEnergyAccounting();
+</script>
+</body>
+</html>

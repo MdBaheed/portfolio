@@ -1,0 +1,1659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Z CRACKERS — AI Study Scheduler Prototype | Mohamed Baheed</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<style>
+  :root{
+    --navy:#0B1F3A;
+    --navy-2:#122C4E;
+    --navy-3:#1B3B63;
+    --teal:#17A2A2;
+    --teal-dim:#0E7A7A;
+    --teal-tint:#EAF6F6;
+    --coral:#E8734A;
+    --coral-tint:#FBE9E1;
+    --amber:#D9A441;
+    --amber-tint:#FBF2DF;
+    --green:#3FA76B;
+    --green-tint:#E7F5ED;
+    --ink:#122032;
+    --ink-dim:#5B6B80;
+    --line:#DCE4EC;
+    --paper:#FFFFFF;
+    --floor:#F3F6F9;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--floor);
+    color:var(--ink);
+    font-family:'Inter',system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+  h1,h2,h3,.display{font-family:'Space Grotesk',sans-serif;}
+  .mono{font-family:'JetBrains Mono',monospace;}
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important; transition:none !important;}
+  }
+
+  /* ---------- header ---------- */
+  header.topbar{
+    background:var(--navy);
+    color:#fff;
+    position:sticky;
+    top:0;
+    z-index:20;
+    border-bottom:1px solid rgba(255,255,255,0.08);
+  }
+  .topbar-inner{
+    max-width:1080px;
+    margin:0 auto;
+    padding:14px 20px 0 20px;
+  }
+  .brand-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    flex-wrap:wrap;
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .brand-mark{
+    width:34px;height:34px;
+    background:var(--teal);
+    border-radius:8px;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'JetBrains Mono',monospace;
+    font-weight:700;
+    color:var(--navy);
+    font-size:13px;
+    flex-shrink:0;
+  }
+  .brand-text .name{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700;
+    font-size:15px;
+    letter-spacing:0.02em;
+    line-height:1.1;
+  }
+  .brand-text .tagline{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    color:var(--teal);
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    margin-top:2px;
+  }
+  .header-actions{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+  .proto-badge{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    letter-spacing:0.05em;
+    color:#B9C8DC;
+    border:1px solid rgba(255,255,255,0.18);
+    padding:4px 8px;
+    border-radius:20px;
+    white-space:nowrap;
+  }
+  .day-badge{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    color:#fff;
+    background:rgba(23,162,162,0.25);
+    border:1px solid var(--teal);
+    padding:4px 10px;
+    border-radius:20px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .back-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    background:rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.2);
+    color:#fff;
+    padding:5px 12px;
+    border-radius:20px;
+    font-size:11.5px;
+    font-family:'JetBrains Mono',monospace;
+    text-decoration:none;
+    transition:all 0.2s ease;
+  }
+  .back-btn:hover{
+    background:var(--teal);
+    color:var(--navy);
+  }
+  nav.tabs{
+    display:flex;
+    gap:4px;
+    margin-top:14px;
+    overflow-x:auto;
+    scrollbar-width:none;
+    padding-bottom:0;
+  }
+  nav.tabs::-webkit-scrollbar{display:none;}
+  nav.tabs button{
+    appearance:none;
+    border:none;
+    background:transparent;
+    color:#AEC0D6;
+    font-family:'Inter',sans-serif;
+    font-weight:600;
+    font-size:13px;
+    padding:10px 14px;
+    cursor:pointer;
+    white-space:nowrap;
+    border-bottom:2px solid transparent;
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  nav.tabs button .num{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    color:#7186A0;
+  }
+  nav.tabs button.active{
+    color:#fff;
+    border-bottom:2px solid var(--teal);
+  }
+  nav.tabs button.active .num{color:var(--teal);}
+  nav.tabs button:hover{color:#fff;}
+
+  main{
+    max-width:1080px;
+    margin:0 auto;
+    padding:22px 20px 80px 20px;
+  }
+  .panel{display:none;}
+  .panel.active{display:block; animation:fadein .25s ease;}
+  @keyframes fadein{from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:translateY(0);}}
+
+  .section-head{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:12px;
+    margin-bottom:14px;
+    flex-wrap:wrap;
+  }
+  .section-head h2{
+    font-size:19px;
+    margin:0 0 3px 0;
+    color:var(--navy);
+  }
+  .section-head p{
+    margin:0;
+    font-size:13px;
+    color:var(--ink-dim);
+  }
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10.5px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--teal-dim);
+    font-weight:600;
+    margin-bottom:4px;
+    display:block;
+  }
+
+  /* ---------- cards / grid ---------- */
+  .grid2{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+  }
+  @media (max-width:760px){
+    .grid2{grid-template-columns:1fr;}
+  }
+  .card{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:18px;
+  }
+  .card h3{
+    font-size:14px;
+    margin:0 0 12px 0;
+    color:var(--navy);
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+
+  /* ---------- form ---------- */
+  .field{margin-bottom:14px;}
+  .field label{
+    display:flex;
+    justify-content:space-between;
+    font-size:12.5px;
+    font-weight:600;
+    color:var(--ink);
+    margin-bottom:6px;
+  }
+  .field label .val{
+    font-family:'JetBrains Mono',monospace;
+    color:var(--teal-dim);
+    font-weight:700;
+  }
+  input[type=text], input[type=number], input[type=time]{
+    width:100%;
+    padding:9px 10px;
+    border:1px solid var(--line);
+    border-radius:8px;
+    font-family:'Inter',sans-serif;
+    font-size:13.5px;
+    background:var(--floor);
+    color:var(--ink);
+  }
+  input[type=text]:focus, input[type=number]:focus, input[type=time]:focus, select:focus{
+    outline:2px solid var(--teal);
+    outline-offset:1px;
+    background:#fff;
+  }
+  select{
+    width:100%;
+    padding:9px 10px;
+    border:1px solid var(--line);
+    border-radius:8px;
+    font-family:'Inter',sans-serif;
+    font-size:13.5px;
+    background:var(--floor);
+    color:var(--ink);
+  }
+  input[type=range]{
+    width:100%;
+    -webkit-appearance:none;
+    height:6px;
+    border-radius:4px;
+    background:var(--line);
+    accent-color:var(--teal);
+  }
+  .btn{
+    appearance:none;
+    border:none;
+    border-radius:8px;
+    padding:10px 16px;
+    font-family:'Inter',sans-serif;
+    font-weight:600;
+    font-size:13.5px;
+    cursor:pointer;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    text-decoration:none;
+  }
+  .btn-primary{background:var(--teal); color:#fff;}
+  .btn-primary:hover{background:var(--teal-dim);}
+  .btn-navy{background:var(--navy); color:#fff;}
+  .btn-navy:hover{background:var(--navy-2);}
+  .btn-ghost{background:transparent; color:var(--ink-dim); border:1px solid var(--line);}
+  .btn-ghost:hover{border-color:var(--ink-dim); color:var(--ink);}
+  .btn-sm{padding:6px 10px; font-size:12px; border-radius:6px;}
+  .btn:disabled{opacity:0.45; cursor:not-allowed;}
+  .btn-row{display:flex; gap:8px; flex-wrap:wrap;}
+
+  /* ---------- scoreboard (signature element) ---------- */
+  .scoreboard{
+    background:var(--navy);
+    border-radius:12px;
+    padding:6px;
+    overflow:hidden;
+  }
+  .score-row{
+    display:grid;
+    grid-template-columns:26px 1fr auto;
+    align-items:center;
+    gap:10px;
+    padding:12px 12px;
+    border-bottom:1px solid rgba(255,255,255,0.07);
+  }
+  .score-row:last-child{border-bottom:none;}
+  .score-rank{
+    font-family:'JetBrains Mono',monospace;
+    color:#7186A0;
+    font-size:12px;
+  }
+  .score-main .score-name-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:6px;
+    flex-wrap:wrap;
+  }
+  .score-name{
+    color:#fff;
+    font-weight:600;
+    font-size:13.5px;
+  }
+  .score-track{
+    height:6px;
+    background:rgba(255,255,255,0.09);
+    border-radius:4px;
+    overflow:hidden;
+  }
+  .score-fill{
+    height:100%;
+    background:linear-gradient(90deg, var(--teal), #5FD3D3);
+    border-radius:4px;
+    transition:width .5s cubic-bezier(.4,0,.2,1);
+  }
+  .score-num{
+    font-family:'JetBrains Mono',monospace;
+    color:var(--teal);
+    font-weight:700;
+    font-size:16px;
+    min-width:54px;
+    text-align:right;
+  }
+  .score-num .unit{font-size:10px; color:#7186A0; font-weight:500;}
+
+  .status-pill{
+    font-family:'JetBrains Mono',monospace;
+    font-size:9.5px;
+    letter-spacing:0.04em;
+    text-transform:uppercase;
+    padding:2px 7px;
+    border-radius:20px;
+    font-weight:600;
+  }
+  .status-pending{background:rgba(255,255,255,0.1); color:#C9D4E2;}
+  .status-done{background:rgba(63,167,107,0.22); color:#8FE0B0;}
+  .status-missed{background:rgba(232,115,74,0.25); color:#F3AE93;}
+
+  /* ---------- subject card list (edit mode) ---------- */
+  .subj-card{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:16px;
+    margin-bottom:12px;
+  }
+  .subj-card .subj-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:10px;
+  }
+  .subj-card .subj-name{
+    font-weight:700;
+    font-size:14px;
+    color:var(--navy);
+  }
+  .slider-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px 18px;
+  }
+  @media (max-width:520px){.slider-grid{grid-template-columns:1fr;}}
+
+  /* ---------- timeline ---------- */
+  .timeline{border-left:2px solid var(--line); margin-left:8px; padding-left:20px;}
+  .tblock{
+    position:relative;
+    padding:12px 14px;
+    margin-bottom:10px;
+    border-radius:10px;
+    border:1px solid var(--line);
+    background:var(--paper);
+  }
+  .tblock::before{
+    content:'';
+    position:absolute;
+    left:-26px;
+    top:16px;
+    width:10px;height:10px;
+    border-radius:50%;
+    background:var(--line);
+    border:2px solid var(--paper);
+  }
+  .tblock.study::before{background:var(--teal);}
+  .tblock.brk{background:var(--floor); border-style:dashed;}
+  .tblock.brk::before{background:var(--ink-dim);}
+  .tblock.revision{background:var(--teal-tint); border-color:var(--teal);}
+  .tblock.revision::before{background:var(--navy);}
+  .tblock.missed{border-color:var(--coral); background:var(--coral-tint);}
+  .tblock.done{opacity:0.7;}
+  .trow{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+  .ttime{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11.5px;
+    color:var(--ink-dim);
+    white-space:nowrap;
+  }
+  .tname{font-weight:600; font-size:13.5px;}
+  .tsub{font-size:11.5px; color:var(--ink-dim); margin-top:2px;}
+  .tactions{display:flex; gap:6px;}
+
+  table{width:100%; border-collapse:collapse; font-size:13px;}
+  th{
+    text-align:left;
+    font-family:'JetBrains Mono',monospace;
+    font-size:10.5px;
+    letter-spacing:0.05em;
+    text-transform:uppercase;
+    color:#fff;
+    background:var(--navy);
+    padding:9px 10px;
+  }
+  th:first-child{border-radius:8px 0 0 0;}
+  th:last-child{border-radius:0 8px 0 0;}
+  td{padding:9px 10px; border-bottom:1px solid var(--line);}
+  tr.hi td{background:var(--coral-tint);}
+  tr.med td{background:var(--amber-tint);}
+  tr.lo td{background:var(--green-tint);}
+  .tag{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10.5px;
+    font-weight:700;
+    padding:2px 8px;
+    border-radius:20px;
+  }
+  .tag-hi{background:var(--coral); color:#fff;}
+  .tag-med{background:var(--amber); color:#4A3400;}
+  .tag-lo{background:var(--green); color:#fff;}
+
+  .callout{
+    background:var(--teal-tint);
+    border:1px solid #BFE4E4;
+    border-radius:10px;
+    padding:12px 14px;
+    font-size:12.5px;
+    color:#0E4E4E;
+    line-height:1.5;
+  }
+  .empty{
+    color:var(--ink-dim);
+    font-size:13px;
+    padding:20px 0;
+    text-align:center;
+  }
+
+  /* ---------- dashboard stats ---------- */
+  .stat-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:12px;
+    margin-bottom:16px;
+  }
+  @media (max-width:700px){.stat-grid{grid-template-columns:1fr 1fr;}}
+  .stat{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:14px;
+  }
+  .stat .stat-label{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--ink-dim);
+    margin-bottom:6px;
+  }
+  .stat .stat-val{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700;
+    font-size:26px;
+    color:var(--navy);
+  }
+  .stat .stat-val .of{font-size:14px; color:var(--ink-dim); font-weight:500;}
+
+  .bar-row{display:flex; align-items:center; gap:10px; margin-bottom:10px;}
+  .bar-label{width:120px; font-size:12.5px; font-weight:600; flex-shrink:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .bar-track{flex:1; height:16px; background:var(--floor); border-radius:6px; overflow:hidden;}
+  .bar-fill{height:100%; border-radius:6px; background:linear-gradient(90deg, var(--navy), var(--teal));}
+  .bar-val{font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--ink-dim); width:34px; text-align:right;}
+
+  .weak-item{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:10px 0;
+    border-bottom:1px solid var(--line);
+    font-size:13px;
+  }
+  .weak-item:last-child{border-bottom:none;}
+
+  /* Session History Styles */
+  .history-card{
+    background:var(--floor);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:12px 14px;
+    margin-bottom:10px;
+  }
+  .history-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:6px;
+    font-weight:600;
+    font-size:13px;
+  }
+  .history-meta{
+    font-size:11.5px;
+    color:var(--ink-dim);
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+  }
+
+  footer{
+    text-align:center;
+    padding:18px;
+    color:var(--ink-dim);
+    font-size:11px;
+    font-family:'JetBrains Mono',monospace;
+  }
+  .icon-btn{
+    background:none; border:none; cursor:pointer; color:var(--ink-dim);
+    font-size:15px; padding:4px 6px; border-radius:6px;
+  }
+  .icon-btn:hover{background:var(--floor); color:var(--coral);}
+
+  #dropzone{
+    border:1.5px dashed var(--line);
+    border-radius:8px;
+    background:var(--floor);
+    padding:16px 12px;
+    text-align:center;
+    font-size:12.5px;
+    color:var(--ink-dim);
+    cursor:pointer;
+    transition:border-color .15s, background .15s;
+  }
+  #dropzone:hover, #dropzone:focus-visible{
+    border-color:var(--teal);
+    background:var(--teal-tint);
+    outline:none;
+  }
+  #dropzone.drag-over{
+    border-color:var(--teal);
+    background:var(--teal-tint);
+  }
+  #dropzone .dropzone-link{
+    color:var(--teal-dim);
+    font-weight:600;
+    text-decoration:underline;
+  }
+  #dropzone-filename{
+    font-weight:600;
+    color:var(--navy);
+  }
+  #dropzone-filename .clear-file{
+    color:var(--coral);
+    font-weight:500;
+    margin-left:8px;
+    cursor:pointer;
+    text-decoration:underline;
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand-row">
+      <div class="brand">
+        <div class="brand-mark">ZC</div>
+        <div class="brand-text">
+          <div class="name">Z CRACKERS</div>
+          <div class="tagline">Personalized · Adaptive · Multi-Subject Scheduler</div>
+        </div>
+      </div>
+      <div class="header-actions">
+        <div class="day-badge" id="current-day-label">
+          <i class="fa-solid fa-calendar-day"></i> <span id="session-day-text">Day 1 Session</span>
+        </div>
+        <button class="btn btn-sm btn-ghost" id="advance-day-btn" title="Complete today's session, save to history, and advance to next day" style="color:#fff; border-color:rgba(255,255,255,0.25);">
+          <i class="fa-solid fa-forward-step"></i> Next Day
+        </button>
+        <a href="index.html#stage-4" class="back-btn" title="Return to Mohamed Baheed's Portfolio">
+          <i class="fa-solid fa-arrow-left"></i> Portfolio
+        </a>
+      </div>
+    </div>
+    <nav class="tabs" id="tabs">
+      <button data-tab="subjects" class="active"><span class="num">01</span> Subjects</button>
+      <button data-tab="schedule"><span class="num">02</span> Schedule</button>
+      <button data-tab="quiz"><span class="num">03</span> Quiz &amp; Weakness</button>
+      <button data-tab="dashboard"><span class="num">04</span> Dashboard &amp; History</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <!-- ============ SUBJECTS TAB ============ -->
+  <section class="panel active" id="panel-subjects">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow">Priority score algorithm &amp; Multi-Subject Ingestion</span>
+        <h2>Subjects &amp; live priority</h2>
+        <p>Composite = 0.40×Urgency + 0.25×Difficulty + 0.20×Remaining Work + 0.15×Weakness &bull; Data persists across days</p>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div>
+        <div class="card" style="margin-bottom:16px;">
+          <h3>＋ Add a subject</h3>
+          <div class="field">
+            <label>Subject name</label>
+            <input type="text" id="new-name" placeholder="e.g. Operating Systems">
+          </div>
+          <div class="slider-grid" id="new-sliders"></div>
+          <div class="btn-row" style="margin-top:12px;">
+            <button class="btn btn-primary" id="add-subject">Add subject</button>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom:16px;">
+          <h3>📄 Upload material for any subject &amp; generate quiz</h3>
+          <p style="font-size:12.5px; color:var(--ink-dim); margin:-4px 0 12px 0;">Upload PDF/text files for various subjects or paste chapter notes — pulls key technical terms and creates practice quiz banks for that day's session.</p>
+          <div class="field">
+            <label>Target Subject</label>
+            <select id="material-subject"></select>
+          </div>
+          <div class="field">
+            <label>PDF or text file <span style="font-weight:400; color:var(--ink-dim);">(supports multi-file upload)</span></label>
+            <div id="dropzone" tabindex="0" role="button" aria-label="Choose or drop a PDF or text file">
+              <div id="dropzone-text">Drag files here, or <span class="dropzone-link">click to browse</span></div>
+              <div id="dropzone-filename" style="display:none;"></div>
+            </div>
+            <input type="file" id="material-file" accept=".pdf,.txt" multiple style="display:none;">
+          </div>
+          <div class="field">
+            <label>...or paste notes/text directly</label>
+            <textarea id="material-paste" rows="3" placeholder="Paste chapter notes, syllabus excerpt, or key concepts here" style="width:100%; padding:9px 10px; border:1px solid var(--line); border-radius:8px; font-family:'Inter',sans-serif; font-size:13px; background:var(--floor); color:var(--ink); resize:vertical;"></textarea>
+          </div>
+          <div class="field">
+            <label>Questions per quiz <span class="val mono" id="material-count-val">8</span></label>
+            <input type="range" id="material-count" min="3" max="15" step="1" value="8">
+          </div>
+          <button class="btn btn-navy" id="material-generate">Extract &amp; generate quiz</button>
+          <div id="material-status" style="margin-top:12px;"></div>
+        </div>
+
+        <div id="subject-cards"></div>
+      </div>
+
+      <div>
+        <div class="card" style="padding:10px;">
+          <h3 style="padding:8px 8px 0 8px;">▤ Live scoreboard <span style="font-weight:400; color:var(--ink-dim); font-size:11.5px;">— ranked by priority</span></h3>
+          <div class="scoreboard" id="scoreboard" style="margin-top:8px;"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SCHEDULE TAB ============ -->
+  <section class="panel" id="panel-schedule">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow">Smart scheduling</span>
+        <h2>Today's timetable &bull; <span id="schedule-day-title">Day Session</span></h2>
+        <p>Hardest topic first · 15-min break after ~45 min · no block &gt; 60 min · final slot reserved for revision + quiz</p>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:16px;">
+      <div class="slider-grid" style="grid-template-columns:1fr 1fr 1fr; align-items:end;">
+        <div class="field" style="margin-bottom:0;">
+          <label>Study time available <span class="val mono" id="daily-min-val">180 min</span></label>
+          <input type="range" id="daily-minutes" min="30" max="360" step="15" value="180">
+        </div>
+        <div class="field" style="margin-bottom:0;">
+          <label>Start time</label>
+          <input type="time" id="start-time" value="18:00">
+        </div>
+        <div>
+          <button class="btn btn-navy" id="gen-schedule" style="width:100%;">Generate schedule</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="schedule-output"></div>
+
+    <div id="reschedule-zone" style="display:none; margin-top:18px;">
+      <div class="callout" id="reschedule-note" style="margin-bottom:12px;"></div>
+      <div class="btn-row">
+        <button class="btn btn-primary" id="reschedule-btn">↻ Reschedule for tomorrow</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ QUIZ TAB ============ -->
+  <section class="panel" id="panel-quiz">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow">Weakness detection &amp; practice</span>
+        <h2>Quiz result → revision priority</h2>
+        <p>A quiz score under 60% automatically marks the topic weak and raises its priority for tomorrow's session.</p>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>✎ Record or take today's quiz</h3>
+        <div class="field">
+          <label>Topic</label>
+          <select id="quiz-subject"></select>
+        </div>
+        <div class="field">
+          <label>Questions attempted</label>
+          <input type="number" id="quiz-total" value="10" min="1" max="50">
+        </div>
+        <div class="field">
+          <label>Correct answers</label>
+          <input type="number" id="quiz-correct" value="5" min="0" max="50">
+        </div>
+        <button class="btn btn-primary" id="submit-quiz">Submit result</button>
+        <div id="quiz-result" style="margin-top:14px;"></div>
+
+        <div id="generated-quiz-zone" style="display:none; margin-top:16px; padding-top:16px; border-top:1px solid var(--line);">
+          <div class="callout" id="generated-quiz-info" style="margin-bottom:10px;"></div>
+          <button class="btn btn-navy" id="start-generated-quiz">▶ Take the generated quiz now</button>
+        </div>
+        <div id="generated-quiz-player" style="display:none; margin-top:14px;"></div>
+      </div>
+
+      <div class="card">
+        <h3>▦ Weakness → revision priority</h3>
+        <table>
+          <thead><tr><th>Score</th><th>Revision priority</th></tr></thead>
+          <tbody id="band-table">
+            <tr class="hi"><td>&lt; 60%</td><td><span class="tag tag-hi">High Priority</span></td></tr>
+            <tr class="med"><td>60% – 80%</td><td><span class="tag tag-med">Medium Priority</span></td></tr>
+            <tr class="lo"><td>&gt; 80%</td><td><span class="tag tag-lo">Low Priority</span></td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:14px;">
+          <h3 style="margin-bottom:8px;">Current Topics Status</h3>
+          <div id="quiz-status-list"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DASHBOARD & HISTORY TAB ============ -->
+  <section class="panel" id="panel-dashboard">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow">Study dashboard &amp; History records</span>
+        <h2>Today at a glance &amp; Previous Days' Data</h2>
+        <p>Real-time analytics and historical logs retained across all past study sessions.</p>
+      </div>
+    </div>
+
+    <div class="stat-grid" id="stat-grid"></div>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>▥ Priority ranking</h3>
+        <div id="dash-bars"></div>
+      </div>
+      <div class="card">
+        <h3>⚠ Weak topics</h3>
+        <div id="dash-weak"></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:18px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
+        <h3 style="margin:0;"><i class="fa-solid fa-clock-rotate-left" style="color:var(--teal);"></i> Previous Days' Session Records &amp; Logs</h3>
+        <button class="btn btn-sm btn-ghost" id="clear-history-btn" title="Reset past history">Reset History</button>
+      </div>
+      <div id="history-list"></div>
+    </div>
+  </section>
+
+</main>
+
+<footer>Z CRACKERS — AI-Powered Personalized Study Scheduler · Developed by Mohamed Baheed · Persistent Multi-Session Prototype</footer>
+
+<script>
+/* ==================== STATE & PERSISTENCE ==================== */
+const STORAGE_KEY = 'zcrackers_study_scheduler_data_v2';
+let uid = Date.now();
+const nextId = () => 'sub-' + (uid++);
+
+const DEFAULT_SUBJECTS = [
+  {id: nextId(), name:'CPU Scheduling',      urgency:90, difficulty:80, remaining:70, weakness:60, status:'pending', lastQuizScore:50, quizBank:[], material:null},
+  {id: nextId(), name:'Deadlocks',            urgency:70, difficulty:65, remaining:55, weakness:40, status:'pending', lastQuizScore:null, quizBank:[], material:null},
+  {id: nextId(), name:'Data Structures — Trees', urgency:50, difficulty:60, remaining:50, weakness:35, status:'pending', lastQuizScore:null, quizBank:[], material:null},
+  {id: nextId(), name:'Arrays',                urgency:40, difficulty:30, remaining:20, weakness:20, status:'pending', lastQuizScore:75, quizBank:[], material:null},
+];
+
+const DEFAULT_HISTORY = [
+  {
+    dayNumber: 1,
+    date: '2026-10-24',
+    studyMinutes: 180,
+    quizzesTaken: 2,
+    avgScore: 78,
+    subjectsCompleted: ['Arrays', 'CPU Scheduling Basics'],
+    note: 'Initial syllabus kickoff. Solid progress in arrays.'
+  },
+  {
+    dayNumber: 2,
+    date: '2026-10-25',
+    studyMinutes: 150,
+    quizzesTaken: 1,
+    avgScore: 65,
+    subjectsCompleted: ['Deadlocks Prevention'],
+    note: 'Deadlocks banker\'s algorithm reviewed. Needs another revision.'
+  }
+];
+
+let state = {
+  dayNumber: 3,
+  currentDate: '2026-10-26',
+  subjects: DEFAULT_SUBJECTS,
+  schedule: null,
+  history: DEFAULT_HISTORY
+};
+
+function loadState(){
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw){
+      const parsed = JSON.parse(raw);
+      if(parsed && parsed.subjects && parsed.subjects.length > 0){
+        state = parsed;
+      }
+    }
+  } catch(e){
+    console.error('Error loading state from localStorage', e);
+  }
+}
+
+function saveState(){
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch(e){
+    console.error('Error saving state to localStorage', e);
+  }
+}
+
+const WEIGHTS = {urgency:0.40, difficulty:0.25, remaining:0.20, weakness:0.15};
+
+function priority(s){
+  return WEIGHTS.urgency*s.urgency + WEIGHTS.difficulty*s.difficulty + WEIGHTS.remaining*s.remaining + WEIGHTS.weakness*s.weakness;
+}
+function sortedByPriority(list){
+  return [...list].sort((a,b)=>priority(b)-priority(a));
+}
+function revisionBand(score){
+  if(score===null || score===undefined) return null;
+  if(score>80) return {label:'Low', tag:'tag-lo', row:'lo'};
+  if(score>=60) return {label:'Medium', tag:'tag-med', row:'med'};
+  return {label:'High', tag:'tag-hi', row:'hi'};
+}
+
+/* ==================== TABS ==================== */
+document.getElementById('tabs').addEventListener('click', (e)=>{
+  const btn = e.target.closest('button[data-tab]');
+  if(!btn) return;
+  document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+btn.dataset.tab).classList.add('active');
+  if(btn.dataset.tab==='quiz') renderQuizTab();
+  if(btn.dataset.tab==='dashboard') renderDashboard();
+});
+
+/* ==================== ADVANCE DAY & HISTORY ==================== */
+function updateDayDisplay(){
+  const label = document.getElementById('session-day-text');
+  const schedTitle = document.getElementById('schedule-day-title');
+  if(label) label.textContent = `Day ${state.dayNumber} Session (${state.currentDate})`;
+  if(schedTitle) schedTitle.textContent = `Day ${state.dayNumber} Session (${state.currentDate})`;
+}
+
+document.getElementById('advance-day-btn').addEventListener('click', ()=>{
+  // Archive current day session to history
+  const completedSubjects = state.subjects.filter(s=>s.status==='done').map(s=>s.name);
+  const plannedMinutes = state.schedule ? state.schedule.filter(b=>b.type==='study' && b.status==='done').reduce((a,b)=>a+b.minutes,0) : 120;
+  
+  const quizzesToday = state.subjects.filter(s=>s.lastQuizScore !== null);
+  const avgScore = quizzesToday.length ? Math.round(quizzesToday.reduce((a,s)=>a+s.lastQuizScore,0)/quizzesToday.length) : 75;
+
+  const pastRecord = {
+    dayNumber: state.dayNumber,
+    date: state.currentDate,
+    studyMinutes: plannedMinutes || 120,
+    quizzesTaken: quizzesToday.length || 1,
+    avgScore: avgScore,
+    subjectsCompleted: completedSubjects.length ? completedSubjects : ['Revision of key concepts'],
+    note: `Completed Day ${state.dayNumber} session. Rescheduled weak topics.`
+  };
+
+  state.history.unshift(pastRecord);
+  state.dayNumber += 1;
+  
+  // Advance date by 1 day
+  const d = new Date(state.currentDate);
+  d.setDate(d.getDate() + 1);
+  state.currentDate = d.toISOString().split('T')[0];
+
+  // Reset statuses for tomorrow
+  state.subjects.forEach(s=>{
+    if(s.status==='missed'){
+      s.urgency = Math.min(100, s.urgency+15);
+    } else if(s.status==='done'){
+      s.remaining = Math.max(0, s.remaining-35);
+    }
+    s.status = 'pending';
+  });
+
+  state.schedule = assembleSchedule();
+  saveState();
+  updateDayDisplay();
+  renderSubjects();
+  renderSchedule();
+  renderDashboard();
+  alert(`Day ${state.dayNumber-1} session saved to history! Welcome to Day ${state.dayNumber}.`);
+});
+
+document.getElementById('clear-history-btn')?.addEventListener('click', ()=>{
+  if(confirm('Are you sure you want to reset historical records to default?')){
+    state.history = [...DEFAULT_HISTORY];
+    saveState();
+    renderDashboard();
+  }
+});
+
+/* ==================== NEW SUBJECT SLIDERS ==================== */
+const sliderDefs = [
+  {key:'urgency', label:'Exam urgency', def:50},
+  {key:'difficulty', label:'Difficulty', def:50},
+  {key:'remaining', label:'Remaining work', def:50},
+  {key:'weakness', label:'Weakness', def:30},
+];
+function buildSliderGrid(container, prefix, values){
+  container.innerHTML = sliderDefs.map(d=>`
+    <div class="field" style="margin-bottom:6px;">
+      <label>${d.label} <span class="val mono" id="${prefix}-${d.key}-val">${values[d.key]}</span></label>
+      <input type="range" min="0" max="100" step="5" value="${values[d.key]}" id="${prefix}-${d.key}">
+    </div>
+  `).join('');
+  sliderDefs.forEach(d=>{
+    const input = document.getElementById(`${prefix}-${d.key}`);
+    input.addEventListener('input', ()=>{
+      document.getElementById(`${prefix}-${d.key}-val`).textContent = input.value;
+      if(prefix!=='new') liveUpdateSubject(prefix, d.key, Number(input.value));
+    });
+  });
+}
+buildSliderGrid(document.getElementById('new-sliders'), 'new', {urgency:60,difficulty:50,remaining:50,weakness:30});
+
+document.getElementById('add-subject').addEventListener('click', ()=>{
+  const nameInput = document.getElementById('new-name');
+  const name = nameInput.value.trim();
+  if(!name){ nameInput.focus(); return; }
+  const s = {id: nextId(), name, status:'pending', lastQuizScore:null, quizBank:[], material:null};
+  sliderDefs.forEach(d=> s[d.key] = Number(document.getElementById('new-'+d.key).value));
+  state.subjects.push(s);
+  nameInput.value='';
+  saveState();
+  renderSubjects();
+});
+
+function liveUpdateSubject(id, key, val){
+  const s = state.subjects.find(x=>x.id===id);
+  if(!s) return;
+  s[key] = val;
+  saveState();
+  renderScoreboard();
+}
+
+/* ==================== RENDER: SUBJECT CARDS ==================== */
+function renderSubjects(){
+  const wrap = document.getElementById('subject-cards');
+  if(state.subjects.length===0){
+    wrap.innerHTML = `<div class="empty">No subjects yet — add one above.</div>`;
+  } else {
+    wrap.innerHTML = state.subjects.map(s=>`
+      <div class="subj-card">
+        <div class="subj-top">
+          <div>
+            <span class="subj-name">${escapeHtml(s.name)}</span>
+            ${s.material ? `<span style="font-size:11px; color:var(--teal-dim); margin-left:8px;"><i class="fa-solid fa-file-pdf"></i> ${escapeHtml(s.material.name)}</span>` : ''}
+          </div>
+          <div>
+            <span class="status-pill status-${s.status}" style="background:${s.status==='pending'?'var(--floor)':(s.status==='done'?'var(--green-tint)':'var(--coral-tint)')}; color:${s.status==='pending'?'var(--ink-dim)':(s.status==='done'?'var(--green)':'var(--coral)')};">${s.status}</span>
+            <button class="icon-btn" title="Remove subject" data-remove="${s.id}">✕</button>
+          </div>
+        </div>
+        <div class="slider-grid" id="grid-${s.id}"></div>
+      </div>
+    `).join('');
+    state.subjects.forEach(s=> buildSliderGrid(document.getElementById('grid-'+s.id), s.id, s));
+    wrap.querySelectorAll('[data-remove]').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        state.subjects = state.subjects.filter(x=>x.id!==btn.dataset.remove);
+        saveState();
+        renderSubjects();
+        renderScoreboard();
+      });
+    });
+  }
+  renderScoreboard();
+  renderMaterialSubjectOptions();
+}
+
+function renderMaterialSubjectOptions(){
+  const sel = document.getElementById('material-subject');
+  if(!sel) return;
+  const prev = sel.value;
+  sel.innerHTML = state.subjects.map(s=>`<option value="${s.id}">${escapeHtml(s.name)}${s.quizBank && s.quizBank.length ? ` (${s.quizBank.length} Qs loaded)` : ''}</option>`).join('');
+  if(prev && state.subjects.some(s=>s.id===prev)) sel.value = prev;
+}
+
+function renderScoreboard(){
+  const board = document.getElementById('scoreboard');
+  if(state.subjects.length===0){
+    board.innerHTML = `<div class="empty" style="color:#7186A0;">No subjects yet</div>`;
+    return;
+  }
+  const ranked = sortedByPriority(state.subjects);
+  const max = Math.max(...ranked.map(priority), 1);
+  board.innerHTML = ranked.map((s,i)=>{
+    const p = priority(s);
+    return `
+      <div class="score-row">
+        <div class="score-rank">${String(i+1).padStart(2,'0')}</div>
+        <div class="score-main">
+          <div class="score-name-row">
+            <span class="score-name">${escapeHtml(s.name)}</span>
+            <span class="status-pill status-${s.status}">${s.status}</span>
+            ${s.quizBank && s.quizBank.length ? `<span style="font-size:10px; color:var(--teal); font-family:var(--font-mono);"><i class="fa-solid fa-list-check"></i> ${s.quizBank.length} Qs</span>` : ''}
+          </div>
+          <div class="score-track"><div class="score-fill" style="width:${(p/max*100).toFixed(0)}%;"></div></div>
+        </div>
+        <div class="score-num">${p.toFixed(1)}<div class="unit">/ 100</div></div>
+      </div>
+    `;
+  }).join('');
+}
+
+function escapeHtml(str){
+  if(!str) return '';
+  const d = document.createElement('div');
+  d.textContent = str;
+  return d.innerHTML;
+}
+
+/* ==================== SCHEDULE GENERATION ==================== */
+const dailyMinInput = document.getElementById('daily-minutes');
+dailyMinInput.addEventListener('input', ()=>{
+  document.getElementById('daily-min-val').textContent = dailyMinInput.value + ' min';
+});
+
+function parseTime(str){
+  const [h,m] = str.split(':').map(Number);
+  return h*60+m;
+}
+function formatTime(mins){
+  mins = ((mins%1440)+1440)%1440;
+  let h = Math.floor(mins/60), m = mins%60;
+  const period = h>=12 ? 'PM':'AM';
+  let h12 = h%12; if(h12===0) h12=12;
+  return `${h12}:${String(m).padStart(2,'0')} ${period}`;
+}
+
+function buildStudyChunks(pending, budget){
+  const totalW = pending.reduce((a,s)=>a+priority(s),0) || 1;
+  let targets = pending.map(s=>{
+    const raw = budget * (priority(s)/totalW);
+    return {s, minutes: Math.max(15, Math.round(raw/5)*5)};
+  });
+  let sum = targets.reduce((a,t)=>a+t.minutes,0);
+  if(sum>budget && sum>0){
+    const scale = budget/sum;
+    targets = targets.map(t=>({s:t.s, minutes: Math.max(15, Math.round((t.minutes*scale)/5)*5)}));
+  }
+  targets.sort((a,b)=>priority(b.s)-priority(a.s));
+  const chunks = [];
+  targets.forEach(t=>{
+    let remaining = t.minutes;
+    const subjChunks = [];
+    while(remaining>0){
+      const len = Math.min(45, remaining);
+      subjChunks.push({type:'study', subject:t.s, minutes:len});
+      remaining -= len;
+    }
+    if(subjChunks.length>1){
+      const last = subjChunks[subjChunks.length-1];
+      const prev = subjChunks[subjChunks.length-2];
+      if(last.minutes<15 && prev.minutes+last.minutes<=60){
+        prev.minutes += last.minutes;
+        subjChunks.pop();
+      }
+    }
+    chunks.push(...subjChunks);
+  });
+  return chunks;
+}
+
+function assembleSchedule(){
+  const dailyMinutes = Number(dailyMinInput.value);
+  const reserveMin = 30;
+  const budget = Math.max(0, dailyMinutes - reserveMin);
+  const pending = state.subjects.filter(s=>s.status!=='done');
+  const chunks = pending.length ? buildStudyChunks(pending, budget) : [];
+
+  const blocks = [];
+  let sinceBreak = 0;
+  chunks.forEach((c, idx)=>{
+    blocks.push(c);
+    sinceBreak += c.minutes;
+    const isLast = idx===chunks.length-1;
+    if(!isLast && sinceBreak>=40){
+      blocks.push({type:'break', minutes:15});
+      sinceBreak = 0;
+    }
+  });
+  blocks.push({type:'revision', minutes:reserveMin, label:'Revision + Practice Quiz Slot'});
+
+  let t = parseTime(document.getElementById('start-time').value || '18:00');
+  blocks.forEach(b=>{
+    b.start = t;
+    t += b.minutes;
+    b.end = t;
+    b.id = 'blk-'+Math.random().toString(36).slice(2,8);
+    if(b.type==='study') b.status='pending';
+  });
+  return blocks;
+}
+
+document.getElementById('gen-schedule').addEventListener('click', ()=>{
+  state.schedule = assembleSchedule();
+  document.getElementById('reschedule-zone').style.display='none';
+  saveState();
+  renderSchedule();
+});
+
+function renderSchedule(){
+  const out = document.getElementById('schedule-output');
+  if(!state.schedule){
+    out.innerHTML = `<div class="empty">No schedule generated yet — set your available minutes and click "Generate schedule".</div>`;
+    return;
+  }
+  if(state.schedule.every(b=>b.type!=='study')){
+    out.innerHTML = `<div class="empty">All subjects are marked done for today! Use the "Next Day" button to begin tomorrow's session.</div>`;
+    return;
+  }
+  out.innerHTML = `<div class="timeline">` + state.schedule.map(b=>{
+    if(b.type==='break'){
+      return `<div class="tblock brk"><div class="trow">
+        <div><div class="tname">Cognitive Break</div></div>
+        <div class="ttime">${formatTime(b.start)} – ${formatTime(b.end)} · ${b.minutes} min</div>
+      </div></div>`;
+    }
+    if(b.type==='revision'){
+      return `<div class="tblock revision"><div class="trow">
+        <div>
+          <div class="tname">${b.label}</div>
+          <div class="tsub">High-priority revision session + instant practice quiz</div>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <div class="ttime">${formatTime(b.start)} – ${formatTime(b.end)} · ${b.minutes} min</div>
+          <button class="btn btn-sm btn-navy" onclick="document.querySelector('button[data-tab=quiz]').click();" title="Jump to quiz player">
+            <i class="fa-solid fa-play"></i> Take Quiz
+          </button>
+        </div>
+      </div></div>`;
+    }
+    const cls = b.status==='missed' ? 'missed' : (b.status==='done' ? 'done' : '');
+    return `<div class="tblock study ${cls}"><div class="trow">
+        <div>
+          <div class="tname">${escapeHtml(b.subject.name)}</div>
+          <div class="tsub">Priority: ${priority(b.subject).toFixed(1)} · ${b.minutes} min block</div>
+        </div>
+        <div style="display:flex; align-items:center; gap:10px;">
+          <div class="ttime">${formatTime(b.start)} – ${formatTime(b.end)}</div>
+          <div class="tactions">
+            <button class="btn btn-sm ${b.status==='done'?'btn-primary':'btn-ghost'}" data-done="${b.id}">✓ Done</button>
+            <button class="btn btn-sm ${b.status==='missed'?'btn-navy':'btn-ghost'}" data-missed="${b.id}" style="${b.status==='missed'?'background:var(--coral);':''}">✕ Missed</button>
+          </div>
+        </div>
+      </div></div>`;
+  }).join('') + `</div>`;
+
+  out.querySelectorAll('[data-done]').forEach(btn=>btn.addEventListener('click', ()=>markBlock(btn.dataset.done,'done')));
+  out.querySelectorAll('[data-missed]').forEach(btn=>btn.addEventListener('click', ()=>markBlock(btn.dataset.missed,'missed')));
+
+  updateRescheduleZone();
+}
+
+function markBlock(blockId, newStatus){
+  const block = state.schedule.find(b=>b.id===blockId);
+  if(!block) return;
+  block.status = block.status===newStatus ? 'pending' : newStatus;
+  block.subject.status = block.status;
+  saveState();
+  renderSchedule();
+  renderScoreboard();
+}
+
+function updateRescheduleZone(){
+  const zone = document.getElementById('reschedule-zone');
+  const missed = state.schedule.filter(b=>b.type==='study' && b.status==='missed');
+  if(missed.length===0){ zone.style.display='none'; return; }
+  zone.style.display='block';
+  document.getElementById('reschedule-note').innerHTML =
+    `<strong>Smart rescheduling:</strong> ${missed.map(m=>escapeHtml(m.subject.name)).join(', ')} will be bumped to the top of tomorrow's list instead of being pushed back untouched — freed time absorbs revision and a new topic.`;
+}
+
+document.getElementById('reschedule-btn').addEventListener('click', ()=>{
+  state.subjects.forEach(s=>{
+    if(s.status==='missed'){
+      s.urgency = Math.min(100, s.urgency+15);
+      s.status = 'pending';
+    } else if(s.status==='done'){
+      s.remaining = Math.max(0, s.remaining-35);
+      s.status = 'pending';
+    }
+  });
+  state.schedule = assembleSchedule();
+  document.getElementById('reschedule-zone').style.display='none';
+  saveState();
+  renderSubjects();
+  renderSchedule();
+});
+
+/* ==================== QUIZ TAB ==================== */
+function renderQuizTab(){
+  const sel = document.getElementById('quiz-subject');
+  const prev = sel.value;
+  sel.innerHTML = state.subjects.map(s=>`<option value="${s.id}">${escapeHtml(s.name)}</option>`).join('');
+  if(prev && state.subjects.some(s=>s.id===prev)) sel.value = prev;
+  renderQuizStatusList();
+  renderGeneratedQuizZone();
+}
+document.getElementById('quiz-subject').addEventListener('change', renderGeneratedQuizZone);
+
+function renderGeneratedQuizZone(){
+  const zone = document.getElementById('generated-quiz-zone');
+  const player = document.getElementById('generated-quiz-player');
+  player.style.display = 'none';
+  player.innerHTML = '';
+  const id = document.getElementById('quiz-subject').value;
+  const s = state.subjects.find(x=>x.id===id);
+  if(!s || !s.quizBank || s.quizBank.length===0){
+    zone.style.display = 'none';
+    return;
+  }
+  zone.style.display = 'block';
+  document.getElementById('generated-quiz-info').innerHTML =
+    `<strong>${s.quizBank.length} auto-generated questions</strong> ready for ${escapeHtml(s.name)}${s.material ? ` from <em>${escapeHtml(s.material.name)}</em>` : ''}.`;
+}
+
+function renderQuizStatusList(){
+  const wrap = document.getElementById('quiz-status-list');
+  if(state.subjects.length===0){ wrap.innerHTML = `<div class="empty">No subjects yet</div>`; return; }
+  wrap.innerHTML = state.subjects.map(s=>{
+    const band = revisionBand(s.lastQuizScore);
+    const bank = s.quizBank && s.quizBank.length ? `<span style="color:var(--teal-dim); font-size:11px; margin-left:8px;">📄 ${s.quizBank.length} generated</span>` : '';
+    return `<div class="weak-item">
+      <span>${escapeHtml(s.name)}${bank}</span>
+      ${band ? `<span class="tag ${band.tag}">${s.lastQuizScore}% · ${band.label}</span>` : `<span style="color:var(--ink-dim); font-size:12px;">no quiz yet</span>`}
+    </div>`;
+  }).join('');
+}
+
+function applyQuizResult(s, correct, total){
+  const score = Math.round((correct/total)*100);
+  s.lastQuizScore = score;
+  s.weakness = score>80 ? 20 : (score>=60 ? 50 : 80);
+  saveState();
+  return score;
+}
+
+document.getElementById('submit-quiz').addEventListener('click', ()=>{
+  const id = document.getElementById('quiz-subject').value;
+  const total = Math.max(1, Number(document.getElementById('quiz-total').value));
+  const correct = Math.min(total, Math.max(0, Number(document.getElementById('quiz-correct').value)));
+  const s = state.subjects.find(x=>x.id===id);
+  if(!s) return;
+  const score = applyQuizResult(s, correct, total);
+  const band = revisionBand(score);
+  document.getElementById('quiz-result').innerHTML = `
+    <div class="callout">
+      <strong>${escapeHtml(s.name)}</strong> — ${correct}/${total} correct = <span class="mono">${score}%</span><br>
+      Revision priority set to <span class="tag ${band.tag}">${band.label}</span> · weakness score updated to ${s.weakness}
+    </div>`;
+  renderQuizStatusList();
+  renderGeneratedQuizZone();
+  renderScoreboard();
+});
+
+/* ---- generated quiz player ---- */
+let quizPlay = null;
+
+document.getElementById('start-generated-quiz').addEventListener('click', ()=>{
+  const id = document.getElementById('quiz-subject').value;
+  const s = state.subjects.find(x=>x.id===id);
+  if(!s || !s.quizBank || !s.quizBank.length) return;
+  quizPlay = {subjectId:id, index:0, correct:0, questions:s.quizBank};
+  document.getElementById('generated-quiz-zone').style.display='none';
+  document.getElementById('quiz-result').innerHTML='';
+  renderQuizPlayer();
+});
+
+function renderQuizPlayer(){
+  const wrap = document.getElementById('generated-quiz-player');
+  wrap.style.display = 'block';
+  const {questions, index} = quizPlay;
+
+  if(index >= questions.length){
+    const s = state.subjects.find(x=>x.id===quizPlay.subjectId);
+    const score = applyQuizResult(s, quizPlay.correct, questions.length);
+    const band = revisionBand(score);
+    wrap.innerHTML = `
+      <div class="callout">
+        <strong>Quiz complete —</strong> ${quizPlay.correct}/${questions.length} correct = <span class="mono">${score}%</span><br>
+        Revision priority set to <span class="tag ${band.tag}">${band.label}</span> · weakness score updated to ${s.weakness}
+      </div>`;
+    quizPlay = null;
+    renderQuizStatusList();
+    renderScoreboard();
+    return;
+  }
+
+  const q = questions[index];
+  wrap.innerHTML = `
+    <div class="card">
+      <div class="eyebrow">Question ${index+1} of ${questions.length}</div>
+      <div style="font-weight:600; font-size:14.5px; margin:8px 0 14px 0; line-height:1.5;">${escapeHtml(q.question)}</div>
+      <div id="quiz-opts" style="display:flex; flex-direction:column; gap:8px;"></div>
+    </div>`;
+  const optsWrap = wrap.querySelector('#quiz-opts');
+  q.options.forEach((opt)=>{
+    const b = document.createElement('button');
+    b.className = 'btn btn-ghost';
+    b.style.textAlign = 'left';
+    b.style.justifyContent = 'flex-start';
+    b.textContent = opt;
+    b.addEventListener('click', ()=>{
+      if(opt.toLowerCase() === q.answer.toLowerCase()) quizPlay.correct++;
+      quizPlay.index++;
+      renderQuizPlayer();
+    });
+    optsWrap.appendChild(b);
+  });
+}
+
+/* ==================== MULTI-SUBJECT MATERIAL INGESTION & AUTO QUIZ ==================== */
+if(window.pdfjsLib){
+  pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+}
+
+document.getElementById('material-count').addEventListener('input', (e)=>{
+  document.getElementById('material-count-val').textContent = e.target.value;
+});
+
+const dropzone = document.getElementById('dropzone');
+const fileInput = document.getElementById('material-file');
+const dzText = document.getElementById('dropzone-text');
+const dzFilename = document.getElementById('dropzone-filename');
+
+function showChosenFiles(files){
+  if(!files || !files.length){
+    dzText.style.display = 'block';
+    dzFilename.style.display = 'none';
+    return;
+  }
+  dzText.style.display = 'none';
+  dzFilename.style.display = 'block';
+  dzFilename.innerHTML = Array.from(files).map(f=>`📄 ${escapeHtml(f.name)}`).join(', ') + 
+    ` <span class="clear-file" id="clear-file">clear</span>`;
+  document.getElementById('clear-file').addEventListener('click', (e)=>{
+    e.stopPropagation();
+    fileInput.value = '';
+    showChosenFiles(null);
+  });
+}
+
+dropzone.addEventListener('click', ()=> fileInput.click());
+dropzone.addEventListener('keydown', (e)=>{
+  if(e.key==='Enter' || e.key===' '){ e.preventDefault(); fileInput.click(); }
+});
+fileInput.addEventListener('change', ()=> showChosenFiles(fileInput.files));
+
+['dragenter','dragover'].forEach(evt=>{
+  dropzone.addEventListener(evt, (e)=>{
+    e.preventDefault(); e.stopPropagation();
+    dropzone.classList.add('drag-over');
+  });
+});
+['dragleave','drop'].forEach(evt=>{
+  dropzone.addEventListener(evt, (e)=>{
+    e.preventDefault(); e.stopPropagation();
+    dropzone.classList.remove('drag-over');
+  });
+});
+dropzone.addEventListener('drop', (e)=>{
+  const dropped = e.dataTransfer.files;
+  if(dropped && dropped.length){
+    fileInput.files = dropped;
+    showChosenFiles(dropped);
+  }
+});
+
+async function extractPdfText(file){
+  const buf = await file.arrayBuffer();
+  const pdf = await pdfjsLib.getDocument({data:buf}).promise;
+  let text = '';
+  for(let i=1;i<=pdf.numPages;i++){
+    const page = await pdf.getPage(i);
+    const content = await page.getTextContent();
+    text += content.items.map(it=>it.str).join(' ') + '\n';
+  }
+  return text;
+}
+
+const STOPWORDS = new Set(['the','and','that','with','from','this','have','has','were','are','was','for','which','their','there','these','those','into','also','such','than','then','when','where','while','about','after','before','because','during','over','under','between','being','been','they','them','your','you','not','but','can','will','would','could','should','may','might','must','its','only','more','most','some','each','other','both','same','very','just','into','upon','however','therefore','thus','without','within']);
+
+function extractKeywords(text){
+  const words = text.match(/[A-Za-z][A-Za-z\-]{3,}/g) || [];
+  const freq = {};
+  words.forEach(w=>{
+    const lw = w.toLowerCase();
+    if(STOPWORDS.has(lw)) return;
+    freq[lw] = (freq[lw]||0)+1;
+  });
+  return Object.entries(freq).sort((a,b)=>b[1]-a[1]).map(e=>e[0]);
+}
+
+function shuffle(arr){
+  const a = [...arr];
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+function generateQuizFromText(text, count){
+  const clean = text.replace(/\s+/g,' ').trim();
+  const sentences = clean.split(/(?<=[.?!])\s+/).map(s=>s.trim()).filter(s=>{
+    const wc = s.split(' ').length;
+    return wc>=8 && wc<=32 && /[a-zA-Z]{3,}/.test(s);
+  });
+  const keywords = extractKeywords(clean).slice(0,60);
+  const used = new Set();
+  const questions = [];
+
+  for(const s of sentences){
+    if(questions.length >= count) break;
+    let chosen = null, matchedText = null;
+    for(const kw of keywords){
+      if(used.has(kw)) continue;
+      const re = new RegExp('\\b'+kw.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'\\b','i');
+      const m = s.match(re);
+      if(m){ chosen = kw; matchedText = m[0]; break; }
+    }
+    if(!chosen) continue;
+    used.add(chosen);
+    const re = new RegExp('\\b'+chosen.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'\\b','i');
+    const blanked = s.replace(re, '_____');
+    const distractorPool = keywords.filter(k=>k!==chosen && k.length>2);
+    const distractors = shuffle(distractorPool).slice(0,3);
+    if(distractors.length < 3) continue;
+    const options = shuffle([matchedText, ...distractors]);
+    questions.push({question: blanked, answer: matchedText, options});
+  }
+  return questions;
+}
+
+document.getElementById('material-generate').addEventListener('click', async ()=>{
+  const status = document.getElementById('material-status');
+  const subjId = document.getElementById('material-subject').value;
+  const s = state.subjects.find(x=>x.id===subjId);
+  if(!s){ status.innerHTML = `<div class="callout" style="background:var(--coral-tint); border-color:#F0B9A3; color:#7A2E12;">Add a subject first.</div>`; return; }
+
+  const pasteText = document.getElementById('material-paste').value.trim();
+  const count = Number(document.getElementById('material-count').value);
+  const files = fileInput.files;
+
+  if((!files || !files.length) && !pasteText){
+    status.innerHTML = `<div class="callout" style="background:var(--coral-tint); border-color:#F0B9A3; color:#7A2E12;">Upload a PDF/text file or paste some text first.</div>`;
+    return;
+  }
+
+  status.innerHTML = `<div class="callout">Reading and ingesting material…</div>`;
+  try{
+    let combinedText = '';
+    let names = [];
+    if(files && files.length){
+      for(let i=0; i<files.length; i++){
+        const file = files[i];
+        names.push(file.name);
+        if(file.name.toLowerCase().endsWith('.pdf')){
+          combinedText += (await extractPdfText(file)) + '\n';
+        } else {
+          combinedText += (await file.text()) + '\n';
+        }
+      }
+    }
+    if(pasteText) combinedText = (combinedText ? combinedText + '\n' : '') + pasteText;
+
+    const wordCount = (combinedText.match(/\S+/g) || []).length;
+    if(wordCount < 40){
+      status.innerHTML = `<div class="callout" style="background:var(--coral-tint); border-color:#F0B9A3; color:#7A2E12;">That material's too short to build a reliable quiz from — try a longer excerpt.</div>`;
+      return;
+    }
+
+    const questions = generateQuizFromText(combinedText, count);
+    if(questions.length === 0){
+      status.innerHTML = `<div class="callout" style="background:var(--amber-tint); border-color:#EAD29B; color:#5C4400;">Couldn't extract clean questions from that text — try material with more complete sentences and distinct terminology.</div>`;
+      return;
+    }
+
+    s.quizBank = questions;
+    s.material = {name: names.length ? names.join(', ') : 'Pasted text', wordCount};
+    saveState();
+
+    status.innerHTML = `<div class="callout">
+      <strong>Generated ${questions.length} question${questions.length===1?'':'s'}</strong> for <strong>${escapeHtml(s.name)}</strong> from <em>${escapeHtml(s.material.name)}</em> (~${wordCount} words).<br>
+      Saved to persistent storage for today's session and future revisions.
+    </div>`;
+    renderSubjects();
+    renderQuizStatusList();
+    fileInput.value = '';
+    showChosenFiles(null);
+    document.getElementById('material-paste').value = '';
+  } catch(err){
+    status.innerHTML = `<div class="callout" style="background:var(--coral-tint); border-color:#F0B9A3; color:#7A2E12;">Couldn't read that file (${escapeHtml(err.message || String(err))}). If it's a scanned/image-only PDF try pasting text directly.</div>`;
+  }
+});
+
+/* ==================== DASHBOARD & HISTORY ==================== */
+function renderDashboard(){
+  const studyMinutes = state.schedule ? state.schedule.filter(b=>b.type==='study').reduce((a,b)=>a+b.minutes,0) : 0;
+  const done = state.subjects.filter(s=>s.status==='done').length;
+  const missed = state.subjects.filter(s=>s.status==='missed').length;
+  const weak = state.subjects.filter(s=>s.weakness>=50);
+
+  document.getElementById('stat-grid').innerHTML = `
+    <div class="stat"><div class="stat-label">Study time planned</div><div class="stat-val">${studyMinutes}<span class="of">min</span></div></div>
+    <div class="stat"><div class="stat-label">Completed</div><div class="stat-val">${done}<span class="of">/ ${state.subjects.length}</span></div></div>
+    <div class="stat"><div class="stat-label">Days Logged</div><div class="stat-val">${state.history.length + 1}<span class="of">days</span></div></div>
+    <div class="stat"><div class="stat-label">Weak topics</div><div class="stat-val">${weak.length}<span class="of">flagged</span></div></div>
+  `;
+
+  const ranked = sortedByPriority(state.subjects);
+  const max = Math.max(...ranked.map(priority), 1);
+  document.getElementById('dash-bars').innerHTML = ranked.length ? ranked.map(s=>`
+    <div class="bar-row">
+      <div class="bar-label">${escapeHtml(s.name)}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${(priority(s)/max*100).toFixed(0)}%;"></div></div>
+      <div class="bar-val mono">${priority(s).toFixed(1)}</div>
+    </div>
+  `).join('') : `<div class="empty">No subjects yet</div>`;
+
+  document.getElementById('dash-weak').innerHTML = weak.length ? weak.sort((a,b)=>b.weakness-a.weakness).map(s=>{
+    const band = revisionBand(s.lastQuizScore) || {label: s.weakness>=70?'High':'Medium', tag: s.weakness>=70?'tag-hi':'tag-med'};
+    return `<div class="weak-item"><span>${escapeHtml(s.name)}</span><span class="tag ${band.tag}">${band.label}</span></div>`;
+  }).join('') : `<div class="empty">No weak topics right now 🎉</div>`;
+
+  // Render History List
+  const histList = document.getElementById('history-list');
+  if(!histList) return;
+  if(!state.history || !state.history.length){
+    histList.innerHTML = `<div class="empty">No past sessions logged yet. Complete today's schedule and click "Next Day" to archive your sessions.</div>`;
+    return;
+  }
+  histList.innerHTML = state.history.map(h=>`
+    <div class="history-card">
+      <div class="history-header">
+        <span><strong>Day ${h.dayNumber} Session</strong> &bull; ${escapeHtml(h.date)}</span>
+        <span class="tag ${h.avgScore >= 75 ? 'tag-lo' : (h.avgScore >= 60 ? 'tag-med' : 'tag-hi')}">Avg: ${h.avgScore}%</span>
+      </div>
+      <div class="history-meta">
+        <span><i class="fa-solid fa-clock"></i> ${h.studyMinutes} mins studied</span>
+        <span><i class="fa-solid fa-check-double"></i> ${h.quizzesTaken} quiz session${h.quizzesTaken === 1 ? '' : 's'}</span>
+        <span><i class="fa-solid fa-book"></i> ${escapeHtml(h.subjectsCompleted ? h.subjectsCompleted.join(', ') : 'General study')}</span>
+      </div>
+      ${h.note ? `<div style="font-size:12px; color:var(--ink-dim); margin-top:6px; font-style:italic;">${escapeHtml(h.note)}</div>` : ''}
+    </div>
+  `).join('');
+}
+
+/* ==================== INIT ==================== */
+loadState();
+updateDayDisplay();
+renderSubjects();
+</script>
+</body>
+</html>
