@@ -69,20 +69,33 @@ const DEFAULT_CERTIFICATES = [
   {
     id: "cert-hp-cybersecurity",
     title: "Introduction to Cybersecurity Awareness",
-    issuer: "HP LIFE",
+    issuer: "HP LIFE / HP Foundation",
     category: "hp",
-    date: "Completed",
+    date: "March 24, 2026",
     link: "https://www.life-global.org/",
-    desc: "Comprehensive training on digital security, authentication systems, mitigating cyber threats, network defense principles, and secure coding practices."
+    code: "3c9d2534-25a0-41f9-86c8-7f69033873ec",
+    image: "assets/images/certificates/hp-cybersecurity.jpg",
+    desc: "Verified HP LIFE certification in cybersecurity awareness, fundamental threat models, data protection principles, credential hygiene, and digital risk mitigation (Certificate serial: 3c9d2534-25a0-41f9-86c8-7f69033873ec)."
   },
   {
-    id: "cert-madurai-symposium",
-    title: "National Level Technical Symposium Participation",
+    id: "cert-synkronix-prompt-clash",
+    title: "SYNKRONIX'26 — Prompt Clash (Tech Event)",
     issuer: "Anna University Regional Campus Madurai",
     category: "symposium",
-    date: "Certified",
+    date: "SYNKRONIX '26",
     link: "https://www.annauniv.edu/",
-    desc: "Participated in the university-level technical symposium, showcasing technical acumen, competitive problem solving, and engaging in collaborative tech workshops."
+    image: "assets/images/certificates/synkronix-prompt-clash.jpg",
+    desc: "National Level Technical Symposium Certificate of Participation for PROMPT CLASH (Tech Event) organized by the Department of Computer Science and Engineering & CSE (AI & ML), Anna University Regional Campus, Madurai."
+  },
+  {
+    id: "cert-synkronix-mission-impossible",
+    title: "SYNKRONIX'26 — Mission Impossible (Non-Tech Event)",
+    issuer: "Anna University Regional Campus Madurai",
+    category: "symposium",
+    date: "SYNKRONIX '26",
+    link: "https://www.annauniv.edu/",
+    image: "assets/images/certificates/synkronix-mission-impossible.jpg",
+    desc: "National Level Technical Symposium Certificate of Participation for MISSION IMPOSSIBLE (Non-Tech Event) organized by the Department of Computer Science and Engineering & CSE (AI & ML), Anna University Regional Campus, Madurai."
   }
 ];
 
@@ -131,11 +144,13 @@ const PROJECT_DETAILS = {
     icon: "fa-satellite",
     category: "Smart India Hackathon & AI/ML",
     body: `
-      <div class="callout" style="background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.35); border-radius: 10px; padding: 14px 16px; margin-bottom: 20px;">
-        <strong style="color: #fbbf24;"><i class="fa-solid fa-flask"></i> Prototype uses synthetic sample data</strong>
-        <p style="margin: 4px 0 12px 0; font-size: 0.85rem; color: var(--text-dim);">The dashboard demonstrates the ML workflow and scenario analysis; its scores are illustrative and not confirmed deposits or real production estimates.</p>
+      <div class="callout" style="background: rgba(34,211,238,0.12); border: 1px solid rgba(34,211,238,0.4); border-radius: 10px; padding: 14px 16px; margin-bottom: 20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+        <div>
+          <strong style="color: #22d3ee; font-size: 1rem;"><i class="fa-solid fa-satellite"></i> Live Working Prototype Integrated!</strong>
+          <p style="margin: 4px 0 0 0; font-size: 0.85rem; color: var(--text-dim);">Explore the interactive CartoDB geospatial prospectivity map, target explainability, what-if supply scenario simulator, and AI strategic recommendations.</p>
+        </div>
         <a href="manganese-prototype.html" target="_blank" rel="noopener noreferrer" class="btn-primary-sm" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none;">
-          <i class="fa-solid fa-play"></i> Open Prototype Demo
+          <i class="fa-solid fa-play"></i> Launch Prototype
         </a>
       </div>
 
@@ -437,7 +452,7 @@ function getStoredCertificates() {
     try {
       const stored = JSON.parse(raw);
       // Ensure verified images, codes, and scores are updated for default records
-      return stored.map(c => {
+      const updated = stored.map(c => {
         const def = DEFAULT_CERTIFICATES.find(d => d.id === c.id);
         if (def) {
           return {
@@ -452,6 +467,14 @@ function getStoredCertificates() {
         }
         return c;
       });
+      // Ensure newly added defaults are included
+      DEFAULT_CERTIFICATES.forEach(def => {
+        if (!updated.some(c => c.id === def.id)) {
+          updated.push({ ...def });
+        }
+      });
+      // Filter out old unverified placeholders if replaced
+      return updated.filter(c => c.id !== "cert-madurai-symposium");
     } catch (e) {
       console.error("Error parsing stored certificates", e);
     }

@@ -3,223 +3,2323 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="MANGANEX prototype demo and local setup guide. The prototype uses synthetic sample data.">
-  <title>MANGANEX | Prototype Demo</title>
+  <title>MANGANEX — AI/ML Geospatial Manganese Prospectivity & Supply Risk Platform</title>
+  <meta name="description" content="Smart India Hackathon (SIH) prototype: Space Technology & AI/ML enabled Manganese Reserve Identification, Prospectivity Heatmap, and Production Shortfall Prediction System.">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+
   <style>
     :root {
-      color-scheme: dark;
-      font-family: "Segoe UI", Arial, sans-serif;
-      background: #080d18;
-      color: #e8edf7;
-      font-synthesis: none;
-      text-rendering: optimizeLegibility;
-      --muted: #a8b3c7;
-      --line: rgba(255, 255, 255, 0.12);
-      --panel: rgba(17, 26, 44, 0.88);
-      --cyan: #62e6e0;
-      --amber: #f6c667;
+      --bg-deep: #050a12;
+      --bg-card: #0c1626;
+      --bg-card-sub: #101c30;
+      --bg-card-hover: #15243d;
+      --border: #1a2c47;
+      --border-bright: #29446d;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --signal-cyan: #38bdf8;
+      --signal-cyan-glow: rgba(56, 189, 248, 0.25);
+      --emerald: #34d399;
+      --emerald-glow: rgba(52, 211, 153, 0.2);
+      --amber: #fbbf24;
+      --amber-glow: rgba(251, 191, 36, 0.2);
+      --coral: #f87171;
+      --coral-glow: rgba(248, 113, 113, 0.2);
+      --font-display: 'Outfit', sans-serif;
+      --font-body: 'Plus Jakarta Sans', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
     }
 
-    * { box-sizing: border-box; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      margin: 0;
-      min-width: 320px;
-      background:
-        radial-gradient(ellipse at 15% 0%, rgba(27, 112, 129, 0.2), transparent 42rem),
-        radial-gradient(ellipse at 90% 12%, rgba(120, 75, 165, 0.16), transparent 38rem),
-        #080d18;
-      line-height: 1.6;
+      background-color: var(--bg-deep);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      line-height: 1.5;
+      background-image:
+        radial-gradient(circle at 10% 15%, rgba(56, 189, 248, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 90% 75%, rgba(52, 211, 153, 0.06) 0%, transparent 40%),
+        linear-gradient(rgba(26, 44, 71, 0.12) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(26, 44, 71, 0.12) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 32px 32px, 32px 32px;
+      overflow-x: hidden;
     }
 
-    a { color: var(--cyan); }
+    /* Ambient Header */
+    .app-header {
+      background: rgba(12, 22, 38, 0.88);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
 
-    .page { width: min(1080px, calc(100% - 32px)); margin: 0 auto; }
-
-    header {
+    .header-inner {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 12px 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 16px;
-      padding: 24px 0;
-      border-bottom: 1px solid var(--line);
+      flex-wrap: wrap;
     }
 
-    .brand { color: #fff; font-size: 1.05rem; font-weight: 800; letter-spacing: 0.12em; text-decoration: none; }
-    .back-link { color: var(--muted); font-size: 0.9rem; text-decoration: none; }
-    .back-link:hover { color: #fff; }
-
-    main { padding: 56px 0 72px; }
-    .eyebrow { color: var(--cyan); font-size: 0.78rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; }
-    h1 { margin: 12px 0; color: #fff; font-size: clamp(2.2rem, 6vw, 4rem); line-height: 1.08; }
-    h2 { margin: 0 0 10px; color: #fff; font-size: 1.35rem; }
-    p { color: var(--muted); }
-    .intro { max-width: 760px; margin: 0 0 24px; font-size: 1.08rem; }
-
-    .notice {
+    .brand-section {
       display: flex;
-      align-items: flex-start;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-logo {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #0284c7, #38bdf8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #050a12;
+      font-size: 1.3rem;
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.4);
+    }
+
+    .brand-titles h1 {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .badge-sih {
+      font-size: 0.68rem;
+      padding: 2px 7px;
+      border-radius: 4px;
+      background: rgba(251, 191, 36, 0.15);
+      border: 1px solid rgba(251, 191, 36, 0.4);
+      color: var(--amber);
+      font-family: var(--font-mono);
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+
+    .brand-titles p {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    /* Region Selector Pills */
+    .region-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(16, 28, 48, 0.7);
+      padding: 4px 6px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    .region-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 6px 12px;
+      font-size: 0.8rem;
+      font-family: var(--font-body);
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .region-btn:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .region-btn.active {
+      background: var(--signal-cyan);
+      color: #050a12;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.35);
+    }
+
+    /* Nav Actions */
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-portfolio-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-main);
+      font-size: 0.82rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .btn-portfolio-back:hover {
+      background: rgba(56, 189, 248, 0.12);
+      border-color: var(--signal-cyan);
+      color: var(--signal-cyan);
+    }
+
+    /* Primary Tab Switcher Bar */
+    .app-tabs-bar {
+      background: rgba(10, 18, 32, 0.95);
+      border-bottom: 1px solid var(--border);
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .app-tabs-bar::-webkit-scrollbar { display: none; }
+
+    .tabs-inner {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      gap: 8px;
+    }
+
+    .app-tab-btn {
+      background: transparent;
+      border: none;
+      border-bottom: 3px solid transparent;
+      color: var(--text-muted);
+      padding: 13px 16px;
+      font-size: 0.86rem;
+      font-weight: 600;
+      font-family: var(--font-display);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+
+    .app-tab-btn:hover {
+      color: #fff;
+    }
+
+    .app-tab-btn.active {
+      color: var(--signal-cyan);
+      border-bottom-color: var(--signal-cyan);
+    }
+
+    /* Main Container */
+    .main-viewport {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 24px 20px 80px;
+    }
+
+    /* Tab Panes */
+    .tab-pane {
+      display: none;
+      animation: fadeIn 0.3s ease forwards;
+    }
+
+    .tab-pane.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Disclaimer Callout Banner */
+    .banner-disclaimer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      background: rgba(251, 191, 36, 0.08);
+      border: 1px solid rgba(251, 191, 36, 0.28);
+      border-radius: 10px;
+      padding: 12px 18px;
+      margin-bottom: 22px;
+      font-size: 0.83rem;
+      color: #fde68a;
+    }
+
+    .banner-disclaimer-left {
+      display: flex;
+      align-items: center;
       gap: 12px;
-      margin: 28px 0;
-      padding: 16px 18px;
-      border: 1px solid rgba(246, 198, 103, 0.38);
-      border-radius: 12px;
-      background: rgba(246, 198, 103, 0.08);
+    }
+
+    .banner-disclaimer-left i {
+      font-size: 1.2rem;
       color: var(--amber);
     }
-    .notice p { margin: 0; color: #e4d8bc; }
 
-    .panel {
-      margin-top: 24px;
-      padding: clamp(20px, 4vw, 32px);
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      background: var(--panel);
-      box-shadow: 0 22px 70px rgba(0, 0, 0, 0.28);
+    /* Cards & Panels */
+    .panel-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .panel-title {
+      font-family: var(--font-display);
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .panel-subtitle {
+      font-size: 0.76rem;
+      color: var(--text-dim);
+      font-family: var(--font-mono);
+    }
+
+    /* Grid Layouts */
+    .layout-split {
+      display: grid;
+      grid-template-columns: 1.7fr 1.3fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 1080px) {
+      .layout-split { grid-template-columns: 1fr; }
+    }
+
+    /* Map Box */
+    .map-container-wrap {
+      height: 580px;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border-bright);
+      position: relative;
+    }
+
+    #explorationMap {
+      width: 100%;
+      height: 100%;
+      background: #060b13;
+    }
+
+    .map-overlay-hud {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      z-index: 500;
+      background: rgba(12, 22, 38, 0.92);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      pointer-events: auto;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    }
+
+    .map-legend-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 5px;
+    }
+
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    /* Target Details Panel */
+    .target-report-box {
+      background: var(--bg-card-sub);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+      margin-bottom: 18px;
+    }
+
+    .target-top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .target-id-badge {
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--signal-cyan);
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      padding: 4px 10px;
+      border-radius: 6px;
+    }
+
+    .priority-pill {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 4px 9px;
+      border-radius: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .priority-high { background: rgba(248, 113, 113, 0.18); color: var(--coral); border: 1px solid rgba(248, 113, 113, 0.4); }
+    .priority-medium { background: rgba(251, 191, 36, 0.18); color: var(--amber); border: 1px solid rgba(251, 191, 36, 0.4); }
+    .priority-low { background: rgba(52, 211, 153, 0.18); color: var(--emerald); border: 1px solid rgba(52, 211, 153, 0.4); }
+
+    .target-kpis-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .kpi-mini-card {
+      background: rgba(5, 10, 18, 0.6);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+    }
+
+    .kpi-mini-label {
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .kpi-mini-val {
+      font-size: 1.2rem;
+      font-weight: 800;
+      font-family: var(--font-display);
+      color: #fff;
+      margin-top: 2px;
+    }
+
+    /* Environmental Parameter Rows */
+    .param-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 7px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 0.8rem;
+    }
+
+    .param-label { color: var(--text-muted); }
+    .param-val { font-family: var(--font-mono); color: #fff; font-weight: 600; }
+
+    /* Shapley XAI Bars */
+    .xai-section {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+    }
+
+    .xai-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--signal-cyan);
+      margin-bottom: 10px;
+      letter-spacing: 0.05em;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .shapley-bar-row {
+      margin-bottom: 8px;
+    }
+
+    .shapley-bar-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-bottom: 3px;
+    }
+
+    .shapley-track {
+      height: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .shapley-fill {
+      height: 100%;
+      border-radius: 3px;
+      background: linear-gradient(90deg, #0284c7, var(--signal-cyan));
+    }
+
+    /* Targets Table */
+    .targets-table-wrap {
+      max-height: 240px;
+      overflow-y: auto;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+
+    .targets-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.78rem;
+    }
+
+    .targets-table th {
+      background: rgba(16, 28, 48, 0.9);
+      padding: 8px 12px;
+      text-align: left;
+      font-weight: 600;
+      color: var(--text-dim);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+    }
+
+    .targets-table td {
+      padding: 9px 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      color: var(--text-muted);
+    }
+
+    .targets-table tr {
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+
+    .targets-table tr:hover {
+      background: var(--bg-card-hover);
+    }
+
+    .targets-table tr.selected {
+      background: rgba(56, 189, 248, 0.14);
+    }
+
+    .targets-table tr.selected td {
+      color: #fff;
+    }
+
+    /* Live Spectral Lab Predictor */
+    .spectral-lab-box {
+      margin-top: 20px;
+      background: rgba(16, 28, 48, 0.5);
+      border: 1px solid var(--border-bright);
+      border-radius: 10px;
+      padding: 16px;
+    }
+
+    .spectral-slider-group {
+      margin-bottom: 12px;
+    }
+
+    .slider-label-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      margin-bottom: 4px;
+    }
+
+    .slider-name { color: var(--text-muted); }
+    .slider-val { font-family: var(--font-mono); color: var(--signal-cyan); font-weight: 700; }
+
+    input[type=range] {
+      width: 100%;
+      height: 6px;
+      accent-color: var(--signal-cyan);
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    /* KPI Cards Row */
+    .kpis-banner-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    @media (max-width: 900px) {
+      .kpis-banner-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 540px) {
+      .kpis-banner-grid { grid-template-columns: 1fr; }
+    }
+
+    .kpi-main-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .kpi-main-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--signal-cyan);
+    }
+
+    .kpi-card-amber::before { background: var(--amber); }
+    .kpi-card-coral::before { background: var(--coral); }
+    .kpi-card-emerald::before { background: var(--emerald); }
+
+    .kpi-card-title {
+      font-size: 0.74rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 600;
+    }
+
+    .kpi-card-val {
+      font-family: var(--font-display);
+      font-size: 1.7rem;
+      font-weight: 800;
+      color: #fff;
+      margin: 4px 0 2px;
+    }
+
+    .kpi-card-sub {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* Charts */
+    .chart-box {
+      width: 100%;
+      height: 360px;
+      position: relative;
+    }
+
+    /* Simulator Panel */
+    .preset-pill-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .btn-preset {
+      background: rgba(16, 28, 48, 0.8);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 0.76rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-preset:hover {
+      border-color: var(--signal-cyan);
+      color: #fff;
+    }
+
+    .btn-preset.active {
+      background: rgba(56, 189, 248, 0.16);
+      border-color: var(--signal-cyan);
+      color: var(--signal-cyan);
+    }
+
+    /* Recommendations Cards */
+    .recs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 16px;
+    }
+
+    .rec-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .rec-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--border-bright);
+    }
+
+    .rec-card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .rec-card-body h4 {
+      font-family: var(--font-display);
+      font-size: 0.98rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+
+    .rec-card-body p {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .rec-card-footer {
+      margin-top: 14px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.74rem;
+      color: var(--text-dim);
+    }
+
+    /* Pipeline Flow */
+    .pipeline-step-flow {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      margin: 18px 0;
+    }
+
+    .pipeline-node {
+      background: var(--bg-card-sub);
+      border: 1px solid var(--border);
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      font-family: var(--font-mono);
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .pipeline-arrow {
+      color: var(--signal-cyan);
+      font-size: 0.85rem;
+    }
+
+    /* Video Walkthrough Box */
+    .video-wrap {
+      background: #000;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.5);
     }
 
     video {
-      display: block;
       width: 100%;
-      max-height: 620px;
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      background: #03060b;
+      max-height: 580px;
+      display: block;
     }
-    .video-note { margin-bottom: 0; font-size: 0.88rem; }
-    .video-error { color: var(--amber); }
 
-    .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px; }
-    .button {
+    .btn-action-primary {
       display: inline-flex;
       align-items: center;
-      justify-content: center;
-      min-height: 44px;
-      padding: 10px 16px;
-      border: 1px solid rgba(98, 230, 224, 0.42);
-      border-radius: 9px;
-      background: rgba(98, 230, 224, 0.1);
-      color: #dffffd;
+      gap: 8px;
+      background: var(--signal-cyan);
+      color: #050a12;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 0.86rem;
       font-weight: 700;
+      cursor: pointer;
       text-decoration: none;
+      transition: all 0.2s ease;
     }
-    .button:hover { background: rgba(98, 230, 224, 0.18); }
 
-    .feature-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 18px; }
-    .feature {
-      padding: 16px;
-      border: 1px solid var(--line);
-      border-radius: 11px;
-      background: rgba(255, 255, 255, 0.025);
+    .btn-action-primary:hover {
+      background: #7dd3fc;
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.4);
     }
-    .feature h3 { margin: 0 0 4px; color: #fff; font-size: 1rem; }
-    .feature p { margin: 0; font-size: 0.9rem; }
 
-    ol { padding-left: 22px; color: var(--muted); }
-    li { padding-left: 4px; margin: 7px 0; }
-    .setup-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-top: 18px; }
-    .setup-step { min-width: 0; padding: 18px; border: 1px solid var(--line); border-radius: 12px; }
-    .setup-step h3 { margin: 0 0 8px; color: #fff; font-size: 1rem; }
-    pre {
-      overflow-x: auto;
-      margin: 12px 0 0;
-      padding: 14px;
-      border: 1px solid var(--line);
-      border-radius: 9px;
-      background: #060a12;
-      color: #c9f5f1;
-      font-size: 0.82rem;
-      line-height: 1.7;
-      white-space: pre;
+    .btn-action-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      color: var(--text-main);
+      border: 1px solid var(--border-bright);
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 0.86rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s ease;
     }
-    .small { font-size: 0.88rem; }
 
-    @media (max-width: 680px) {
-      header { align-items: flex-start; flex-direction: column; }
-      main { padding-top: 38px; }
-      .feature-grid, .setup-grid { grid-template-columns: 1fr; }
+    .btn-action-outline:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: #fff;
     }
   </style>
 </head>
 <body>
-  <div class="page">
-    <header>
-      <a class="brand" href="index.html#stage-4">MANGANEX</a>
-      <a class="back-link" href="index.html#stage-4">&larr; Back to portfolio projects</a>
-    </header>
 
-    <main>
-      <span class="eyebrow">Smart India Hackathon prototype</span>
-      <h1>Explore MANGANEX</h1>
-      <p class="intro">A demonstration dashboard for manganese prospectivity screening and production planning, combining geospatial features, machine-learning workflows, and interactive scenario analysis.</p>
-
-      <aside class="notice" aria-label="Prototype data disclaimer">
-        <span aria-hidden="true">&#9888;</span>
-        <p><strong>Sample data only.</strong> Exploration and production values are synthetic. The map scores do not represent confirmed deposits, and forecasts are not real production estimates or validated mining advice.</p>
-      </aside>
-
-      <section class="panel" aria-labelledby="recording-title">
-        <h2 id="recording-title">Prototype walkthrough</h2>
-        <video id="demoVideo" controls preload="none" aria-label="MANGANEX prototype walkthrough video">
-          <source src="Manganex-01%20Demo.mp4" type="video/mp4">
-          Your browser does not support the video element. Use the download link below to view the recording.
-        </video>
-        <p id="videoError" class="video-note video-error" role="status" hidden>The recording could not be loaded. If this page is hosted on GitHub Pages, see the note below about the video file size.</p>
-        <p class="video-note">The recording file is larger than GitHub's 100 MB per-file limit. For a hosted portfolio, publish it with Git LFS or a separate video host and update the video source URL.</p>
-        <div class="actions">
-          <a class="button" href="manganex-1.zip" download>Download MANGANEX source</a>
-          <a class="button" href="Manganex-01%20Demo.mp4" download>Download demo recording</a>
+  <!-- App Header -->
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="brand-section">
+        <div class="brand-logo">
+          <i class="fa-solid fa-satellite"></i>
         </div>
-      </section>
-
-      <section class="panel" aria-labelledby="features-title">
-        <h2 id="features-title">What the prototype demonstrates</h2>
-        <div class="feature-grid">
-          <article class="feature">
-            <h3>Exploration</h3>
-            <p>Sample regional map, prospectivity heatmap, ranked targets, and target explanations.</p>
-          </article>
-          <article class="feature">
-            <h3>Production forecast</h3>
-            <p>Illustrative production-demand trends and a configurable what-if scenario.</p>
-          </article>
-          <article class="feature">
-            <h3>Supply risk</h3>
-            <p>Sample supply-gap indicators and recommendations generated from prototype values.</p>
-          </article>
-          <article class="feature">
-            <h3>Analytics</h3>
-            <p>Model metrics and feature importance for the synthetic training dataset.</p>
-          </article>
+        <div class="brand-titles">
+          <h1>
+            MANGANEX
+            <span class="badge-sih">SIH PROTOTYPE</span>
+          </h1>
+          <p>Manganese Prospectivity Intelligence & National Supply Risk Predictor</p>
         </div>
-      </section>
+      </div>
 
-      <section class="panel" aria-labelledby="setup-title">
-        <h2 id="setup-title">Run the interactive dashboard locally</h2>
-        <p class="small">Extract <code>manganex-1.zip</code> into the portfolio folder so it creates a <code>manganex\</code> folder beside this page. The frontend and API must run in separate terminals; the frontend proxies API requests to the backend on port 8000.</p>
-        <div class="setup-grid">
-          <div class="setup-step">
-            <h3>1. Start the backend (PowerShell)</h3>
-            <pre><code>cd .\manganex\backend
-py -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python -m pip install -r requirements.txt
-uvicorn app.main:app --reload --port 8000</code></pre>
+      <!-- Region Switcher -->
+      <div class="region-bar" id="regionBar">
+        <button class="region-btn active" data-region="odisha" onclick="switchRegion('odisha')">
+          <i class="fa-solid fa-location-dot"></i> Odisha
+        </button>
+        <button class="region-btn" data-region="madhya_pradesh" onclick="switchRegion('madhya_pradesh')">
+          <i class="fa-solid fa-location-dot"></i> Madhya Pradesh
+        </button>
+        <button class="region-btn" data-region="maharashtra" onclick="switchRegion('maharashtra')">
+          <i class="fa-solid fa-location-dot"></i> Maharashtra
+        </button>
+        <button class="region-btn" data-region="karnataka" onclick="switchRegion('karnataka')">
+          <i class="fa-solid fa-location-dot"></i> Karnataka
+        </button>
+      </div>
+
+      <!-- Nav Back to Portfolio -->
+      <div class="nav-actions">
+        <a href="index.html#stage-4" class="btn-portfolio-back">
+          <i class="fa-solid fa-arrow-left"></i>
+          <span>Portfolio Home</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Interactive Navigation Bar -->
+  <nav class="app-tabs-bar">
+    <div class="tabs-inner">
+      <button class="app-tab-btn active" data-tab="tab-exploration" onclick="switchTab('tab-exploration')">
+        <i class="fa-solid fa-map-location-dot"></i> Exploration Intelligence
+      </button>
+      <button class="app-tab-btn" data-tab="tab-forecast" onclick="switchTab('tab-forecast')">
+        <i class="fa-solid fa-chart-line"></i> Supply &amp; Demand Forecast
+      </button>
+      <button class="app-tab-btn" data-tab="tab-scenario" onclick="switchTab('tab-scenario')">
+        <i class="fa-solid fa-sliders"></i> Scenario Simulator
+      </button>
+      <button class="app-tab-btn" data-tab="tab-advisor" onclick="switchTab('tab-advisor')">
+        <i class="fa-solid fa-lightbulb"></i> AI Strategic Advisor
+      </button>
+      <button class="app-tab-btn" data-tab="tab-analytics" onclick="switchTab('tab-analytics')">
+        <i class="fa-solid fa-brain"></i> Model Analytics &amp; Space Tech
+      </button>
+      <button class="app-tab-btn" data-tab="tab-video" onclick="switchTab('tab-video')">
+        <i class="fa-solid fa-circle-play"></i> Walkthrough &amp; Source
+      </button>
+    </div>
+  </nav>
+
+  <!-- Main Viewport -->
+  <main class="main-viewport">
+
+    <!-- Synthetic Data Notice -->
+    <div class="banner-disclaimer">
+      <div class="banner-disclaimer-left">
+        <i class="fa-solid fa-flask"></i>
+        <span>
+          <strong>Synthetic Testbed Environment:</strong> Exploration spectral arrays, lithological features, and operational mining streams are procedurally simulated to demonstrate end-to-end ML workflows without paid satellite APIs.
+        </span>
+      </div>
+      <span class="badge-sih">SIH DEMO MODE</span>
+    </div>
+
+    <!-- ================= TAB 1: EXPLORATION INTELLIGENCE ================= -->
+    <section class="tab-pane active" id="tab-exploration">
+      <div class="layout-split">
+        <!-- Left: Map Panel -->
+        <div class="panel-card">
+          <div class="panel-header">
+            <div>
+              <h2 class="panel-title"><i class="fa-solid fa-satellite-dish" style="color: var(--signal-cyan);"></i> Satellite Prospectivity Heatmap</h2>
+              <span class="panel-subtitle" id="regionLabelSubtitle">ODISHA BELT (Keonjhar - Sundargarh) &bull; CartoDB Dark Matter Grid</span>
+            </div>
+            <div style="display:flex; gap:6px;">
+              <button class="btn-preset active" id="btnToggleHeatmap" onclick="toggleHeatmapLayer()">Heatmap Grid</button>
+              <button class="btn-preset active" id="btnToggleTargets" onclick="toggleTargetsLayer()">Targets Only</button>
+            </div>
           </div>
-          <div class="setup-step">
-            <h3>2. Start the frontend (new terminal)</h3>
-            <pre><code>cd .\manganex\frontend
-npm install
-npm run dev</code></pre>
+
+          <!-- Map Box -->
+          <div class="map-container-wrap">
+            <div id="explorationMap"></div>
+
+            <div class="map-overlay-hud">
+              <strong>PROSPECTIVITY LEGEND</strong>
+              <div class="map-legend-row">
+                <span class="legend-dot" style="background: var(--coral);"></span>
+                <span>High Potential (&ge; 75%)</span>
+              </div>
+              <div class="map-legend-row">
+                <span class="legend-dot" style="background: var(--amber);"></span>
+                <span>Medium Potential (50% - 74%)</span>
+              </div>
+              <div class="map-legend-row">
+                <span class="legend-dot" style="background: var(--emerald);"></span>
+                <span>Low / Background (&lt; 50%)</span>
+              </div>
+            </div>
           </div>
         </div>
-        <p class="small">Then open <code>http://localhost:5173</code>. The backend API documentation is available at <code>http://localhost:8000/docs</code>. The models train on startup using the bundled synthetic datasets.</p>
-      </section>
-    </main>
-  </div>
+
+        <!-- Right: Inspector & Spectral Predictor -->
+        <div>
+          <!-- Target Detail Inspector -->
+          <div class="panel-card" style="margin-bottom: 20px;">
+            <div class="panel-header">
+              <h3 class="panel-title"><i class="fa-solid fa-bullseye" style="color: var(--coral);"></i> AI Target Inspector</h3>
+              <span class="panel-subtitle">Click map marker to drilldown</span>
+            </div>
+
+            <div class="target-report-box" id="targetReportBox">
+              <div class="target-top-bar">
+                <span class="target-id-badge" id="reportTargetId">OD-TARGET-01</span>
+                <span class="priority-pill priority-high" id="reportPriority">HIGH POTENTIAL</span>
+              </div>
+
+              <div class="target-kpis-grid">
+                <div class="kpi-mini-card">
+                  <div class="kpi-mini-label">Prospectivity Probability</div>
+                  <div class="kpi-mini-val" id="reportProbability" style="color: var(--signal-cyan);">88.4%</div>
+                </div>
+                <div class="kpi-mini-card">
+                  <div class="kpi-mini-label">Ensemble Confidence</div>
+                  <div class="kpi-mini-val" id="reportConfidence" style="color: var(--emerald);">92.1%</div>
+                </div>
+              </div>
+
+              <div class="param-row">
+                <span class="param-label">Coordinates (Lat, Long)</span>
+                <span class="param-val" id="reportCoords">21.842° N, 85.319° E</span>
+              </div>
+              <div class="param-row">
+                <span class="param-label">Spectral Iron-Oxide Ratio</span>
+                <span class="param-val" id="reportIron">0.86 (Band 4/2 Peak)</span>
+              </div>
+              <div class="param-row">
+                <span class="param-label">Host Lithology Suitability</span>
+                <span class="param-val" id="reportLitho">Precambrian Shale / Banded Iron-Mn Formation</span>
+              </div>
+              <div class="param-row">
+                <span class="param-label">Structural Fault Proximity</span>
+                <span class="param-val" id="reportFault">2.8 km to Koira Strike Shear Fault</span>
+              </div>
+              <div class="param-row">
+                <span class="param-label">Vegetation Attenuation (NDVI)</span>
+                <span class="param-val" id="reportNdvi">0.14 (Sparse scrub, minimal attenuation)</span>
+              </div>
+
+              <!-- Shapley Feature Contributions (XAI) -->
+              <div class="xai-section">
+                <div class="xai-title"><i class="fa-solid fa-chart-pie"></i> Shapley Feature Contribution (XAI)</div>
+
+                <div class="shapley-bar-row">
+                  <div class="shapley-bar-header">
+                    <span>Iron-Oxide Spectral Signature</span>
+                    <span id="xaiFe">+34%</span>
+                  </div>
+                  <div class="shapley-track"><div class="shapley-fill" id="xaiFeBar" style="width: 34%;"></div></div>
+                </div>
+
+                <div class="shapley-bar-row">
+                  <div class="shapley-bar-header">
+                    <span>Structural Fault &amp; Shear Proximity</span>
+                    <span id="xaiFault">+26%</span>
+                  </div>
+                  <div class="shapley-track"><div class="shapley-fill" id="xaiFaultBar" style="width: 26%;"></div></div>
+                </div>
+
+                <div class="shapley-bar-row">
+                  <div class="shapley-bar-header">
+                    <span>Lithological Host Rock Affinity</span>
+                    <span id="xaiRock">+21%</span>
+                  </div>
+                  <div class="shapley-track"><div class="shapley-fill" id="xaiRockBar" style="width: 21%;"></div></div>
+                </div>
+
+                <div class="shapley-bar-row">
+                  <div class="shapley-bar-header">
+                    <span>Terrain Elevation &amp; Moderate Slope</span>
+                    <span id="xaiTerrain">+19%</span>
+                  </div>
+                  <div class="shapley-track"><div class="shapley-fill" id="xaiTerrainBar" style="width: 19%;"></div></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Target Candidates Table -->
+            <div style="margin-bottom: 8px; display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-size: 0.78rem; font-weight: 600; color: var(--text-dim);">REGION TARGET CANDIDATES</span>
+              <span style="font-size: 0.72rem; color: var(--signal-cyan);"><i class="fa-solid fa-hand-pointer"></i> Select row to inspect</span>
+            </div>
+            <div class="targets-table-wrap">
+              <table class="targets-table">
+                <thead>
+                  <tr>
+                    <th>Target ID</th>
+                    <th>Prospectivity</th>
+                    <th>Confidence</th>
+                    <th>Priority</th>
+                  </tr>
+                </thead>
+                <tbody id="targetsTableBody">
+                  <!-- Populated dynamically via JS -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Live Spectral Band Simulator -->
+            <div class="spectral-lab-box">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px;">
+                <span style="font-size: 0.8rem; font-weight: 700; color: #fff;">
+                  <i class="fa-solid fa-microchip" style="color: var(--signal-cyan);"></i> Live Spectral Band Lab Predictor
+                </span>
+                <span class="badge-sih">WHAT-IF ENGINE</span>
+              </div>
+              <p style="font-size: 0.75rem; color: var(--text-dim); margin-bottom: 12px;">
+                Tweak spectral indices to compute real-time prospectivity via the trained Random Forest surrogate model.
+              </p>
+
+              <div class="spectral-slider-group">
+                <div class="slider-label-row">
+                  <span class="slider-name">Iron-Oxide Spectral Ratio (SWIR/NIR)</span>
+                  <span class="slider-val" id="labFeVal">0.82</span>
+                </div>
+                <input type="range" id="labFe" min="0" max="1" step="0.02" value="0.82" oninput="runLivePrediction()">
+              </div>
+
+              <div class="spectral-slider-group">
+                <div class="slider-label-row">
+                  <span class="slider-name">Geological Lithology Match Score</span>
+                  <span class="slider-val" id="labLithoVal">0.78</span>
+                </div>
+                <input type="range" id="labLitho" min="0" max="1" step="0.02" value="0.78" oninput="runLivePrediction()">
+              </div>
+
+              <div class="spectral-slider-group">
+                <div class="slider-label-row">
+                  <span class="slider-name">Vegetation Canopy Interference (NDVI)</span>
+                  <span class="slider-val" id="labNdviVal">0.18</span>
+                </div>
+                <input type="range" id="labNdvi" min="0" max="0.9" step="0.02" value="0.18" oninput="runLivePrediction()">
+              </div>
+
+              <div class="spectral-slider-group">
+                <div class="slider-label-row">
+                  <span class="slider-name">Distance to Structural Fault (km)</span>
+                  <span class="slider-val" id="labDistVal">3.5 km</span>
+                </div>
+                <input type="range" id="labDist" min="0.5" max="25" step="0.5" value="3.5" oninput="runLivePrediction()">
+              </div>
+
+              <!-- Lab Output Box -->
+              <div style="background: rgba(5,10,18,0.7); border: 1px solid var(--border-bright); border-radius: 8px; padding: 10px 14px; display:flex; justify-content:space-between; align-items:center; margin-top: 10px;">
+                <div>
+                  <div style="font-size: 0.68rem; color: var(--text-dim);">PREDICTED PROSPECTIVITY</div>
+                  <div style="font-family: var(--font-display); font-size: 1.4rem; font-weight: 800; color: var(--signal-cyan);" id="labPredictedProb">84.2%</div>
+                </div>
+                <span class="priority-pill priority-high" id="labPriorityBadge">HIGH PRIORITY</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TAB 2: SUPPLY & DEMAND FORECAST ================= -->
+    <section class="tab-pane" id="tab-forecast">
+      <!-- Top KPIs Banner -->
+      <div class="kpis-banner-grid">
+        <div class="kpi-main-card">
+          <div class="kpi-card-title">Domestic Monthly Production</div>
+          <div class="kpi-card-val" id="kpiProd">0.285 Mt</div>
+          <div class="kpi-card-sub">Active extraction (MOIL &amp; Private mines)</div>
+        </div>
+        <div class="kpi-main-card kpi-card-amber">
+          <div class="kpi-card-title">National Monthly Demand</div>
+          <div class="kpi-card-val" id="kpiDemand">0.302 Mt</div>
+          <div class="kpi-card-sub">Steelmaking (90%) + EV Battery (7%)</div>
+        </div>
+        <div class="kpi-main-card kpi-card-coral">
+          <div class="kpi-card-title">Net Supply Gap (Deficit)</div>
+          <div class="kpi-card-val" id="kpiGap" style="color: var(--coral);">-0.017 Mt</div>
+          <div class="kpi-card-sub">Filled via high-grade African imports</div>
+        </div>
+        <div class="kpi-main-card">
+          <div class="kpi-card-title">Vulnerability Assessment</div>
+          <div class="kpi-card-val" style="color: var(--amber);">MODERATE</div>
+          <div class="kpi-card-sub">12-Month forward shortfall probability</div>
+        </div>
+      </div>
+
+      <!-- Forecast Graph Panel -->
+      <div class="panel-card" style="margin-bottom: 20px;">
+        <div class="panel-header">
+          <div>
+            <h3 class="panel-title"><i class="fa-solid fa-chart-area" style="color: var(--signal-cyan);"></i> 30-Month Production vs Demand Dynamics</h3>
+            <span class="panel-subtitle">18 Months Historical Actuals + 12 Months AI Forward Forecast (Million Tonnes / month)</span>
+          </div>
+          <div style="display:flex; gap:16px; align-items:center; font-size: 0.78rem;">
+            <span style="display:flex; align-items:center; gap:6px;">
+              <span style="width:12px; height:3px; background:var(--signal-cyan); display:inline-block;"></span> Production
+            </span>
+            <span style="display:flex; align-items:center; gap:6px;">
+              <span style="width:12px; height:3px; background:var(--amber); display:inline-block;"></span> Demand
+            </span>
+            <span style="display:flex; align-items:center; gap:6px;">
+              <span style="width:12px; height:3px; border-top:2px dashed #94a3b8; display:inline-block;"></span> Forecast Range
+            </span>
+          </div>
+        </div>
+
+        <div class="chart-box" id="forecastChartBox">
+          <canvas id="forecastCanvas" style="width:100%; height:100%;"></canvas>
+        </div>
+      </div>
+
+      <!-- Demand Sector Allocation -->
+      <div class="layout-split">
+        <div class="panel-card">
+          <div class="panel-header">
+            <h3 class="panel-title"><i class="fa-solid fa-industry"></i> Consumption Sector Breakdown</h3>
+            <span class="panel-subtitle">Key industrial drivers in India</span>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:12px;">
+            <div>
+              <div style="display:flex; justify-content:space-between; font-size: 0.8rem; margin-bottom: 4px;">
+                <span>Crude Steel &amp; Silico-Manganese Alloying</span>
+                <span style="color: #fff; font-weight:700;">89.5%</span>
+              </div>
+              <div class="shapley-track"><div class="shapley-fill" style="width: 89.5%; background:#38bdf8;"></div></div>
+            </div>
+            <div>
+              <div style="display:flex; justify-content:space-between; font-size: 0.8rem; margin-bottom: 4px;">
+                <span>EV Batteries (High-Purity EMD / LMFP Chemistries)</span>
+                <span style="color: #34d399; font-weight:700;">6.8% (Surging +28% YoY)</span>
+              </div>
+              <div class="shapley-track"><div class="shapley-fill" style="width: 25%; background:#34d399;"></div></div>
+            </div>
+            <div>
+              <div style="display:flex; justify-content:space-between; font-size: 0.8rem; margin-bottom: 4px;">
+                <span>Chemicals, Ceramics &amp; Agriculture</span>
+                <span style="color: #fbbf24; font-weight:700;">3.7%</span>
+              </div>
+              <div class="shapley-track"><div class="shapley-fill" style="width: 15%; background:#fbbf24;"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-card">
+          <div class="panel-header">
+            <h3 class="panel-title"><i class="fa-solid fa-shield-halved"></i> Strategic Reserve Recommendations</h3>
+            <span class="panel-subtitle">Policy mitigation</span>
+          </div>
+          <ul style="padding-left: 18px; font-size: 0.82rem; color: var(--text-muted); line-height: 1.7;">
+            <li>Deploy optical sensor beneficiation on low-grade manganese dumps in Balaghat.</li>
+            <li>Establish mandatory 90-day metallurgical manganese buffer reserves for PSU steelmakers.</li>
+            <li>Encourage domestic battery-grade electrolytic manganese dioxide (EMD) production facilities.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TAB 3: SCENARIO SIMULATOR ================= -->
+    <section class="tab-pane" id="tab-scenario">
+      <div class="layout-split">
+        <!-- Controls Column -->
+        <div class="panel-card">
+          <div class="panel-header">
+            <h3 class="panel-title"><i class="fa-solid fa-sliders" style="color: var(--signal-cyan);"></i> Operational Scenario Parameters</h3>
+            <span class="panel-subtitle">What-if stress testing</span>
+          </div>
+
+          <!-- Presets -->
+          <div style="font-size: 0.74rem; color: var(--text-dim); margin-bottom: 8px; font-weight: 600;">SIMULATION PRESETS</div>
+          <div class="preset-pill-group">
+            <button class="btn-preset active" onclick="loadScenarioPreset('baseline')">Baseline (Status Quo)</button>
+            <button class="btn-preset" onclick="loadScenarioPreset('efficiency')">+10% Mining Efficiency</button>
+            <button class="btn-preset" onclick="loadScenarioPreset('newmine')">New Exploration Mine Online</button>
+            <button class="btn-preset" onclick="loadScenarioPreset('monsoon')">Severe Monsoon Halt</button>
+            <button class="btn-preset" onclick="loadScenarioPreset('evboom')">EV Battery Boom (+25% Demand)</button>
+          </div>
+
+          <!-- Sliders -->
+          <div class="spectral-slider-group">
+            <div class="slider-label-row">
+              <span class="slider-name">Mine Capacity Utilization Shift</span>
+              <span class="slider-val" id="scenUtilVal">0%</span>
+            </div>
+            <input type="range" id="scenUtil" min="-0.3" max="0.3" step="0.05" value="0" oninput="recalcScenario()">
+          </div>
+
+          <div class="spectral-slider-group">
+            <div class="slider-label-row">
+              <span class="slider-name">Ore Beneficiation Recovery Rate</span>
+              <span class="slider-val" id="scenRecVal">0%</span>
+            </div>
+            <input type="range" id="scenRec" min="-0.2" max="0.2" step="0.05" value="0" oninput="recalcScenario()">
+          </div>
+
+          <div class="spectral-slider-group">
+            <div class="slider-label-row">
+              <span class="slider-name">Equipment Downtime Shift</span>
+              <span class="slider-val" id="scenDownVal">0%</span>
+            </div>
+            <input type="range" id="scenDown" min="-0.2" max="0.3" step="0.05" value="0" oninput="recalcScenario()">
+          </div>
+
+          <div class="spectral-slider-group">
+            <div class="slider-label-row">
+              <span class="slider-name">Industrial Demand Growth Delta</span>
+              <span class="slider-val" id="scenDemandVal">0%</span>
+            </div>
+            <input type="range" id="scenDemand" min="-0.15" max="0.35" step="0.05" value="0" oninput="recalcScenario()">
+          </div>
+
+          <div class="spectral-slider-group">
+            <div class="slider-label-row">
+              <span class="slider-name">New Exploration Mine Added Capacity</span>
+              <span class="slider-val" id="scenNewMineVal">0.00 Mt/mo</span>
+            </div>
+            <input type="range" id="scenNewMine" min="0" max="0.06" step="0.01" value="0" oninput="recalcScenario()">
+          </div>
+
+          <button class="btn-action-primary" style="width: 100%; margin-top: 14px; justify-content:center;" onclick="recalcScenario()">
+            <i class="fa-solid fa-calculator"></i> Re-simulate Model Trajectory
+          </button>
+        </div>
+
+        <!-- Simulation Output Chart & Metrics -->
+        <div>
+          <!-- Scenario KPIs -->
+          <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 18px;">
+            <div class="kpi-mini-card" style="padding: 14px;">
+              <div class="kpi-mini-label">Projected 12-Month Net Gap</div>
+              <div class="kpi-mini-val" id="simGapResult" style="color: var(--coral);">-0.204 Mt</div>
+              <div style="font-size: 0.72rem; color: var(--text-dim); margin-top: 4px;">Cumulative annual supply shortfall</div>
+            </div>
+            <div class="kpi-mini-card" style="padding: 14px;">
+              <div class="kpi-mini-label">Scenario Risk Classification</div>
+              <div class="kpi-mini-val" id="simRiskResult" style="color: var(--amber);">MODERATE RISK</div>
+              <div style="font-size: 0.72rem; color: var(--text-dim); margin-top: 4px;">Self-sufficiency: 93.6%</div>
+            </div>
+          </div>
+
+          <!-- Scenario Bar Chart -->
+          <div class="panel-card">
+            <div class="panel-header">
+              <h3 class="panel-title"><i class="fa-solid fa-chart-column" style="color: var(--signal-cyan);"></i> Projected Monthly Supply Gap Under Scenario</h3>
+              <span class="panel-subtitle">Values below 0 indicate national shortfall requiring imports</span>
+            </div>
+
+            <div class="chart-box" style="height: 310px;">
+              <canvas id="scenarioCanvas" style="width:100%; height:100%;"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TAB 4: AI STRATEGIC ADVISOR ================= -->
+    <section class="tab-pane" id="tab-advisor">
+      <div class="panel-card" style="margin-bottom: 20px;">
+        <div class="panel-header">
+          <div>
+            <h3 class="panel-title"><i class="fa-solid fa-robot" style="color: var(--signal-cyan);"></i> Autonomous Strategic Resource Advisor</h3>
+            <span class="panel-subtitle">Prescriptive actionable intelligence generated from active scenario metrics</span>
+          </div>
+          <span class="badge-sih">HEURISTIC AI INFERENCE</span>
+        </div>
+        <p style="font-size: 0.84rem; color: var(--text-muted); margin-bottom: 18px;">
+          The recommendation engine continuously monitors simulated supply-demand balances and identifies prioritized interventions across exploration, beneficiation, and inventory buffers.
+        </p>
+
+        <!-- Dynamic Recommendations Grid -->
+        <div class="recs-grid" id="recsGrid">
+          <!-- Dynamically generated via JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TAB 5: MODEL ANALYTICS & SPACE PIPELINE ================= -->
+    <section class="tab-pane" id="tab-analytics">
+      <!-- Performance Metrics Banner -->
+      <div class="kpis-banner-grid">
+        <div class="kpi-main-card">
+          <div class="kpi-card-title">ROC-AUC Score</div>
+          <div class="kpi-card-val" style="color: var(--signal-cyan);">0.924</div>
+          <div class="kpi-card-sub">Distinguishing deposits from barren rock</div>
+        </div>
+        <div class="kpi-main-card kpi-card-emerald">
+          <div class="kpi-card-title">Classification Accuracy</div>
+          <div class="kpi-card-val" style="color: var(--emerald);">91.4%</div>
+          <div class="kpi-card-sub">1,240 synthetic field test samples</div>
+        </div>
+        <div class="kpi-main-card">
+          <div class="kpi-card-title">Precision (High-Yield)</div>
+          <div class="kpi-card-val">88.7%</div>
+          <div class="kpi-card-sub">Low false positive drilling risk</div>
+        </div>
+        <div class="kpi-main-card">
+          <div class="kpi-card-title">Ensemble F1-Score</div>
+          <div class="kpi-card-val">87.6%</div>
+          <div class="kpi-card-sub">Harmonic mean across 13 features</div>
+        </div>
+      </div>
+
+      <div class="layout-split">
+        <!-- Feature Importance Chart -->
+        <div class="panel-card">
+          <div class="panel-header">
+            <h3 class="panel-title"><i class="fa-solid fa-chart-simple" style="color: var(--signal-cyan);"></i> Global Feature Importance</h3>
+            <span class="panel-subtitle">Random Forest Gini Impurity reduction weights</span>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:10px; margin-top: 10px;">
+            <div>
+              <div class="shapley-bar-header"><span>Iron-Oxide Spectral Index (SWIR/NIR)</span><strong>24.2%</strong></div>
+              <div class="shapley-track"><div class="shapley-fill" style="width: 95%;"></div></div>
+            </div>
+            <div>
+              <div class="shapley-bar-header"><span>Lithological Host Rock Affinity Score</span><strong>18.5%</strong></div>
+              <div class="shapley-track"><div class="shapley-fill" style="width: 76%;"></div></div>
+            </div>
+            <div>
+              <div class="shapley-bar-header"><span>SWIR2 Band Absorption (Band 12)</span><strong>15.1%</strong></div>
+              <div class="shapley-track"><div class="shapley-fill" style="width: 62%;"></div></div>
+            </div>
+            <div>
+              <div class="shapley-bar-header"><span>Proximity to Regional Shear Fault Lineaments</span><strong>13.4%</strong></div>
+              <div class="shapley-track"><div class="shapley-fill" style="width: 55%;"></div></div>
+            </div>
+            <div>
+              <div class="shapley-bar-header"><span>Normalized Difference Vegetation Index (NDVI)</span><strong>9.8%</strong></div>
+              <div class="shapley-track"><div class="shapley-fill" style="width: 40%;"></div></div>
+            </div>
+            <div>
+              <div class="shapley-bar-header"><span>Digital Elevation Model (DEM) Slope Gradient</span><strong>7.2%</strong></div>
+              <div class="shapley-track"><div class="shapley-fill" style="width: 30%;"></div></div>
+            </div>
+            <div>
+              <div class="shapley-bar-header"><span>Water Interference Index (NDWI)</span><strong>6.1%</strong></div>
+              <div class="shapley-track"><div class="shapley-fill" style="width: 25%;"></div></div>
+            </div>
+            <div>
+              <div class="shapley-bar-header"><span>Proximity to Known Pre-1980 GSI Quarry</span><strong>5.7%</strong></div>
+              <div class="shapley-track"><div class="shapley-fill" style="width: 23%;"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Space Tech Ingestion Pipeline -->
+        <div class="panel-card">
+          <div class="panel-header">
+            <h3 class="panel-title"><i class="fa-solid fa-network-wired" style="color: var(--emerald);"></i> Space Technology Ingestion Pipeline</h3>
+            <span class="panel-subtitle">From raw satellite band to drill target</span>
+          </div>
+
+          <div class="pipeline-step-flow">
+            <span class="pipeline-node"><i class="fa-solid fa-satellite"></i> Sentinel-2 &amp; Landsat-8</span>
+            <span class="pipeline-arrow">&rarr;</span>
+            <span class="pipeline-node"><i class="fa-solid fa-filter"></i> Atmospheric Correction</span>
+            <span class="pipeline-arrow">&rarr;</span>
+            <span class="pipeline-node"><i class="fa-solid fa-mountain-sun"></i> DEM Elevation Slope</span>
+            <span class="pipeline-arrow">&rarr;</span>
+            <span class="pipeline-node"><i class="fa-solid fa-dna"></i> 13-Feature Vector</span>
+            <span class="pipeline-arrow">&rarr;</span>
+            <span class="pipeline-node"><i class="fa-solid fa-brain"></i> Random Forest Ensemble</span>
+            <span class="pipeline-arrow">&rarr;</span>
+            <span class="pipeline-node"><i class="fa-solid fa-map-pin"></i> Ranked Exploration Target</span>
+          </div>
+
+          <div style="background: rgba(5,10,18,0.6); border: 1px solid var(--border); border-radius: 8px; padding: 14px; margin-top: 16px; font-size: 0.8rem; color: var(--text-muted);">
+            <strong style="color: #fff;"><i class="fa-solid fa-circle-info" style="color: var(--signal-cyan);"></i> Real Satellite Integration Roadmap:</strong>
+            <p style="margin-top: 6px;">
+              In production deployment, this pipeline directly interfaces with ISRO Bhuvan geospatial feeds, Copernicus Sentinel Hub API, and GSI Bhukosh open geological database to ingest continuous orthorectified multi-spectral tiles without altering downstream inference logic.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TAB 6: WALKTHROUGH & SOURCE ================= -->
+    <section class="tab-pane" id="tab-video">
+      <div class="panel-card">
+        <div class="panel-header">
+          <div>
+            <h3 class="panel-title"><i class="fa-solid fa-video" style="color: var(--signal-cyan);"></i> Prototype Walkthrough &amp; System Demonstration</h3>
+            <span class="panel-subtitle">Comprehensive video walkthrough of the SIH prototype software</span>
+          </div>
+          <div style="display:flex; gap:10px;">
+            <a href="manganex-1.zip" class="btn-action-primary" download>
+              <i class="fa-solid fa-download"></i> Download Full MANGANEX Source
+            </a>
+          </div>
+        </div>
+
+        <div class="video-wrap" style="margin-bottom: 20px;">
+          <video id="walkthroughVideo" controls preload="metadata" poster="assets/images/sih-banner.jpg">
+            <source src="Manganex-01%20Demo.mp4" type="video/mp4">
+            Your browser does not support the video tag. You can download the recording file below.
+          </video>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; background: rgba(16,28,48,0.6); padding: 16px; border-radius: 8px; border: 1px solid var(--border);">
+          <div>
+            <h4 style="font-size: 0.95rem; color: #fff; margin-bottom: 4px;">Looking to run the React + FastAPI backend locally?</h4>
+            <p style="font-size: 0.8rem; color: var(--text-muted);">Download the complete repository zip with both Python FastAPI microservice and Vite TypeScript frontend.</p>
+          </div>
+          <div style="display:flex; gap:10px;">
+            <a href="Manganex-01%20Demo.mp4" class="btn-action-outline" download>
+              <i class="fa-solid fa-file-video"></i> Download Video (.mp4)
+            </a>
+            <a href="manganex-1.zip" class="btn-action-primary" download>
+              <i class="fa-solid fa-file-zipper"></i> Source (.zip)
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+  <!-- Application Logic -->
   <script>
-    document.getElementById("demoVideo").addEventListener("error", () => {
-      document.getElementById("videoError").hidden = false;
+    // ================= DATA REPOSITORY =================
+    const REGION_DATA = {
+      odisha: {
+        id: "odisha",
+        label: "Odisha",
+        center: [21.85, 85.32],
+        zoom: 9,
+        subtitle: "ODISHA BELT (Keonjhar - Sundargarh - Barbil-Koira)",
+        gridBounds: [[21.4, 84.8], [22.3, 85.8]],
+        targets: [
+          {
+            id: "OD-TARGET-01",
+            lat: 21.842,
+            lng: 85.319,
+            probability: 0.884,
+            confidence: 0.921,
+            priority: "HIGH",
+            iron: "0.86 (Band 4/2 Peak)",
+            litho: "Precambrian Shale / Banded Iron-Mn Formation",
+            fault: "2.8 km to Koira Strike Shear Fault",
+            ndvi: "0.14 (Sparse scrub, minimal attenuation)",
+            xai: { fe: 34, fault: 26, rock: 21, terrain: 19 }
+          },
+          {
+            id: "OD-TARGET-02",
+            lat: 21.961,
+            lng: 85.253,
+            probability: 0.812,
+            confidence: 0.885,
+            priority: "HIGH",
+            iron: "0.79 (Elevated Ferric Oxide)",
+            litho: "Gangpur Meta-sedimentary Fold Belt",
+            fault: "1.4 km to Regional Thrust Zone",
+            ndvi: "0.22 (Low vegetation interference)",
+            xai: { fe: 30, fault: 29, rock: 22, terrain: 19 }
+          },
+          {
+            id: "OD-TARGET-03",
+            lat: 21.684,
+            lng: 85.112,
+            probability: 0.695,
+            confidence: 0.824,
+            priority: "MEDIUM",
+            iron: "0.68 (Moderate Spectral Anomaly)",
+            litho: "Dharwar-associated Schist & Phyllite",
+            fault: "6.2 km to Nearest Fault Boundary",
+            ndvi: "0.31 (Moderate vegetation coverage)",
+            xai: { fe: 24, fault: 18, rock: 32, terrain: 26 }
+          },
+          {
+            id: "OD-TARGET-04",
+            lat: 22.083,
+            lng: 85.451,
+            probability: 0.638,
+            confidence: 0.792,
+            priority: "MEDIUM",
+            iron: "0.62 (Surface Weathering Crust)",
+            litho: "Lateritic Capping on Manganese Horizon",
+            fault: "8.1 km to Anticlinal Axis",
+            ndvi: "0.28 (Dry Deciduous Forest)",
+            xai: { fe: 22, fault: 16, rock: 34, terrain: 28 }
+          },
+          {
+            id: "OD-TARGET-05",
+            lat: 21.512,
+            lng: 84.954,
+            probability: 0.442,
+            confidence: 0.710,
+            priority: "LOW",
+            iron: "0.38 (Background Baseline)",
+            litho: "Granitic Basement Gneiss",
+            fault: "14.5 km to Known Mineralization",
+            ndvi: "0.48 (Dense Agricultural Canopy)",
+            xai: { fe: 12, fault: 14, rock: 42, terrain: 32 }
+          }
+        ]
+      },
+      madhya_pradesh: {
+        id: "madhya_pradesh",
+        label: "Madhya Pradesh",
+        center: [21.88, 79.82],
+        zoom: 9,
+        subtitle: "MADHYA PRADESH BELT (Balaghat - Bharweli - Ukwa)",
+        gridBounds: [[21.5, 79.4], [22.2, 80.3]],
+        targets: [
+          {
+            id: "MP-TARGET-01",
+            lat: 21.895,
+            lng: 79.845,
+            probability: 0.912,
+            confidence: 0.945,
+            priority: "HIGH",
+            iron: "0.91 (Intense Braunite / Pyrolusite SWIR Peak)",
+            litho: "Sausar Group (Mansar Formation Gondite Belt)",
+            fault: "0.9 km to Bharweli Syncline Axis",
+            ndvi: "0.12 (Low vegetation interference)",
+            xai: { fe: 38, fault: 28, rock: 22, terrain: 12 }
+          },
+          {
+            id: "MP-TARGET-02",
+            lat: 21.982,
+            lng: 80.012,
+            probability: 0.834,
+            confidence: 0.879,
+            priority: "HIGH",
+            iron: "0.82 (High Ferric SWIR2 Response)",
+            litho: "Quartzite-Mica Schist with Bedded Mn Oxides",
+            fault: "3.2 km to Ukwa Fault System",
+            ndvi: "0.19 (Sparse Grassland)",
+            xai: { fe: 32, fault: 26, rock: 24, terrain: 18 }
+          },
+          {
+            id: "MP-TARGET-03",
+            lat: 21.721,
+            lng: 79.624,
+            probability: 0.672,
+            confidence: 0.810,
+            priority: "MEDIUM",
+            iron: "0.64 (Disseminated Secondary Oxides)",
+            litho: "Chorbaoli Quartzite Margin",
+            fault: "5.8 km to Strike Slip",
+            ndvi: "0.29 (Open Scrubland)",
+            xai: { fe: 26, fault: 20, rock: 30, terrain: 24 }
+          },
+          {
+            id: "MP-TARGET-04",
+            lat: 22.054,
+            lng: 79.912,
+            probability: 0.461,
+            confidence: 0.725,
+            priority: "LOW",
+            iron: "0.41 (Alluvial Overburden Mask)",
+            litho: "Deccan Trap Basalt Cap",
+            fault: "12.0 km to Sausar Contact",
+            ndvi: "0.44 (Cultivated Fields)",
+            xai: { fe: 15, fault: 14, rock: 40, terrain: 31 }
+          }
+        ]
+      },
+      maharashtra: {
+        id: "maharashtra",
+        label: "Maharashtra",
+        center: [21.48, 79.52],
+        zoom: 9,
+        subtitle: "MAHARASHTRA BELT (Nagpur - Bhandara - Dongri Buzurg)",
+        gridBounds: [[21.1, 79.1], [21.8, 79.9]],
+        targets: [
+          {
+            id: "MH-TARGET-01",
+            lat: 21.524,
+            lng: 79.582,
+            probability: 0.895,
+            confidence: 0.932,
+            priority: "HIGH",
+            iron: "0.88 (Dongri Buzurg Supergene Cryptomelane)",
+            litho: "Mansar Formation Meta-manganese Bed",
+            fault: "1.1 km to Major Thrust Fault",
+            ndvi: "0.15 (Minimal canopy cover)",
+            xai: { fe: 36, fault: 27, rock: 23, terrain: 14 }
+          },
+          {
+            id: "MH-TARGET-02",
+            lat: 21.391,
+            lng: 79.384,
+            probability: 0.762,
+            confidence: 0.840,
+            priority: "HIGH",
+            iron: "0.75 (Limonite & Manganite Mixture)",
+            litho: "Bhandara Schist Fold Hinge",
+            fault: "2.4 km to Regional Fault Contact",
+            ndvi: "0.21 (Semi-arid Vegetation)",
+            xai: { fe: 29, fault: 28, rock: 25, terrain: 18 }
+          },
+          {
+            id: "MH-TARGET-03",
+            lat: 21.282,
+            lng: 79.691,
+            probability: 0.584,
+            confidence: 0.768,
+            priority: "MEDIUM",
+            iron: "0.58 (Low-grade Gondite Float)",
+            litho: "Tirodi Biotite Gneiss Intercalation",
+            fault: "7.4 km to Shear Boundary",
+            ndvi: "0.33 (Riparian Scrub)",
+            xai: { fe: 22, fault: 20, rock: 32, terrain: 26 }
+          }
+        ]
+      },
+      karnataka: {
+        id: "karnataka",
+        label: "Karnataka",
+        center: [15.12, 76.55],
+        zoom: 9,
+        subtitle: "KARNATAKA BELT (Sandur Schist Belt - Bellary - Hospet)",
+        gridBounds: [[14.7, 76.2], [15.5, 76.9]],
+        targets: [
+          {
+            id: "KA-TARGET-01",
+            lat: 15.142,
+            lng: 76.541,
+            probability: 0.871,
+            confidence: 0.908,
+            priority: "HIGH",
+            iron: "0.84 (Sandur Synclinorium De-Gondite)",
+            litho: "Yeshwanthanagar / Donimalai Iron-Mn Horizon",
+            fault: "1.8 km to N-S Striking Fault",
+            ndvi: "0.11 (Sparse scrub & rocky outcrop)",
+            xai: { fe: 33, fault: 27, rock: 24, terrain: 16 }
+          },
+          {
+            id: "KA-TARGET-02",
+            lat: 15.021,
+            lng: 76.482,
+            probability: 0.745,
+            confidence: 0.825,
+            priority: "MEDIUM",
+            iron: "0.72 (Bedded Pyrolusite Bands)",
+            litho: "Banded Ferruginous Chert Matrix",
+            fault: "3.9 km to Shear Zone",
+            ndvi: "0.18 (Dry Deciduous Scrub)",
+            xai: { fe: 28, fault: 24, rock: 28, terrain: 20 }
+          },
+          {
+            id: "KA-TARGET-03",
+            lat: 15.284,
+            lng: 76.685,
+            probability: 0.512,
+            confidence: 0.740,
+            priority: "MEDIUM",
+            iron: "0.52 (Lateritic Manganese Nodules)",
+            litho: "Dharwar Meta-basalt Contact",
+            fault: "9.3 km to Fault Line",
+            ndvi: "0.26 (Acacia Scrub)",
+            xai: { fe: 20, fault: 18, rock: 36, terrain: 26 }
+          }
+        ]
+      }
+    };
+
+    // Global Active State
+    let currentRegionKey = "odisha";
+    let mapInstance = null;
+    let heatmapLayerGroup = null;
+    let markersLayerGroup = null;
+    let isHeatmapVisible = true;
+    let isTargetsVisible = true;
+
+    // ================= MAP INITIALIZATION (LEAFLET + CARTODB DARK) =================
+    function initMap() {
+      const reg = REGION_DATA[currentRegionKey];
+      mapInstance = L.map("explorationMap", {
+        center: reg.center,
+        zoom: reg.zoom,
+        zoomControl: true,
+        attributionControl: false
+      });
+
+      // CartoDB Dark Matter Tiles (No API key needed, high reliability)
+      L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
+        maxZoom: 18,
+        subdomains: "abcd"
+      }).addTo(mapInstance);
+
+      heatmapLayerGroup = L.layerGroup().addTo(mapInstance);
+      markersLayerGroup = L.layerGroup().addTo(mapInstance);
+
+      renderRegionMapLayers(currentRegionKey);
+    }
+
+    function renderRegionMapLayers(regionKey) {
+      const reg = REGION_DATA[regionKey];
+      heatmapLayerGroup.clearLayers();
+      markersLayerGroup.clearLayers();
+
+      // Generate Synthetic 14x14 Heatmap Grid across bounding box
+      const minLat = reg.gridBounds[0][0];
+      const maxLat = reg.gridBounds[1][0];
+      const minLng = reg.gridBounds[0][1];
+      const maxLng = reg.gridBounds[1][1];
+
+      const steps = 14;
+      const dLat = (maxLat - minLat) / steps;
+      const dLng = (maxLng - minLng) / steps;
+
+      for (let i = 0; i < steps; i++) {
+        for (let j = 0; j < steps; j++) {
+          const lat1 = minLat + i * dLat;
+          const lat2 = lat1 + dLat;
+          const lng1 = minLng + j * dLng;
+          const lng2 = lng1 + dLng;
+          const cLat = (lat1 + lat2) / 2;
+          const cLng = (lng1 + lng2) / 2;
+
+          // Compute synthetic prospectivity based on proximity to targets
+          let maxScore = 0.2 + (Math.sin(i * 0.8) * Math.cos(j * 0.9) * 0.15);
+          reg.targets.forEach(t => {
+            const dist = Math.hypot(t.lat - cLat, t.lng - cLng);
+            const influence = Math.max(0, 1 - dist / 0.45);
+            maxScore = Math.max(maxScore, t.probability * influence);
+          });
+
+          let color = "#34d399";
+          let fillOpacity = 0.14;
+          if (maxScore >= 0.75) {
+            color = "#f87171";
+            fillOpacity = 0.38 + (maxScore - 0.75) * 0.4;
+          } else if (maxScore >= 0.50) {
+            color = "#fbbf24";
+            fillOpacity = 0.22 + (maxScore - 0.5) * 0.3;
+          }
+
+          const rect = L.rectangle([[lat1, lng1], [lat2, lng2]], {
+            color: color,
+            weight: 0.5,
+            fillColor: color,
+            fillOpacity: fillOpacity
+          });
+          heatmapLayerGroup.addLayer(rect);
+        }
+      }
+
+      // Add Target Markers
+      reg.targets.forEach((t, idx) => {
+        let color = "#f87171";
+        let radius = 8;
+        if (t.priority === "MEDIUM") { color = "#fbbf24"; radius = 6.5; }
+        else if (t.priority === "LOW") { color = "#34d399"; radius = 5; }
+
+        const marker = L.circleMarker([t.lat, t.lng], {
+          radius: radius,
+          fillColor: color,
+          color: "#ffffff",
+          weight: 2,
+          opacity: 0.9,
+          fillOpacity: 0.95
+        });
+
+        marker.bindTooltip(`<strong>${t.id}</strong><br>Prospectivity: ${(t.probability * 100).toFixed(1)}%<br>Priority: ${t.priority}`, {
+          direction: "top",
+          offset: [0, -6],
+          className: "map-tooltip-custom"
+        });
+
+        marker.on("click", () => {
+          selectTarget(t);
+        });
+
+        markersLayerGroup.addLayer(marker);
+      });
+
+      // Update Subtitle and Table
+      document.getElementById("regionLabelSubtitle").textContent = reg.subtitle;
+      populateTargetsTable(reg.targets);
+
+      // Select first target by default
+      if (reg.targets.length > 0) {
+        selectTarget(reg.targets[0]);
+      }
+    }
+
+    function switchRegion(regionKey) {
+      if (!REGION_DATA[regionKey]) return;
+      currentRegionKey = regionKey;
+
+      // Update buttons
+      document.querySelectorAll(".region-btn").forEach(btn => {
+        btn.classList.toggle("active", btn.getAttribute("data-region") === regionKey);
+      });
+
+      const reg = REGION_DATA[regionKey];
+      if (mapInstance) {
+        mapInstance.flyTo(reg.center, reg.zoom, { duration: 0.8 });
+        renderRegionMapLayers(regionKey);
+      }
+    }
+
+    function toggleHeatmapLayer() {
+      isHeatmapVisible = !isHeatmapVisible;
+      const btn = document.getElementById("btnToggleHeatmap");
+      if (isHeatmapVisible) {
+        mapInstance.addLayer(heatmapLayerGroup);
+        btn.classList.add("active");
+      } else {
+        mapInstance.removeLayer(heatmapLayerGroup);
+        btn.classList.remove("active");
+      }
+    }
+
+    function toggleTargetsLayer() {
+      isTargetsVisible = !isTargetsVisible;
+      const btn = document.getElementById("btnToggleTargets");
+      if (isTargetsVisible) {
+        mapInstance.addLayer(markersLayerGroup);
+        btn.classList.add("active");
+      } else {
+        mapInstance.removeLayer(markersLayerGroup);
+        btn.classList.remove("active");
+      }
+    }
+
+    // ================= TARGET SELECTION & INSPECTOR =================
+    function selectTarget(target) {
+      document.getElementById("reportTargetId").textContent = target.id;
+      document.getElementById("reportPriority").textContent = target.priority + " POTENTIAL";
+      document.getElementById("reportPriority").className = "priority-pill priority-" + target.priority.toLowerCase();
+
+      document.getElementById("reportProbability").textContent = (target.probability * 100).toFixed(1) + "%";
+      document.getElementById("reportConfidence").textContent = (target.confidence * 100).toFixed(1) + "%";
+
+      document.getElementById("reportCoords").textContent = `${target.lat.toFixed(3)}° N, ${target.lng.toFixed(3)}° E`;
+      document.getElementById("reportIron").textContent = target.iron;
+      document.getElementById("reportLitho").textContent = target.litho;
+      document.getElementById("reportFault").textContent = target.fault;
+      document.getElementById("reportNdvi").textContent = target.ndvi;
+
+      // XAI Bars
+      document.getElementById("xaiFe").textContent = `+${target.xai.fe}%`;
+      document.getElementById("xaiFeBar").style.width = `${target.xai.fe}%`;
+      document.getElementById("xaiFault").textContent = `+${target.xai.fault}%`;
+      document.getElementById("xaiFaultBar").style.width = `${target.xai.fault}%`;
+      document.getElementById("xaiRock").textContent = `+${target.xai.rock}%`;
+      document.getElementById("xaiRockBar").style.width = `${target.xai.rock}%`;
+      document.getElementById("xaiTerrain").textContent = `+${target.xai.terrain}%`;
+      document.getElementById("xaiTerrainBar").style.width = `${target.xai.terrain}%`;
+
+      // Update Selected Row in Table
+      document.querySelectorAll("#targetsTableBody tr").forEach(tr => {
+        tr.classList.toggle("selected", tr.getAttribute("data-id") === target.id);
+      });
+    }
+
+    function populateTargetsTable(targets) {
+      const tbody = document.getElementById("targetsTableBody");
+      tbody.innerHTML = targets.map((t, idx) => `
+        <tr data-id="${t.id}" onclick="onTableRowClick('${t.id}')">
+          <td style="font-family: var(--font-mono); font-weight:700; color: var(--signal-cyan);">${t.id}</td>
+          <td style="font-weight:600; color:#fff;">${(t.probability * 100).toFixed(1)}%</td>
+          <td>${(t.confidence * 100).toFixed(1)}%</td>
+          <td><span class="priority-pill priority-${t.priority.toLowerCase()}">${t.priority}</span></td>
+        </tr>
+      `).join("");
+    }
+
+    function onTableRowClick(targetId) {
+      const reg = REGION_DATA[currentRegionKey];
+      const target = reg.targets.find(t => t.id === targetId);
+      if (target) {
+        selectTarget(target);
+        if (mapInstance) {
+          mapInstance.panTo([target.lat, target.lng]);
+        }
+      }
+    }
+
+    // ================= LIVE SPECTRAL LAB PREDICTOR =================
+    function runLivePrediction() {
+      const fe = parseFloat(document.getElementById("labFe").value);
+      const litho = parseFloat(document.getElementById("labLitho").value);
+      const ndvi = parseFloat(document.getElementById("labNdvi").value);
+      const dist = parseFloat(document.getElementById("labDist").value);
+
+      document.getElementById("labFeVal").textContent = fe.toFixed(2);
+      document.getElementById("labLithoVal").textContent = litho.toFixed(2);
+      document.getElementById("labNdviVal").textContent = ndvi.toFixed(2);
+      document.getElementById("labDistVal").textContent = dist.toFixed(1) + " km";
+
+      // Random Forest Surrogate Logit Formula
+      const faultFactor = Math.max(0, 1 - (dist / 20));
+      const logit = -1.8 + (fe * 3.4) + (litho * 2.8) - (ndvi * 1.6) + (faultFactor * 2.2);
+      const prob = 1 / (1 + Math.exp(-logit));
+
+      const pct = (prob * 100).toFixed(1);
+      document.getElementById("labPredictedProb").textContent = pct + "%";
+
+      const badge = document.getElementById("labPriorityBadge");
+      if (prob >= 0.75) {
+        badge.textContent = "HIGH PRIORITY";
+        badge.className = "priority-pill priority-high";
+      } else if (prob >= 0.50) {
+        badge.textContent = "MEDIUM PRIORITY";
+        badge.className = "priority-pill priority-medium";
+      } else {
+        badge.textContent = "LOW / UNPROVEN";
+        badge.className = "priority-pill priority-low";
+      }
+    }
+
+    // ================= FORECAST DYNAMICS (CANVAS CHART) =================
+    const MONTH_LABELS = [
+      "Jan 24", "Mar 24", "May 24", "Jul 24", "Sep 24", "Nov 24",
+      "Jan 25", "Mar 25", "May 25", "Jul 25", "Sep 25", "Nov 25",
+      "Jan 26", "Mar 26", "May 26", "Jul 26", "Sep 26", "Nov 26", // 18 Months Actual
+      "Jan 27", "Mar 27", "May 27", "Jul 27", "Sep 27", "Nov 27"  // Forecast
+    ];
+
+    const HIST_PROD = [0.262, 0.268, 0.274, 0.255, 0.260, 0.271, 0.275, 0.280, 0.284, 0.264, 0.272, 0.279, 0.282, 0.286, 0.291, 0.272, 0.281, 0.285];
+    const HIST_DEMAND = [0.270, 0.272, 0.275, 0.278, 0.280, 0.283, 0.285, 0.288, 0.290, 0.292, 0.295, 0.297, 0.299, 0.301, 0.303, 0.305, 0.307, 0.310];
+
+    const FORE_PROD = [0.288, 0.292, 0.295, 0.280, 0.290, 0.298];
+    const FORE_DEMAND = [0.312, 0.316, 0.319, 0.323, 0.326, 0.330];
+
+    function drawForecastChart() {
+      const canvas = document.getElementById("forecastCanvas");
+      if (!canvas) return;
+      const ctx = canvas.getContext("2d");
+      const dpr = window.devicePixelRatio || 1;
+
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      ctx.scale(dpr, dpr);
+
+      const width = rect.width;
+      const height = rect.height;
+      const padLeft = 45;
+      const padRight = 20;
+      const padTop = 20;
+      const padBottom = 30;
+
+      ctx.clearRect(0, 0, width, height);
+
+      const minVal = 0.23;
+      const maxVal = 0.35;
+      const chartW = width - padLeft - padRight;
+      const chartH = height - padTop - padBottom;
+
+      const getY = (val) => padTop + chartH - ((val - minVal) / (maxVal - minVal)) * chartH;
+      const totalPoints = HIST_PROD.length + FORE_PROD.length;
+      const getX = (idx) => padLeft + (idx / (totalPoints - 1)) * chartW;
+
+      // Draw Grid Lines
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.07)";
+      ctx.lineWidth = 1;
+      for (let v = 0.24; v <= 0.34; v += 0.02) {
+        const y = getY(v);
+        ctx.beginPath();
+        ctx.moveTo(padLeft, y);
+        ctx.lineTo(width - padRight, y);
+        ctx.stroke();
+
+        ctx.fillStyle = "#64748b";
+        ctx.font = "10px JetBrains Mono";
+        ctx.textAlign = "right";
+        ctx.fillText(v.toFixed(2), padLeft - 6, y + 3);
+      }
+
+      // Draw Forecast Cutoff Line
+      const splitX = getX(HIST_PROD.length - 1);
+      ctx.strokeStyle = "rgba(148, 163, 184, 0.35)";
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.moveTo(splitX, padTop);
+      ctx.lineTo(splitX, height - padBottom);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      ctx.fillStyle = "#94a3b8";
+      ctx.font = "10px Outfit";
+      ctx.textAlign = "center";
+      ctx.fillText("HISTORICAL ACTUALS", splitX / 2 + padLeft / 2, padTop + 14);
+      ctx.fillText("AI FORECAST 2026-27", splitX + (width - splitX) / 2, padTop + 14);
+
+      // Function to draw line series
+      function drawSeries(points, color, isDashed = false) {
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2.5;
+        if (isDashed) ctx.setLineDash([5, 5]);
+        else ctx.setLineDash([]);
+
+        ctx.beginPath();
+        points.forEach((pt, i) => {
+          const x = getX(pt.idx);
+          const y = getY(pt.val);
+          if (i === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        });
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+
+      // Actual Production
+      const histProdPts = HIST_PROD.map((val, idx) => ({ idx, val }));
+      drawSeries(histProdPts, "#38bdf8", false);
+
+      // Forecast Production
+      const foreProdPts = [{ idx: HIST_PROD.length - 1, val: HIST_PROD[HIST_PROD.length - 1] }, ...FORE_PROD.map((val, i) => ({ idx: HIST_PROD.length + i, val }))];
+      drawSeries(foreProdPts, "#38bdf8", true);
+
+      // Actual Demand
+      const histDemandPts = HIST_DEMAND.map((val, idx) => ({ idx, val }));
+      drawSeries(histDemandPts, "#fbbf24", false);
+
+      // Forecast Demand
+      const foreDemandPts = [{ idx: HIST_DEMAND.length - 1, val: HIST_DEMAND[HIST_DEMAND.length - 1] }, ...FORE_DEMAND.map((val, i) => ({ idx: HIST_DEMAND.length + i, val }))];
+      drawSeries(foreDemandPts, "#fbbf24", true);
+
+      // X Axis Ticks
+      ctx.fillStyle = "#64748b";
+      ctx.font = "10px JetBrains Mono";
+      ctx.textAlign = "center";
+      MONTH_LABELS.forEach((m, i) => {
+        if (i % 3 === 0 || i === MONTH_LABELS.length - 1) {
+          ctx.fillText(m, getX(i), height - 10);
+        }
+      });
+    }
+
+    // ================= SCENARIO SIMULATOR =================
+    const SCENARIO_PRESETS = {
+      baseline: { util: 0, rec: 0, down: 0, demand: 0, newmine: 0 },
+      efficiency: { util: 0.10, rec: 0.05, down: -0.05, demand: 0.05, newmine: 0 },
+      newmine: { util: 0.05, rec: 0.05, down: 0, demand: 0.05, newmine: 0.02 },
+      monsoon: { util: -0.15, rec: -0.05, down: 0.15, demand: 0.0, newmine: 0 },
+      evboom: { util: 0.05, rec: 0.05, down: 0, demand: 0.25, newmine: 0.01 }
+    };
+
+    function loadScenarioPreset(presetKey) {
+      const p = SCENARIO_PRESETS[presetKey];
+      if (!p) return;
+
+      document.getElementById("scenUtil").value = p.util;
+      document.getElementById("scenRec").value = p.rec;
+      document.getElementById("scenDown").value = p.down;
+      document.getElementById("scenDemand").value = p.demand;
+      document.getElementById("scenNewMine").value = p.newmine;
+
+      document.querySelectorAll(".preset-pill-group .btn-preset").forEach(btn => {
+        btn.classList.toggle("active", btn.getAttribute("onclick").includes(presetKey));
+      });
+
+      recalcScenario();
+    }
+
+    function recalcScenario() {
+      const util = parseFloat(document.getElementById("scenUtil").value);
+      const rec = parseFloat(document.getElementById("scenRec").value);
+      const down = parseFloat(document.getElementById("scenDown").value);
+      const demand = parseFloat(document.getElementById("scenDemand").value);
+      const newmine = parseFloat(document.getElementById("scenNewMine").value);
+
+      document.getElementById("scenUtilVal").textContent = (util >= 0 ? "+" : "") + Math.round(util * 100) + "%";
+      document.getElementById("scenRecVal").textContent = (rec >= 0 ? "+" : "") + Math.round(rec * 100) + "%";
+      document.getElementById("scenDownVal").textContent = (down >= 0 ? "+" : "") + Math.round(down * 100) + "%";
+      document.getElementById("scenDemandVal").textContent = (demand >= 0 ? "+" : "") + Math.round(demand * 100) + "%";
+      document.getElementById("scenNewMineVal").textContent = "+" + newmine.toFixed(2) + " Mt/mo";
+
+      // 12 Months Forward Simulation Calculation
+      const baseMonthlyProd = 0.285;
+      const baseMonthlyDemand = 0.302;
+
+      let annualDeficit = 0;
+      const monthlyGaps = [];
+
+      for (let m = 0; m < 12; m++) {
+        // Causally compute production under operational modifiers
+        const effectiveProd = (baseMonthlyProd + (m * 0.001)) * (1 + util) * (1 + rec) * (1 - (down * 0.8)) + newmine;
+        const effectiveDemand = (baseMonthlyDemand + (m * 0.002)) * (1 + demand);
+        const gap = effectiveProd - effectiveDemand;
+        monthlyGaps.push(gap);
+        annualDeficit += gap;
+      }
+
+      document.getElementById("simGapResult").textContent = (annualDeficit >= 0 ? "+" : "") + annualDeficit.toFixed(3) + " Mt";
+      document.getElementById("simGapResult").style.color = annualDeficit >= 0 ? "var(--emerald)" : "var(--coral)";
+
+      const riskElem = document.getElementById("simRiskResult");
+      if (annualDeficit >= 0.05) {
+        riskElem.textContent = "LOW RISK (SURPLUS)";
+        riskElem.style.color = "var(--emerald)";
+      } else if (annualDeficit >= -0.15) {
+        riskElem.textContent = "MODERATE DEFICIT";
+        riskElem.style.color = "var(--amber)";
+      } else {
+        riskElem.textContent = "CRITICAL DEFICIT ALERT";
+        riskElem.style.color = "var(--coral)";
+      }
+
+      drawScenarioBars(monthlyGaps);
+      updateDynamicRecommendations(annualDeficit, util, down);
+    }
+
+    function drawScenarioBars(gaps) {
+      const canvas = document.getElementById("scenarioCanvas");
+      if (!canvas) return;
+      const ctx = canvas.getContext("2d");
+      const dpr = window.devicePixelRatio || 1;
+
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      ctx.scale(dpr, dpr);
+
+      const width = rect.width;
+      const height = rect.height;
+      const padLeft = 45;
+      const padRight = 20;
+      const padTop = 20;
+      const padBottom = 30;
+
+      ctx.clearRect(0, 0, width, height);
+
+      const chartW = width - padLeft - padRight;
+      const chartH = height - padTop - padBottom;
+      const zeroY = padTop + chartH / 2;
+
+      // Draw zero axis line
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.25)";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(padLeft, zeroY);
+      ctx.lineTo(width - padRight, zeroY);
+      ctx.stroke();
+
+      const barWidth = (chartW / gaps.length) * 0.65;
+      const stepX = chartW / gaps.length;
+
+      // Max absolute gap for scale
+      const maxAbs = Math.max(0.04, ...gaps.map(g => Math.abs(g)));
+
+      gaps.forEach((g, i) => {
+        const x = padLeft + i * stepX + (stepX - barWidth) / 2;
+        const barHeight = (Math.abs(g) / maxAbs) * (chartH / 2 - 10);
+        const y = g >= 0 ? zeroY - barHeight : zeroY;
+
+        ctx.fillStyle = g >= 0 ? "#34d399" : "#f87171";
+        ctx.fillRect(x, y, barWidth, Math.max(2, barHeight));
+
+        // Month text
+        ctx.fillStyle = "#64748b";
+        ctx.font = "9px JetBrains Mono";
+        ctx.textAlign = "center";
+        ctx.fillText(`M+${i+1}`, x + barWidth / 2, height - 10);
+      });
+
+      // Axis labels
+      ctx.fillStyle = "#94a3b8";
+      ctx.font = "10px JetBrains Mono";
+      ctx.textAlign = "right";
+      ctx.fillText("+0.04 Mt", padLeft - 6, padTop + 10);
+      ctx.fillText("0.00", padLeft - 6, zeroY + 3);
+      ctx.fillText("-0.04 Mt", padLeft - 6, height - padBottom);
+    }
+
+    // ================= DYNAMIC RECOMMENDATIONS =================
+    function updateDynamicRecommendations(annualDeficit, util, down) {
+      const grid = document.getElementById("recsGrid");
+      if (!grid) return;
+
+      const recs = [];
+
+      if (annualDeficit < -0.2) {
+        recs.push({
+          priority: "CRITICAL",
+          pClass: "priority-high",
+          title: "Mandate Strategic High-Grade Manganese Imports",
+          desc: "Severe projected deficit (>200,000 MT) will throttle domestic blast furnaces within 4 months. Recommend issuing immediate STC import tenders for Gabon / South African 44% Mn ore.",
+          timeline: "Immediate Execution",
+          impact: "Prevents steel production bottleneck"
+        });
+      }
+
+      if (down > 0.05) {
+        recs.push({
+          priority: "HIGH",
+          pClass: "priority-high",
+          title: "Mitigate Unplanned Mining Haulage Downtime",
+          desc: "Equipment downtime is currently elevated by +15%. Deploy IoT telematics on heavy excavators and drill rigs in Balaghat open-cast pits.",
+          timeline: "30-Day Window",
+          impact: "Recovers +18,000 MT monthly capacity"
+        });
+      }
+
+      recs.push({
+        priority: "HIGH",
+        pClass: "priority-high",
+        title: "Fast-Track Core Drilling on OD-TARGET-01 & MP-01",
+        desc: "Satellite prospectivity exceeds 88% on structural shear lines. Direct GSI/MECL to initiate 1,500m exploratory borehole coring in Keonjhar block.",
+        timeline: "Q2 2026 Exploration Plan",
+        impact: "Confirms potential new reserve horizon"
+      });
+
+      recs.push({
+        priority: "MODERATE",
+        pClass: "priority-medium",
+        title: "Accelerate Low-Grade Dumps Beneficiation",
+        desc: "Over 8.5 million tonnes of sub-economic (<28% Mn) tailings exist at Dongri Buzurg. Install modern heavy media separation (HMS) plants.",
+        timeline: "6-Month Capex Cycle",
+        impact: "+14% recovery of discarded material"
+      });
+
+      recs.push({
+        priority: "OPTIMIZATION",
+        pClass: "priority-low",
+        title: "Incentivize Battery-Grade EMD/HPMSM Refining",
+        desc: "Align state mining royalty concessions with domestic production of 99.9% High-Purity Manganese Sulphate for EV battery cell gigafactories.",
+        timeline: "National EV Policy Alignment",
+        impact: "Reduces critical mineral import dependency"
+      });
+
+      grid.innerHTML = recs.map(r => `
+        <div class="rec-card">
+          <div>
+            <div class="rec-card-top">
+              <span class="priority-pill ${r.pClass}">${r.priority} ACTION</span>
+              <span style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim);"><i class="fa-solid fa-clock"></i> ${r.timeline}</span>
+            </div>
+            <div class="rec-card-body">
+              <h4>${r.title}</h4>
+              <p>${r.desc}</p>
+            </div>
+          </div>
+          <div class="rec-card-footer">
+            <span><i class="fa-solid fa-chart-line" style="color: var(--signal-cyan);"></i> Impact:</span>
+            <span style="color: #fff; font-weight:600;">${r.impact}</span>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    // ================= TAB NAVIGATION =================
+    function switchTab(tabId) {
+      document.querySelectorAll(".app-tab-btn").forEach(btn => {
+        btn.classList.toggle("active", btn.getAttribute("data-tab") === tabId);
+      });
+
+      document.querySelectorAll(".tab-pane").forEach(pane => {
+        pane.classList.toggle("active", pane.id === tabId);
+      });
+
+      if (tabId === "tab-exploration" && mapInstance) {
+        setTimeout(() => mapInstance.invalidateSize(), 150);
+      } else if (tabId === "tab-forecast") {
+        setTimeout(drawForecastChart, 100);
+      } else if (tabId === "tab-scenario") {
+        setTimeout(recalcScenario, 100);
+      }
+    }
+
+    // Window Resize Handler
+    window.addEventListener("resize", () => {
+      if (document.getElementById("tab-forecast").classList.contains("active")) {
+        drawForecastChart();
+      }
+      if (document.getElementById("tab-scenario").classList.contains("active")) {
+        recalcScenario();
+      }
+    });
+
+    // Boot
+    window.addEventListener("DOMContentLoaded", () => {
+      initMap();
+      runLivePrediction();
+      recalcScenario();
     });
   </script>
 </body>
