@@ -34,30 +34,67 @@
         <div class="logo-symbol">MB</div>
         <div class="logo-text">
           <span class="logo-name">Mohamed Baheed</span>
-          <span class="logo-tag">CSE &bull; Data & Code</span>
+          <span class="logo-tag"><span class="status-pulse-dot"></span> CSE &bull; Full-Stack &amp; Data</span>
         </div>
       </a>
 
-      <!-- Quick Stage Indicator HUD -->
-      <div class="stage-hud" id="stageHud">
-        <span class="hud-label">CURRENT STAGE</span>
+      <!-- Center Integrated Navigation Dock -->
+      <nav class="stages-dock" id="stagesDock" aria-label="Stage Navigation">
+        <button class="dock-pill active" data-stage="1" title="Stage 1: Identity &amp; Vision">
+          <i class="fa-solid fa-compass"></i>
+          <span class="pill-text">Hero</span>
+        </button>
+        <button class="dock-pill" data-stage="2" title="Stage 2: Academic Record &amp; Honors">
+          <i class="fa-solid fa-graduation-cap"></i>
+          <span class="pill-text">Education</span>
+        </button>
+        <button class="dock-pill" data-stage="3" title="Stage 3: Technical Skills">
+          <i class="fa-solid fa-code"></i>
+          <span class="pill-text">Skills</span>
+        </button>
+        <button class="dock-pill" data-stage="4" title="Stage 4: Projects &amp; SIH Hackathons">
+          <i class="fa-solid fa-laptop-code"></i>
+          <span class="pill-text">Projects</span>
+        </button>
+        <button class="dock-pill" data-stage="5" title="Stage 5: Certificates &amp; Dynamic Vault">
+          <i class="fa-solid fa-certificate"></i>
+          <span class="pill-text">Certificates</span>
+        </button>
+        <button class="dock-pill" data-stage="6" title="Stage 6: Leadership, Hobbies &amp; Sports">
+          <i class="fa-solid fa-trophy"></i>
+          <span class="pill-text">Activities</span>
+        </button>
+        <button class="dock-pill" data-stage="7" title="Stage 7: Contact &amp; Connect">
+          <i class="fa-solid fa-envelope"></i>
+          <span class="pill-text">Contact</span>
+        </button>
+      </nav>
+
+      <!-- Stage HUD Pill (Compact) -->
+      <div class="stage-hud" id="stageHud" title="Current Active Stage">
+        <span class="hud-label">STAGE</span>
         <div class="hud-stage-counter">
           <span class="hud-current" id="hudCurrent">01</span>
           <span class="hud-divider">/</span>
           <span class="hud-total" id="hudTotal">07</span>
         </div>
-        <span class="hud-title" id="hudTitle">Identity & Vision</span>
+        <span class="hud-title" id="hudTitle">Identity &amp; Vision</span>
       </div>
 
-      <!-- Action Tools (Sound Toggle, View Mode, GitHub, Resume) -->
+      <!-- Action Tools (Sound Toggle, View Mode, Resume CV, GitHub) -->
       <div class="header-controls">
         <button class="icon-btn" id="soundToggleBtn" title="Toggle UI Sound Effects" aria-label="Toggle UI Audio">
           <i class="fa-solid fa-volume-high" id="soundIcon"></i>
         </button>
 
-        <button class="mode-toggle-btn" id="viewModeBtn" title="Switch between Stage Mode and Full Scroll Mode">
+        <button class="mode-toggle-btn" id="viewModeBtn" title="Switch between Continuous Scroll and Stage Focus Mode">
           <i class="fa-solid fa-layer-group"></i>
-          <span class="mode-label" id="viewModeLabel">Stage Mode</span>
+          <span class="mode-label" id="viewModeLabel">Scroll Mode</span>
+        </button>
+
+        <button class="btn-cv-header" id="headerResumeBtn" title="View Summary CV">
+          <i class="fa-solid fa-file-invoice"></i>
+          <span>CV</span>
         </button>
 
         <a href="https://github.com/MdBaheed" target="_blank" rel="noopener noreferrer" class="btn-github" id="githubLink" title="View GitHub Profile">
@@ -67,47 +104,15 @@
 
         <button class="btn-primary-sm" id="quickAddBtn" title="Add Upcoming Achievement">
           <i class="fa-solid fa-plus"></i>
-          <span>Add Achievement</span>
+          <span>Add</span>
         </button>
       </div>
     </div>
 
-    <!-- Stage Progress Bar -->
+    <!-- Stage Progress Bar (Slim 2.5px Gradient Track) -->
     <div class="stage-progress-track">
       <div class="stage-progress-fill" id="stageProgressFill"></div>
     </div>
-
-    <!-- Quick Navigation Dock / Stage Pills -->
-    <nav class="stages-dock" id="stagesDock" aria-label="Stage Navigation">
-      <button class="dock-pill active" data-stage="1" title="Stage 1: Identity & Vision">
-        <span class="pill-number">01</span>
-        <span class="pill-text">Hero</span>
-      </button>
-      <button class="dock-pill" data-stage="2" title="Stage 2: Academic Record & Honors">
-        <span class="pill-number">02</span>
-        <span class="pill-text">Education</span>
-      </button>
-      <button class="dock-pill" data-stage="3" title="Stage 3: Technical Skills">
-        <span class="pill-number">03</span>
-        <span class="pill-text">Skills</span>
-      </button>
-      <button class="dock-pill" data-stage="4" title="Stage 4: Projects & SIH Hackathons">
-        <span class="pill-number">04</span>
-        <span class="pill-text">Projects</span>
-      </button>
-      <button class="dock-pill" data-stage="5" title="Stage 5: Certificates & Dynamic Vault">
-        <span class="pill-number">05</span>
-        <span class="pill-text">Certificates</span>
-      </button>
-      <button class="dock-pill" data-stage="6" title="Stage 6: Leadership, Hobbies & Sports">
-        <span class="pill-number">06</span>
-        <span class="pill-text">Extracurricular</span>
-      </button>
-      <button class="dock-pill" data-stage="7" title="Stage 7: Contact & Connect">
-        <span class="pill-number">07</span>
-        <span class="pill-text">Contact</span>
-      </button>
-    </nav>
   </header>
 
   <!-- Main Multi-Stage Container -->
@@ -172,30 +177,150 @@
         </div>
 
         <div class="hero-visual">
-          <div class="avatar-card-container">
-            <div class="avatar-glow-ring"></div>
-            <div class="avatar-card">
-              <img src="assets/images/avatar.jpg" alt="Mohamed Baheed - Tech Avatar" class="avatar-img" id="heroAvatarImg">
-              <div class="floating-badge badge-top-right">
-                <i class="fa-solid fa-code"></i>
-                <div>
-                  <div class="f-title">Fullstack</div>
-                  <div class="f-sub">Python &bull; JS &bull; Java</div>
+          <div class="code-terminal-container">
+            <div class="terminal-glow-ring"></div>
+            
+            <div class="code-terminal glass-card">
+              <!-- Window Chrome Header -->
+              <div class="terminal-titlebar">
+                <div class="window-controls">
+                  <span class="control-dot dot-close" title="Close"></span>
+                  <span class="control-dot dot-minimize" title="Minimize"></span>
+                  <span class="control-dot dot-maximize" title="Maximize"></span>
+                </div>
+                <div class="terminal-tabs" role="tablist">
+                  <button class="terminal-tab active" data-terminal-tab="code" role="tab" aria-selected="true" id="tabBtnCode">
+                    <i class="fa-brands fa-js tab-icon-js"></i>
+                    <span>developer.ts</span>
+                  </button>
+                  <button class="terminal-tab" data-terminal-tab="stack" role="tab" aria-selected="false" id="tabBtnStack">
+                    <i class="fa-solid fa-layer-group tab-icon-stack"></i>
+                    <span>tech-stack.json</span>
+                  </button>
+                  <button class="terminal-tab" data-terminal-tab="cli" role="tab" aria-selected="false" id="tabBtnCli">
+                    <i class="fa-solid fa-terminal tab-icon-cli"></i>
+                    <span>interactive.sh</span>
+                  </button>
+                </div>
+                <div class="terminal-actions">
+                  <button class="terminal-action-btn" id="copyCodeBtn" title="Copy code snippet" aria-label="Copy code">
+                    <i class="fa-regular fa-copy" id="copyIcon"></i>
+                    <span class="copy-tooltip" id="copyTooltip">Copy</span>
+                  </button>
                 </div>
               </div>
-              <div class="floating-badge badge-bottom-left">
-                <i class="fa-solid fa-chart-line"></i>
-                <div>
-                  <div class="f-title">Data Science</div>
-                  <div class="f-sub">NPTEL Certified</div>
+
+              <!-- Tab 1: TypeScript Profile -->
+              <div class="terminal-body tab-content active" id="tabBodyCode">
+                <div class="code-editor-view">
+                  <div class="code-line-numbers" aria-hidden="true">
+                    <span>01</span><span>02</span><span>03</span><span>04</span><span>05</span>
+                    <span>06</span><span>07</span><span>08</span><span>09</span><span>10</span>
+                    <span>11</span><span>12</span><span>13</span><span>14</span><span>15</span>
+                  </div>
+                  <pre class="code-lines"><code><span class="c-kw">const</span> <span class="c-var">developer</span>: <span class="c-type">EngineerProfile</span> = {
+  <span class="c-prop">name</span>: <span class="c-str">"Mohamed Baheed"</span>,
+  <span class="c-prop">degree</span>: <span class="c-str">"B.E. Computer Science &amp; Engg"</span>,
+  <span class="c-prop">college</span>: <span class="c-str">"Mohamed Sathak Engineering College"</span>,
+  <span class="c-prop">academics</span>: {
+    <span class="c-prop">sem2SGPA</span>: <span class="c-num">9.62</span>, <span class="c-comment">// Class 2nd Rank</span>
+    <span class="c-prop">sem1SGPA</span>: <span class="c-num">9.54</span>,
+    <span class="c-prop">distinction</span>: <span class="c-bool">true</span>
+  },
+  <span class="c-prop">domains</span>: [<span class="c-str">"Full-Stack Web"</span>, <span class="c-str">"Data Science"</span>, <span class="c-str">"AI Prompt Eng"</span>],
+  <span class="c-prop">sihProjects</span>: [<span class="c-str">"Smart Energy IoT"</span>, <span class="c-str">"MANGANEX Geospatial AI"</span>],
+  <span class="c-prop">status</span>: <span class="c-str">"Innovating &amp; Open for Opportunities"</span>
+};</code></pre>
                 </div>
               </div>
-              <div class="floating-badge badge-bottom-right">
-                <i class="fa-solid fa-lightbulb"></i>
-                <div>
-                  <div class="f-title">SIH Innovator</div>
-                  <div class="f-sub">AI & IoT Solutions</div>
+
+              <!-- Tab 2: Tech Stack JSON -->
+              <div class="terminal-body tab-content" id="tabBodyStack">
+                <div class="code-editor-view">
+                  <div class="code-line-numbers" aria-hidden="true">
+                    <span>01</span><span>02</span><span>03</span><span>04</span><span>05</span>
+                    <span>06</span><span>07</span><span>08</span><span>09</span><span>10</span>
+                    <span>11</span><span>12</span><span>13</span>
+                  </div>
+                  <pre class="code-lines"><code>{
+  <span class="c-prop">"coreLanguages"</span>: [<span class="c-str">"Python"</span>, <span class="c-str">"Java"</span>, <span class="c-str">"JavaScript ES6+"</span>, <span class="c-str">"SQL"</span>],
+  <span class="c-prop">"technologies"</span>: [<span class="c-str">"HTML5/CSS3"</span>, <span class="c-str">"JavaFX"</span>, <span class="c-str">"Git/GitHub"</span>, <span class="c-str">"REST APIs"</span>],
+  <span class="c-prop">"certifications"</span>: {
+    <span class="c-prop">"nptel"</span>: <span class="c-str">"Python for Data Science (Elite 62%)"</span>,
+    <span class="c-prop">"hpLife"</span>: [<span class="c-str">"Critical Thinking AI"</span>, <span class="c-str">"Cybersecurity"</span>, <span class="c-str">"AI Basics"</span>],
+    <span class="c-prop">"simplilearn"</span>: <span class="c-str">"Data Structures &amp; Algorithms"</span>
+  },
+  <span class="c-prop">"leadership"</span>: <span class="c-str">"Event Coordinator @ IIF &amp; EDC-Cell"</span>,
+  <span class="c-prop">"hackathons"</span>: <span class="c-str">"2x Smart India Hackathon (SIH) Participant"</span>
+}</code></pre>
                 </div>
+              </div>
+
+              <!-- Tab 3: Interactive CLI -->
+              <div class="terminal-body tab-content" id="tabBodyCli">
+                <div class="interactive-terminal-view">
+                  <div class="cli-output" id="cliOutput">
+                    <div class="cli-line intro-line">Mohamed Baheed Dev Environment [Version 2.4.0]</div>
+                    <div class="cli-line info-line">Type a command or click a quick shortcut below:</div>
+                    <div class="cli-shortcuts">
+                      <button type="button" class="cmd-pill" onclick="runCliCmd('skills')">skills</button>
+                      <button type="button" class="cmd-pill" onclick="runCliCmd('academics')">academics</button>
+                      <button type="button" class="cmd-pill" onclick="runCliCmd('projects')">projects</button>
+                      <button type="button" class="cmd-pill" onclick="runCliCmd('contact')">contact</button>
+                      <button type="button" class="cmd-pill" onclick="runCliCmd('clear')">clear</button>
+                    </div>
+                  </div>
+                  <form class="cli-input-row" id="cliForm" onsubmit="event.preventDefault(); submitCliCmd();">
+                    <span class="cli-prompt"><i class="fa-solid fa-angle-right"></i> baheed:~$</span>
+                    <input type="text" id="cliInput" class="cli-input" placeholder="Type skills, projects, contact..." autocomplete="off">
+                    <button type="submit" class="cli-run-btn" title="Run command" aria-label="Run command">
+                      <i class="fa-solid fa-arrow-turn-down fa-rotate-90"></i>
+                    </button>
+                  </form>
+                </div>
+              </div>
+
+              <!-- Terminal Status Bar -->
+              <div class="terminal-statusbar">
+                <div class="status-left">
+                  <span class="status-item"><i class="fa-solid fa-code-branch"></i> main</span>
+                  <span class="status-item status-live"><span class="status-dot"></span> Available for Opportunities</span>
+                </div>
+                <div class="status-right">
+                  <span class="status-item">UTF-8</span>
+                  <span class="status-item">TypeScript</span>
+                  <span class="status-item text-accent">9.62 SGPA</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Surrounding Floating Glass Badges -->
+            <div class="floating-badge badge-top-right">
+              <i class="fa-solid fa-laptop-code"></i>
+              <div>
+                <div class="f-title">Fullstack</div>
+                <div class="f-sub">Python &bull; JS &bull; Java</div>
+              </div>
+            </div>
+            <div class="floating-badge badge-top-left">
+              <i class="fa-solid fa-trophy"></i>
+              <div>
+                <div class="f-title">Class Rank #2</div>
+                <div class="f-sub">9.62 SGPA Distinction</div>
+              </div>
+            </div>
+            <div class="floating-badge badge-bottom-left">
+              <i class="fa-solid fa-chart-line"></i>
+              <div>
+                <div class="f-title">Data Science</div>
+                <div class="f-sub">NPTEL Certified</div>
+              </div>
+            </div>
+            <div class="floating-badge badge-bottom-right">
+              <i class="fa-solid fa-lightbulb"></i>
+              <div>
+                <div class="f-title">SIH Innovator</div>
+                <div class="f-sub">AI &amp; IoT Solutions</div>
               </div>
             </div>
           </div>

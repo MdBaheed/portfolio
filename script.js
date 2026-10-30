@@ -15,7 +15,7 @@ const STAGE_CONFIG = [
 ];
 
 let currentStage = 1;
-let isScrollMode = false;
+let isScrollMode = true;
 let isSoundEnabled = true;
 
 // Default Pre-loaded Certificates
@@ -318,28 +318,20 @@ function playUiTone(type = "click") {
 }
 
 // ================= STAGE NAVIGATION CONTROLLER =================
-function goToStage(stageNumber) {
-  if (stageNumber < 1) stageNumber = 1;
-  if (stageNumber > STAGE_CONFIG.length) stageNumber = STAGE_CONFIG.length;
-
-  currentStage = stageNumber;
-  const stageInfo = STAGE_CONFIG[currentStage - 1];
+function updateStageUI(stageIdx) {
+  const stageInfo = STAGE_CONFIG[stageIdx - 1];
+  if (!stageInfo) return;
 
   // Update HUD
   const hudCurrent = document.getElementById("hudCurrent");
   const hudTitle = document.getElementById("hudTitle");
-  if (hudCurrent) hudCurrent.textContent = String(currentStage).padStart(2, "0");
+  if (hudCurrent) hudCurrent.textContent = String(stageIdx).padStart(2, "0");
   if (hudTitle) hudTitle.textContent = stageInfo.name;
-
-  // Update Progress Bar
-  const progressPercent = (currentStage / STAGE_CONFIG.length) * 100;
-  const progressFill = document.getElementById("stageProgressFill");
-  if (progressFill) progressFill.style.width = `${progressPercent}%`;
 
   // Update Dock Pills
   document.querySelectorAll(".dock-pill").forEach(pill => {
     const pillStage = parseInt(pill.getAttribute("data-stage"));
-    if (pillStage === currentStage) {
+    if (pillStage === stageIdx) {
       pill.classList.add("active");
     } else {
       pill.classList.remove("active");
@@ -352,21 +344,36 @@ function goToStage(stageNumber) {
   const prevBtn = document.getElementById("prevStageBtn");
   const nextBtn = document.getElementById("nextStageBtn");
 
-  if (ctrlCounter) ctrlCounter.textContent = `STAGE ${currentStage} OF ${STAGE_CONFIG.length}`;
+  if (ctrlCounter) ctrlCounter.textContent = `STAGE ${stageIdx} OF ${STAGE_CONFIG.length}`;
   if (ctrlCurrentTitle) ctrlCurrentTitle.textContent = stageInfo.name;
 
   if (prevBtn) {
-    prevBtn.disabled = currentStage === 1;
+    prevBtn.disabled = stageIdx === 1;
   }
 
   if (nextBtn) {
-    if (currentStage === STAGE_CONFIG.length) {
+    if (stageIdx === STAGE_CONFIG.length) {
       nextBtn.innerHTML = `<span>Back to Start</span> <i class="fa-solid fa-arrow-rotate-left"></i>`;
     } else {
-      const nextStageName = STAGE_CONFIG[currentStage].name;
       nextBtn.innerHTML = `<span>Review Next Page</span> <i class="fa-solid fa-arrow-right"></i>`;
     }
   }
+
+  if (!isScrollMode) {
+    const progressPercent = (stageIdx / STAGE_CONFIG.length) * 100;
+    const progressFill = document.getElementById("stageProgressFill");
+    if (progressFill) progressFill.style.width = `${progressPercent}%`;
+  }
+}
+
+function goToStage(stageNumber) {
+  if (stageNumber < 1) stageNumber = 1;
+  if (stageNumber > STAGE_CONFIG.length) stageNumber = STAGE_CONFIG.length;
+
+  currentStage = stageNumber;
+  const stageInfo = STAGE_CONFIG[currentStage - 1];
+
+  updateStageUI(currentStage);
 
   // Handle Stage Display
   if (!isScrollMode) {
@@ -887,16 +894,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 11. Resume Modal
   const openResumeBtn = document.getElementById("openResumeModalBtn");
+  const headerResumeBtn = document.getElementById("headerResumeBtn");
   const resumeModal = document.getElementById("resumeModal");
   const closeResumeModalBtn = document.getElementById("closeResumeModalBtn");
 
-  if (openResumeBtn && resumeModal) {
-    openResumeBtn.addEventListener("click", () => {
+  const openResumeModal = () => {
+    if (resumeModal) {
       resumeModal.classList.add("open");
       resumeModal.setAttribute("aria-hidden", "false");
       playUiTone("click");
-    });
-  }
+    }
+  };
+
+  if (openResumeBtn) openResumeBtn.addEventListener("click", openResumeModal);
+  if (headerResumeBtn) headerResumeBtn.addEventListener("click", openResumeModal);
   if (closeResumeModalBtn) closeResumeModalBtn.addEventListener("click", closeAllModals);
 
   // 12. Close Modals on Overlay Click or Escape Key
@@ -927,6 +938,177 @@ document.addEventListener("DOMContentLoaded", () => {
   // 14. Projects Filters
   initProjectFilters();
 
-  // 15. Initial Stage State
-  goToStage(1);
+  // 15. Hero Code Terminal & Workstation
+  initHeroTerminal();
+
+  // 16. Scroll-Spy for Continuous Scroll Mode
+  initScrollSpy();
+
+  // 17. Initial Stage State & Mode Setup
+  if (isScrollMode) {
+    document.body.classList.add("scroll-all-mode");
+    if (viewModeLabel) viewModeLabel.textContent = "Scroll Mode";
+    if (viewModeBtn) viewModeBtn.style.borderColor = "var(--cyan-primary)";
+  } else {
+    document.body.classList.remove("scroll-all-mode");
+    if (viewModeLabel) viewModeLabel.textContent = "Stage Mode";
+    if (viewModeBtn) viewModeBtn.style.borderColor = "var(--border-glass)";
+  }
+  updateStageUI(1);
 });
+
+// ================= HERO CODE TERMINAL WORKSTATION =================
+function initHeroTerminal() {
+  const tabBtns = document.querySelectorAll(".terminal-tab");
+  const tabBodies = {
+    code: document.getElementById("tabBodyCode"),
+    stack: document.getElementById("tabBodyStack"),
+    cli: document.getElementById("tabBodyCli")
+  };
+
+  tabBtns.forEach(btn => {
+    btn.addEventListener("click", () => {
+      const tabKey = btn.getAttribute("data-terminal-tab");
+      tabBtns.forEach(b => {
+        b.classList.remove("active");
+        b.setAttribute("aria-selected", "false");
+      });
+      btn.classList.add("active");
+      btn.setAttribute("aria-selected", "true");
+
+      Object.values(tabBodies).forEach(body => {
+        if (body) body.classList.remove("active");
+      });
+      if (tabBodies[tabKey]) {
+        tabBodies[tabKey].classList.add("active");
+      }
+      playUiTone("click");
+    });
+  });
+
+  // Copy Code Action
+  const copyBtn = document.getElementById("copyCodeBtn");
+  const copyIcon = document.getElementById("copyIcon");
+  const copyTooltip = document.getElementById("copyTooltip");
+
+  if (copyBtn) {
+    copyBtn.addEventListener("click", () => {
+      const activeTab = document.querySelector(".terminal-tab.active")?.getAttribute("data-terminal-tab");
+      let codeText = "";
+      if (activeTab === "stack") {
+        codeText = document.getElementById("tabBodyStack")?.innerText || "";
+      } else {
+        codeText = document.getElementById("tabBodyCode")?.innerText || "";
+      }
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(codeText).then(() => {
+          if (copyIcon) copyIcon.className = "fa-solid fa-check";
+          if (copyTooltip) copyTooltip.textContent = "Copied!";
+          showToast("Profile snippet copied to clipboard!");
+          playUiTone("click");
+          setTimeout(() => {
+            if (copyIcon) copyIcon.className = "fa-regular fa-copy";
+            if (copyTooltip) copyTooltip.textContent = "Copy";
+          }, 2400);
+        }).catch(() => {
+          showToast("Snippet selected.");
+        });
+      } else {
+        showToast("Snippet selected.");
+      }
+    });
+  }
+}
+
+// Terminal CLI Commands Engine
+const CLI_COMMANDS = {
+  help: "Available commands: <strong>skills</strong>, <strong>academics</strong>, <strong>projects</strong>, <strong>contact</strong>, <strong>sih</strong>, <strong>clear</strong>",
+  skills: "<strong>Languages:</strong> Python, Java, JavaScript (ES6+), SQL, HTML5/CSS3<br><strong>Frameworks/Tools:</strong> Node.js, JavaFX, Git/GitHub, REST APIs<br><strong>Specializations:</strong> Full-Stack Web Development, Data Science (NPTEL Elite 62%), Prompt Engineering",
+  academics: "<strong>B.E. Computer Science &amp; Engineering</strong> &bull; Mohamed Sathak Engineering College<br>&bull; Semester 1 SGPA: <strong>9.54</strong><br>&bull; Semester 2 SGPA: <strong>9.62 (Class 2nd Rank)</strong>",
+  projects: "<strong>1. Smart Classroom Energy System:</strong> SIH IoT &amp; AI energy management prototype<br><strong>2. MANGANEX Geospatial AI:</strong> SIH mineral prospectivity mapping engine<br><strong>3. AI Study Scheduler:</strong> Syllabus-adaptive study &amp; revision planner<br><strong>4. Engineering Grade Calculator:</strong> SGPA/CGPA forecaster suite",
+  sih: "Smart India Hackathon (SIH) Participant &amp; Innovator with 2 active solutions in Institutional IoT automation and Geospatial AI data mining.",
+  contact: "<strong>Email:</strong> mohamedbaheed6@gmail.com<br><strong>GitHub:</strong> <a href='https://github.com/MdBaheed' target='_blank' style='color:#00f2fe; text-decoration:underline;'>github.com/MdBaheed</a><br><strong>Location:</strong> Mohamed Sathak Engineering College, Kilakarai"
+};
+
+function runCliCmd(cmd) {
+  const cliOutput = document.getElementById("cliOutput");
+  const cliInput = document.getElementById("cliInput");
+  if (!cliOutput) return;
+
+  const cleanCmd = (cmd || "").trim().toLowerCase();
+  if (!cleanCmd) return;
+
+  if (cleanCmd === "clear") {
+    cliOutput.innerHTML = `
+      <div class="cli-line intro-line">Terminal cleared. Type a command or pick below:</div>
+      <div class="cli-shortcuts">
+        <button type="button" class="cmd-pill" onclick="runCliCmd('skills')">skills</button>
+        <button type="button" class="cmd-pill" onclick="runCliCmd('academics')">academics</button>
+        <button type="button" class="cmd-pill" onclick="runCliCmd('projects')">projects</button>
+        <button type="button" class="cmd-pill" onclick="runCliCmd('contact')">contact</button>
+      </div>
+    `;
+    if (cliInput) cliInput.value = "";
+    playUiTone("click");
+    return;
+  }
+
+  const echoLine = document.createElement("div");
+  echoLine.className = "cli-line cmd-echo";
+  echoLine.innerHTML = `<i class="fa-solid fa-angle-right"></i> baheed:~$ ${cleanCmd}`;
+  cliOutput.appendChild(echoLine);
+
+  const resLine = document.createElement("div");
+  resLine.className = "cli-line res-success";
+  if (CLI_COMMANDS[cleanCmd]) {
+    resLine.innerHTML = CLI_COMMANDS[cleanCmd];
+  } else {
+    resLine.innerHTML = `Command not recognized: "${cleanCmd}". Type <strong onclick="runCliCmd('help')" style="cursor:pointer; text-decoration:underline; color:#00f2fe;">help</strong> to see valid commands.`;
+  }
+  cliOutput.appendChild(resLine);
+  cliOutput.scrollTop = cliOutput.scrollHeight;
+  if (cliInput) cliInput.value = "";
+  playUiTone("click");
+}
+
+function submitCliCmd() {
+  const cliInput = document.getElementById("cliInput");
+  if (cliInput && cliInput.value) {
+    runCliCmd(cliInput.value);
+  }
+}
+
+// ================= SCROLL-SPY & INTERSECTION OBSERVER =================
+function initScrollSpy() {
+  const sections = document.querySelectorAll(".stage-section");
+  const observer = new IntersectionObserver((entries) => {
+    if (!isScrollMode) return;
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const stageIdx = parseInt(entry.target.getAttribute("data-stage-index"));
+        if (stageIdx && stageIdx !== currentStage) {
+          currentStage = stageIdx;
+          updateStageUI(stageIdx);
+        }
+      }
+    });
+  }, {
+    rootMargin: "-20% 0px -40% 0px",
+    threshold: 0.15
+  });
+
+  sections.forEach(sec => observer.observe(sec));
+
+  // Dynamic Scroll Progress Bar
+  window.addEventListener("scroll", () => {
+    if (!isScrollMode) return;
+    const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
+    const progressFill = document.getElementById("stageProgressFill");
+    if (progressFill) {
+      progressFill.style.width = `${Math.min(100, Math.max(5, scrolled))}%`;
+    }
+  }, { passive: true });
+}
